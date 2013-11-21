@@ -184,13 +184,13 @@ class TiledLevel extends TiledMap
 		var width:Float = o.width;
 		var height:Float = o.height;
 		
-		/*switch(o.type.toLowerCase())
+		switch(o.type.toLowerCase())
 		{
 			case "enemy":
 				var enemy:Enemy = new Enemy(x,y,  Std.parseInt(o.name));
 				_enemies.add(enemy);
 			
-		}*/
+		}
 	}
 	
 	

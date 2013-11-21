@@ -1,5 +1,6 @@
 package;
 
+import flash.display.BlendMode;
 import flixel.addons.tile.FlxTilemapExt;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -15,6 +16,7 @@ import flixel.util.FlxRect;
 import flixel.addons.display.FlxGridOverlay;
 import levels.TiledLevel;
 import openfl.events.JoystickEvent;
+import flixel.effects.FlxTrail;
 
 /**
  * A FlxState which can be used for the actual gameplay.
@@ -29,10 +31,12 @@ class PlayState extends FlxState
 	private var _levelBounds:FlxRect;
 	private var _grpWalls:FlxGroup;
 	private var _grpPlayers:FlxGroup;
+	private var _grpEnemies:FlxGroup;
 	private var _grpBall:FlxGroup;
 	private var _grpUI:FlxGroup;
 	
 	private var _sprFade:FlxSprite;
+	private var _grpBallTrail:FlxGroup;
 	private var _collisionMap:FlxTilemapExt;
 	
 	private var _state:Int = 0;
@@ -45,7 +49,15 @@ class PlayState extends FlxState
 	private var _ballLaunchTimer:Float;
 	private var _ballLaunchDisplay:FlxSprite;
 	
+	private var _p1score:Int;
+	private var _p2score:Int;
 	
+	private var _txtP1Score:FlxText;
+	private var _txtP2Score:FlxText;
+	
+	private var _lastHitBy:Int = 0;
+	
+	private var _ballTrail:FlxTrail;
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -60,6 +72,9 @@ class PlayState extends FlxState
 		
 		_state = STATE_LOADING;
 		_ballLaunched = false;
+		_p1score = 0;
+		_p2score = 0;
+		_lastHitBy = 0;
 		
 		Reg.LoadLevels();
 		InitGameScreen();
@@ -81,17 +96,23 @@ class PlayState extends FlxState
 		add(_background);
 		
 		_grpWalls = new FlxGroup(1);
+		_grpBallTrail = new FlxGroup(1);
 		_grpPlayers = new FlxGroup(2);
+		_grpEnemies = new FlxGroup(1);
 		_grpBall = new FlxGroup(1);
 		_grpUI = new FlxGroup();
 		
 		add(_grpWalls);
+		add(_grpBallTrail);
 		add(_grpPlayers);
+		add(_grpEnemies);
 		add(_grpBall);
 		add(_grpUI);
 		
 		_sprFade = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		add(_sprFade);
+		
+		
 		
 		_sprPlayer1 = new FlxSprite(16, 16).makeGraphic(Reg.PLAYER_WIDTH, Reg.PLAYER_HEIGHT, FlxColor.BLUE);
 		_sprPlayer2 = new FlxSprite(FlxG.width - 32, 16).makeGraphic(Reg.PLAYER_WIDTH, Reg.PLAYER_HEIGHT, FlxColor.GOLDENROD);
@@ -116,6 +137,21 @@ class PlayState extends FlxState
 		_ballLaunchTimer = 2;
 		_grpUI.add(_ballLaunchDisplay);
 		
+		_txtP1Score = new FlxText(4, 4, 200, "0",16);
+		_txtP1Score.borderStyle = FlxText.BORDER_OUTLINE;
+		_txtP1Score.alignment="left";
+		_txtP1Score.scrollFactor.x = _txtP1Score.scrollFactor.y = 0;
+		_grpUI.add(_txtP1Score);
+		
+		_txtP2Score = new FlxText(FlxG.width - 204, 4, 200, "0",16);
+		_txtP2Score.borderStyle = FlxText.BORDER_OUTLINE;
+		_txtP2Score.alignment="right";
+		_txtP2Score.scrollFactor.x = _txtP2Score.scrollFactor.y = 0;
+		_grpUI.add(_txtP2Score);
+		
+		_ballTrail = new FlxTrail(_ball,null,6,1,.2,.02);
+		_grpBallTrail.add(_ballTrail);
+		
 		
 	}
 	
@@ -132,11 +168,28 @@ class PlayState extends FlxState
 		_sprPlayer1.y = (FlxG.height - Reg.PLAYER_HEIGHT) / 2;
 		_sprPlayer2.y = (FlxG.height - Reg.PLAYER_HEIGHT) / 2;
 		
-		_ballLaunchDisplay.animation.frameIndex = 0;
-		_ballLaunchDisplay.alpha = 0;
-		_ballLaunchTimer = 2;
+		if (_grpEnemies.members.length > 0)
+			_grpEnemies.replace(_grpEnemies.members[0], level.enemies);
+		else
+			_grpEnemies.add(level.enemies);
+
+		ResetBall();
 	}
 	
+	private function ResetBall():Void
+	{
+		_ball.x = (FlxG.width - Reg.BALL_SIZE) / 2;
+		_ball.y = (FlxG.height - Reg.BALL_SIZE) / 2;
+		_ball.velocity.x = 0;
+		_ball.velocity.y = 0;
+		_ballLaunchDisplay.animation.frameIndex = 0;
+		_ballLaunchDisplay.alpha = 0;
+		_ballLaunchDisplay.scale.x = _ballLaunchDisplay.scale.y = 1;
+		_ballLaunchDisplay.visible = true;
+		_ballLaunchTimer = 2;
+		_ballLaunched = false;
+		_lastHitBy = 0;
+	}
 	
 	/**
 	 * Function that is called when this state is destroyed - you might want to 
@@ -170,35 +223,92 @@ class PlayState extends FlxState
 		
 		FlxG.collide(_ball, _grpWalls);
 		FlxG.collide(_grpPlayers, _ball, BallHitPlayer);
+		FlxG.collide(_grpEnemies, _ball, BallHitEnemy);
 		
 		if (!_ballLaunched)
 		{
 			if (_ballLaunchTimer > 0)
 			{
-				_ballLaunchTimer -= FlxG.elapsed * 2;
+				_ballLaunchTimer -= FlxG.elapsed * 3;
 				if (_ballLaunchTimer > 1)
+				{
 					_ballLaunchDisplay.alpha = 1;
+					
+				}
 				else
-					_ballLaunchDisplay.alpha -= _ballLaunchTimer;
+				{
+					_ballLaunchDisplay.scale.x +=FlxG.elapsed * 6;
+					_ballLaunchDisplay.scale.y +=FlxG.elapsed * 6;
+					_ballLaunchDisplay.alpha = _ballLaunchTimer;
+				}
 			}
 			else if (_ballLaunchDisplay.animation.frameIndex < 3)
 			{
 				_ballLaunchDisplay.animation.frameIndex++;
 				_ballLaunchTimer = 2;
 				_ballLaunchDisplay.alpha = 1;
+				_ballLaunchDisplay.scale.x = _ballLaunchDisplay.scale.y = 1;
 			}
 			else if (_ballLaunchDisplay.animation.frameIndex == 3)
 			{
+				_ballLaunchDisplay.visible = false;
 				_ball.velocity.x = FlxRandom.sign() * 200;
 				_ball.velocity.y = FlxRandom.sign() * FlxRandom.intRanged(0, 20);
 				_ballLaunched = true;
 			}
-			
+		}
+		else if (!_ball.onScreen())
+		{
+			// reset the ball!
+			if (_ball.x < 0)
+				_p2score += 100;
+			else
+				_p1score += 100;
+			ResetBall();
+		}
+	}
+	
+	private function BallHitEnemy(E:FlxObject, B:FlxObject):Void
+	{
+		var enemyMid:Int = Std.int(E.y + (E.height / 2));
+		var ballMid:Int = Std.int(B.y + (Reg.BALL_SIZE / 2));
+		var diff:Int;
+		if (ballMid < enemyMid)
+		{
+			// ball hit the 'top' of the paddle
+			diff = enemyMid - ballMid;
+			B.velocity.y = ( -4 * Math.abs(diff));
+		}
+		else if (ballMid > enemyMid)
+		{
+			// ball hit the 'bottom' of the paddle
+			diff = enemyMid - ballMid;
+			B.velocity.y = ( 4 * Math.abs(diff));
+		}
+		else
+		{
+			// ball hit right in the middle...
+			// randomize!
+			B.velocity.y = 2 + Std.int(Math.random() * 8);
+		}
+		E.hurt(1);
+		if (cast(E, Enemy).dying)
+		{
+			if (_lastHitBy == 1)
+			{
+				_p1score += 100;
+			}
+			else if (_lastHitBy == 2)
+			{
+				_p2score += 100;
+			}
 		}
 	}
 	
 	private function BallHitPlayer(P:FlxObject, B:FlxObject):Void
 	{
+		if (P.x == 16) _lastHitBy = 1;
+		else _lastHitBy = 2;
 		var playerMid:Int = Std.int(P.y + (Reg.PLAYER_HEIGHT / 2));
 		var ballMid:Int = Std.int(B.y + (Reg.BALL_SIZE / 2));
 		var diff:Int;
@@ -207,21 +317,18 @@ class PlayState extends FlxState
 			// ball hit the 'top' of the paddle
 			diff = playerMid - ballMid;
 			B.velocity.y = ( -4 * Math.abs(diff));
-			trace('top: ' + B.velocity.y);
 		}
 		else if (ballMid > playerMid)
 		{
 			// ball hit the 'bottom' of the paddle
 			diff = playerMid - ballMid;
 			B.velocity.y = ( 4 * Math.abs(diff));
-			trace('bottom: ' + B.velocity.y);
 		}
 		else
 		{
 			// ball hit right in the middle...
 			// randomize!
 			B.velocity.y = 2 + Std.int(Math.random() * 8);
-			trace('middle: ' + B.velocity.y);
 		}
 		
 	}
@@ -249,6 +356,15 @@ class PlayState extends FlxState
 				GamePlay();
 		}
 		
+		if (_p1score != Std.parseInt(_txtP1Score.text))
+		{
+			_txtP1Score.text = Std.string(Std.parseInt(_txtP1Score.text) + 1);
+		}
+		if (_p2score != Std.parseInt(_txtP2Score.text))
+		{
+			_txtP2Score.text = Std.string(Std.parseInt(_txtP2Score.text) + 1);
+		}
+		
 		super.update();
 		
 		if (_sprPlayer1.y < _levelBounds.top) _sprPlayer1.y =  _levelBounds.top;
@@ -258,4 +374,5 @@ class PlayState extends FlxState
 		else if (_sprPlayer2.y > _levelBounds.bottom - Reg.PLAYER_HEIGHT) _sprPlayer2.y = _levelBounds.bottom - Reg.PLAYER_HEIGHT;
 		
 	}	
+	
 }
