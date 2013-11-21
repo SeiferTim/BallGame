@@ -24,6 +24,8 @@ class MenuState extends FlxState
 		FlxG.mouse.show();
 		#end
 		
+		add(new FlxText(10, 10, 100, "TEST"));
+		
 		super.create();
 	}
 	
