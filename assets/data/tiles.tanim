@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<animations>
+	<tileset firstGID="1">
+		<tile id="0">
+			<animation id="cycle" speed="6">
+				<frame id="0" />
+				<frame id="1" />
+				<frame id="2" />
+				<frame id="1" />
+			</animation>
+		</tile>
+	</tileset>
+</animations>

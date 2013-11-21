@@ -40,4 +40,15 @@ class Reg
 	 * your state if you want to use the same save flixel uses internally
 	 */
 	static public var save:FlxSave;
+	
+	static public inline var PLAYER_WIDTH:Int = 16;
+	static public inline var PLAYER_HEIGHT:Int = 48;
+	static public inline var PLAYER_SPEED:Int = 320;
+	
+	static public inline var BALL_SIZE:Int = 16;
+	
+	static public function LoadLevels():Void
+	{
+		levels.push("001");
+	}
 }
