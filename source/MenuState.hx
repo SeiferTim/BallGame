@@ -24,7 +24,7 @@ class MenuState extends FlxState
 		FlxG.mouse.show();
 		#end
 		
-		add(new FlxText(10, 10, 100, "TEST"));
+		add(new FlxText(10, 10, 100, "Click to Play"));
 		
 		super.create();
 	}
@@ -43,6 +43,8 @@ class MenuState extends FlxState
 	 */
 	override public function update():Void
 	{
+		
+		
 		super.update();
 	}	
 }
