@@ -149,7 +149,7 @@ class PlayState extends FlxState
 		_txtP2Score.scrollFactor.x = _txtP2Score.scrollFactor.y = 0;
 		_grpUI.add(_txtP2Score);
 		
-		_ballTrail = new FlxTrail(_ball,null,6,1,.2,.02);
+		_ballTrail = new FlxTrail(_ball,null,12,1,.4,.03);
 		_grpBallTrail.add(_ballTrail);
 		
 		
