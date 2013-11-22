@@ -155,7 +155,7 @@ class PlayState extends FlxState
 		_txtP2Score.scrollFactor.x = _txtP2Score.scrollFactor.y = 0;
 		_grpUI.add(_txtP2Score);
 		
-		_ballTrail = new FlxTrail(_ball,null,12,1,.4,.03);
+		_ballTrail = new FlxTrail(_ball,null,6,3,.2,.03);
 		_grpBallTrail.add(_ballTrail);
 		
 		
@@ -190,7 +190,7 @@ class PlayState extends FlxState
 		_ball.velocity.y = 0;
 		_ballLaunchDisplay.animation.frameIndex = 0;
 		_ballLaunchDisplay.alpha = 0;
-		_ballLaunchDisplay.scale.x = _ballLaunchDisplay.scale.y = 1;
+		//_ballLaunchDisplay.scale.x = _ballLaunchDisplay.scale.y = 1;
 		_ballLaunchDisplay.visible = true;
 		_ballLaunchTimer = 2;
 		_ballLaunched = false;
@@ -213,115 +213,68 @@ class PlayState extends FlxState
 	
 	private function P2AI():Void
 	{
-		//if (AITimer > 0)
-		//{
-			//AITimer -= FlxG.elapsed * 8;
-			
-			
-			
-		//}
-		if (AIDir != -1)
-			MovePaddle(_sprPlayer2, AIDir);
-		//else
-		//{
-			var ballMid:FlxPoint = _ball.getMidpoint();
-			var paddleMid:Float = _sprPlayer2.y + (Reg.PLAYER_HEIGHT / 2);
-			
-			if (ballMid.x < FlxG.width / 2)
-			{
-				if (FlxRandom.chanceRoll(60))
-				{
-					AIDir = -1;
-					AITimer = 1;
-				}
-				else
-				{
-					if (_ball.y < _sprPlayer2.y + Reg.PLAYER_HEIGHT && _ball.y + Reg.BALL_SIZE > _sprPlayer2.y)
-						AIDir = -1;
-					else if (ballMid.y < paddleMid)
-						AIDir = FlxObject.UP;
-					else if (ballMid.y > paddleMid)
-						AIDir = FlxObject.DOWN;
-					else
-						AIDir = -1;
-					if (AIDir == -1)
-					{
-						if (FlxRandom.chanceRoll(40))
-						{
-							if (FlxRandom.chanceRoll(50))
-							{
-								AIDir = FlxObject.DOWN;
-							}
-							else
-							{
-								AIDir = FlxObject.UP;
-							}
-							AITimer = FlxRandom.floatRanged(.66,.99);
-						}
-						else
-							AITimer = FlxRandom.floatRanged(.99,1.2);
-					}
-					else
-					{
-						AITimer = FlxRandom.floatRanged(.99,1.2);
-					}
-				}
-				
-			}
-			else
-			{
-				if (_ball.y < _sprPlayer2.y + Reg.PLAYER_HEIGHT && _ball.y + Reg.BALL_SIZE > _sprPlayer2.y)
-					AIDir = -1;
-				else if (ballMid.y < paddleMid)
-					AIDir = FlxObject.UP;
-				else if (ballMid.y > paddleMid)
-					AIDir = FlxObject.DOWN;
-				else
-					AIDir = -1;
-				if (AIDir == -1)
-				{
-					if (FlxRandom.chanceRoll(10))
-					{
-						if (FlxRandom.chanceRoll(50))
-						{
-							AIDir = FlxObject.DOWN;
-						}
-						else
-						{
-							AIDir = FlxObject.UP;
-						}
-						AITimer = FlxRandom.floatRanged(.22,66);
-					}
-					else
-						AITimer = FlxRandom.floatRanged(.66,1);
-				}
-				else
-				{
-					AITimer = FlxRandom.floatRanged(.66, 1);
-				}
-			}
+		var ballMid:FlxPoint = _ball.getMidpoint();
+		var paddleMid:Float = _sprPlayer2.y + (Reg.PLAYER_HEIGHT / 2);
+		var targetY:Float;
 		
-		//}
+		if (_ball.velocity.x < 0)
+			targetY =  ballMid.y  + (FlxRandom.sign() * Reg.PLAYER_HEIGHT);
+		else
+			targetY =  ballMid.y;
+		
+		targetY += FlxRandom.sign() * FlxRandom.floatRanged(0, Reg.PLAYER_HEIGHT*FlxRandom.floatRanged(.2,.4));
+		
+		if (targetY < paddleMid - Reg.PLAYER_HEIGHT * FlxRandom.floatRanged(0.2,0.6))
+		{
+			if (AIDir == FlxObject.UP || AITimer <= 0)
+			{
+				MovePaddle(_sprPlayer2, FlxObject.UP);
+				AIDir = FlxObject.UP;
+				AITimer = 1;
+			}
+			else if (AITimer > 0)
+				AITimer -= FlxG.elapsed * 4;
+			
+			
+		}
+		else if (targetY > paddleMid + Reg.PLAYER_HEIGHT *  FlxRandom.floatRanged(0.2,0.6))
+		{
+			if (AIDir == FlxObject.DOWN || AITimer <= 0)
+			{
+				MovePaddle(_sprPlayer2, FlxObject.DOWN);
+				AIDir = FlxObject.DOWN;
+				AITimer = 1;
+			}
+			else if (AITimer > 0)
+				AITimer -= FlxG.elapsed * 4;
+		}
+		else
+		{
+			AITimer = 1;
+			AIDir = -1;
+		}
+		
+		
 	}
 	
 	private function GamePlay():Void
 	{
-		if (FlxG.keyboard.anyPressed(["W", "A"]))
+		if (FlxG.keyboard.anyPressed(Reg.P2_KEYS_UP))
 		{
 			MovePaddle(_sprPlayer1, FlxObject.UP);
 		}
-		else if (FlxG.keyboard.anyPressed(["S", "D"]))
+		else if (FlxG.keyboard.anyPressed(Reg.P1_KEYS_DOWN))
 		{
 			MovePaddle(_sprPlayer1, FlxObject.DOWN);
 		}
 		
 		if (Reg.numPlayers == 2)
 		{
-			if (FlxG.keyboard.anyPressed(["UP", "LEFT"]))
+			if (FlxG.keyboard.anyPressed(Reg.P2_KEYS_UP))
 			{
 				MovePaddle(_sprPlayer2, FlxObject.UP);
 			}
-			else if (FlxG.keyboard.anyPressed(["DOWN", "RIGHT"]))
+			else if (FlxG.keyboard.anyPressed(Reg.P2_KEYS_DOWN))
 			{
 				MovePaddle(_sprPlayer2, FlxObject.DOWN);
 			}
@@ -337,35 +290,8 @@ class PlayState extends FlxState
 		
 		if (!_ballLaunched)
 		{
-			if (_ballLaunchTimer > 0)
-			{
-				_ballLaunchTimer -= FlxG.elapsed * 3;
-				if (_ballLaunchTimer > 1)
-				{
-					_ballLaunchDisplay.alpha = 1;
-					
-				}
-				else
-				{
-					_ballLaunchDisplay.scale.x +=FlxG.elapsed * 6;
-					_ballLaunchDisplay.scale.y +=FlxG.elapsed * 6;
-					_ballLaunchDisplay.alpha = _ballLaunchTimer;
-				}
-			}
-			else if (_ballLaunchDisplay.animation.frameIndex < 3)
-			{
-				_ballLaunchDisplay.animation.frameIndex++;
-				_ballLaunchTimer = 2;
-				_ballLaunchDisplay.alpha = 1;
-				_ballLaunchDisplay.scale.x = _ballLaunchDisplay.scale.y = 1;
-			}
-			else if (_ballLaunchDisplay.animation.frameIndex == 3)
-			{
-				_ballLaunchDisplay.visible = false;
-				_ball.velocity.x = FlxRandom.sign() * 200;
-				_ball.velocity.y = FlxRandom.sign() * FlxRandom.intRanged(0, 20);
-				_ballLaunched = true;
-			}
+			// Ball not launched yet...
+			LaunchBall();
 		}
 		else if (!_ball.onScreen())
 		{
@@ -378,6 +304,43 @@ class PlayState extends FlxState
 		}
 	}
 	
+	private function LaunchBall():Void
+	{
+		_ball.x = (FlxG.width - Reg.BALL_SIZE) / 2;
+		_ball.y = (FlxG.height - Reg.BALL_SIZE) / 2;
+		_ball.velocity.x = 0;
+		_ball.velocity.y = 0;
+		if (_ballLaunchTimer > 0)
+		{
+			_ballLaunchTimer -= FlxG.elapsed * 3;
+			if (_ballLaunchTimer > 1)
+			{
+				_ballLaunchDisplay.alpha = 1;
+				
+			}
+			else
+			{
+				//_ballLaunchDisplay.scale.x +=FlxG.elapsed * 6;
+				//_ballLaunchDisplay.scale.y +=FlxG.elapsed * 6;
+				_ballLaunchDisplay.alpha = _ballLaunchTimer;
+			}
+		}
+		else if (_ballLaunchDisplay.animation.frameIndex < 3)
+		{
+			_ballLaunchDisplay.animation.frameIndex++;
+			_ballLaunchTimer = 2;
+			_ballLaunchDisplay.alpha = 1;
+			//_ballLaunchDisplay.scale.x = _ballLaunchDisplay.scale.y = 1;
+		}
+		else if (_ballLaunchDisplay.animation.frameIndex == 3)
+		{
+			_ballLaunchDisplay.visible = false;
+			_ball.velocity.x = FlxRandom.sign() * 200;
+			_ball.velocity.y = FlxRandom.sign() * FlxRandom.intRanged(0, 20);
+			_ballLaunched = true;
+		}
+	}
+	
 	private function BallHitEnemy(E:FlxObject, B:FlxObject):Void
 	{
 		var enemyMid:Int = Std.int(E.y + (E.height / 2));
@@ -387,19 +350,19 @@ class PlayState extends FlxState
 		{
 			// ball hit the 'top' of the paddle
 			diff = enemyMid - ballMid;
-			B.velocity.y = ( -4 * Math.abs(diff));
+			B.velocity.y = ( -8 * Math.abs(diff));
 		}
 		else if (ballMid > enemyMid)
 		{
 			// ball hit the 'bottom' of the paddle
 			diff = enemyMid - ballMid;
-			B.velocity.y = ( 4 * Math.abs(diff));
+			B.velocity.y = ( 8 * Math.abs(diff));
 		}
 		else
 		{
 			// ball hit right in the middle...
 			// randomize!
-			B.velocity.y = 2 + Std.int(Math.random() * 8);
+			B.velocity.y = 2 + Std.int(Math.random() * 16);
 		}
 		E.hurt(1);
 		if (cast(E, Enemy).dying)

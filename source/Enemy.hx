@@ -41,8 +41,8 @@ class Enemy extends FlxSprite
 		{
 			if (alpha > 0)
 			{
-				scale.x += FlxG.elapsed * 8; 
-				scale.y += FlxG.elapsed * 8;
+				//scale.x += FlxG.elapsed * 8; 
+				//scale.y += FlxG.elapsed * 8;
 				alpha -= FlxG.elapsed * 4;
 			}
 			else

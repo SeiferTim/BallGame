@@ -49,6 +49,11 @@ class Reg
 	
 	static public var numPlayers:Int;
 	
+	static public var P1_KEYS_UP:Array<String> = ["W", "D"];
+	static public var P1_KEYS_DOWN:Array<String> = ["S", "A"];
+	static public var P2_KEYS_UP:Array<String> = ["UP", "RIGHT"];
+	static public var P2_KEYS_DOWN:Array<String> = ["DOWN", "LEFT"];
+	
 	static public function LoadLevels():Void
 	{
 		levels.push("001");
