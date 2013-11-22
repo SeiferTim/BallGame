@@ -20,3 +20,5 @@
 *.PDF	 diff=astextplain
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
+*.tmx	diff=astextplain
+*.TMX	diff=astextplain
