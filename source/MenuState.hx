@@ -12,6 +12,8 @@ import flixel.util.FlxMath;
  */
 class MenuState extends FlxState
 {
+	
+	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -24,9 +26,29 @@ class MenuState extends FlxState
 		FlxG.mouse.show();
 		#end
 		
-		add(new FlxText(10, 10, 100, "Click to Play"));
+		var p1:FlxButton = new FlxButton(0, 0, "1 Player", Start1Player);
+		p1.x = (FlxG.width - p1.width) / 2;
+		p1.y = (FlxG.height / 2) - p1.height - 4;
+		add(p1);
+		
+		var p2:FlxButton = new FlxButton(0, 0, "2 Players", Start2Player);
+		p2.x = (FlxG.width - p2.width) / 2;
+		p2.y = (FlxG.height / 2 ) + 4;
+		add(p2);
 		
 		super.create();
+	}
+	
+	private function Start1Player():Void
+	{
+		Reg.numPlayers = 1;
+		FlxG.switchState(new PlayState());
+	}
+	
+	private function Start2Player():Void
+	{
+		Reg.numPlayers = 2;
+		FlxG.switchState(new PlayState());
 	}
 	
 	/**
@@ -43,10 +65,7 @@ class MenuState extends FlxState
 	 */
 	override public function update():Void
 	{
-		if (FlxG.mouse.justReleased)
-		{
-			FlxG.switchState(new PlayState());
-		}
+		
 		
 		super.update();
 	}	

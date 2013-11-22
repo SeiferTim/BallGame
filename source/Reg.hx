@@ -47,6 +47,8 @@ class Reg
 	
 	static public inline var BALL_SIZE:Int = 16;
 	
+	static public var numPlayers:Int;
+	
 	static public function LoadLevels():Void
 	{
 		levels.push("001");

@@ -17,20 +17,20 @@
  </layer>
  <objectgroup name="Enemies" width="44" height="25">
   <object name="0" type="enemy" gid="4" x="432" y="112"/>
-  <object name="0" type="enemy" gid="4" x="432" y="304"/>
+  <object name="1" type="enemy" gid="4" x="432" y="304"/>
   <object name="0" type="enemy" gid="4" x="368" y="160"/>
   <object name="0" type="enemy" gid="4" x="256" y="112"/>
-  <object name="0" type="enemy" gid="4" x="256" y="304"/>
-  <object name="0" type="enemy" gid="4" x="320" y="256"/>
+  <object name="1" type="enemy" gid="4" x="256" y="304"/>
+  <object name="1" type="enemy" gid="4" x="320" y="256"/>
   <object name="0" type="enemy" gid="4" x="144" y="80"/>
   <object name="0" type="enemy" gid="4" x="320" y="160"/>
-  <object name="0" type="enemy" gid="4" x="144" y="336"/>
-  <object name="0" type="enemy" gid="4" x="368" y="256"/>
-  <object name="0" type="enemy" gid="4" x="544" y="336"/>
+  <object name="1" type="enemy" gid="4" x="144" y="336"/>
+  <object name="1" type="enemy" gid="4" x="368" y="256"/>
+  <object name="1" type="enemy" gid="4" x="544" y="336"/>
   <object name="0" type="enemy" gid="4" x="544" y="80"/>
   <object name="0" type="enemy" gid="4" x="496" y="144"/>
-  <object name="0" type="enemy" gid="4" x="496" y="272"/>
-  <object name="0" type="enemy" gid="4" x="192" y="272"/>
+  <object name="1" type="enemy" gid="4" x="496" y="272"/>
+  <object name="1" type="enemy" gid="4" x="192" y="272"/>
   <object name="0" type="enemy" gid="4" x="192" y="144"/>
  </objectgroup>
 </map>
