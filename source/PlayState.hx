@@ -8,6 +8,7 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.text.FlxText;
+import flixel.tile.FlxTileblock;
 import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
 import flixel.util.FlxMath;
@@ -24,7 +25,7 @@ import flixel.effects.FlxTrail;
  */
 class PlayState extends FlxState
 {
-	private var _background:FlxSprite;
+	private var _background:FlxTileblock;
 	private var _sprPlayer1:FlxSprite;
 	private var _sprPlayer2:FlxSprite;
 	private var _ball:FlxSprite;
@@ -97,9 +98,12 @@ class PlayState extends FlxState
 	
 	private function InitGameScreen():Void
 	{
-		_background =  FlxGridOverlay.create(8,8,-1,-1,false,true, 0x33d83aad, 0x66d83aad ); //new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, 0xff666666);
+		//_background =  FlxGridOverlay.create(8,8,-1,-1,false,true, 0x33d83aad, 0x66d83aad ); //new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, 0xff666666);
+		
+		_background = new FlxTileblock(0, 0, 704, 400).loadTiles("images/Tile.png", 16, 16);
 		_background.scrollFactor.x = _background.scrollFactor.y = 0;
-		add(_background);
+		_background.x = (FlxG.width - _background.width) / 2; 
+		_background.y = (FlxG.height - _background.height) / 2; 
 		
 		_grpWalls = new FlxGroup(1);
 		_grpBallTrail = new FlxGroup(1);
@@ -108,22 +112,24 @@ class PlayState extends FlxState
 		_grpBall = new FlxGroup(1);
 		_grpUI = new FlxGroup();
 		
-		add(_grpWalls);
-		add(_grpBallTrail);
-		add(_grpPlayers);
-		add(_grpEnemies);
-		add(_grpBall);
-		add(_grpUI);
 		
 		_sprFade = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		add(_sprFade);
-
-		_sprPlayer1 = new FlxSprite(16, 16).makeGraphic(Reg.PLAYER_WIDTH, Reg.PLAYER_HEIGHT, FlxColor.BLUE);
-		_sprPlayer2 = new FlxSprite(FlxG.width - 32, 16).makeGraphic(Reg.PLAYER_WIDTH, Reg.PLAYER_HEIGHT, FlxColor.GOLDENROD);
+		
+		
+		_sprPlayer1 = new FlxSprite(16, 16).loadGraphic("images/Left Bumper Ship 1.png", true, false, 16, 48);//.makeGraphic(Reg.PLAYER_WIDTH, Reg.PLAYER_HEIGHT, FlxColor.BLUE);
+		_sprPlayer1.animation.add("normal", [0, 1, 2, 1],6);
+		_sprPlayer1.animation.play("normal");
+		_sprPlayer2 = new FlxSprite(FlxG.width - 32, 16).loadGraphic("images/Right Bumper Ship 1.png", true, false, 16, 48);//).makeGraphic(Reg.PLAYER_WIDTH, Reg.PLAYER_HEIGHT, FlxColor.GOLDENROD);
+		_sprPlayer2.animation.add("normal", [0, 1, 2, 1],6);
+		_sprPlayer2.animation.play("normal");
 		_sprPlayer1.immovable = true;
 		_sprPlayer2.immovable = true;
 		
-		_ball = new FlxSprite((FlxG.width - Reg.BALL_SIZE) / 2, (FlxG.height - Reg.BALL_SIZE) / 2).makeGraphic(Reg.BALL_SIZE, Reg.BALL_SIZE, 0xffffffff);
+		_ball = new FlxSprite((FlxG.width - Reg.BALL_SIZE) / 2, (FlxG.height - Reg.BALL_SIZE) / 2).loadGraphic("images/Ball.png", true, false, 16, 16); // .makeGraphic(Reg.BALL_SIZE, Reg.BALL_SIZE, 0xffffffff);
+		_ball.animation.add("neutral", [0, 1, 2, 1], 6);
+		_ball.animation.add("p1", [3, 4, 5, 4], 6);
+		_ball.animation.add("p2", [6, 7, 8, 7], 6);
+		_ball.animation.play("neutral");
 		_ball.elasticity = 1;
 		_ball.maxVelocity.set(400, 400);
 		_ball.animation.add("normal", [0], 0, true);
@@ -158,6 +164,16 @@ class PlayState extends FlxState
 		_ballTrail = new FlxTrail(_ball,null,6,3,.2,.03);
 		_grpBallTrail.add(_ballTrail);
 		
+		
+		add(_background);
+		add(_grpWalls);
+		add(_grpBallTrail);
+		add(_grpPlayers);
+		add(_grpEnemies);
+		add(_grpBall);
+		add(_grpUI);
+		add(_sprFade);
+
 		
 	}
 	
@@ -195,6 +211,7 @@ class PlayState extends FlxState
 		_ballLaunchTimer = 2;
 		_ballLaunched = false;
 		_lastHitBy = 0;
+		_ball.animation.play("neutral");
 	}
 	
 	/**
@@ -259,7 +276,7 @@ class PlayState extends FlxState
 	
 	private function GamePlay():Void
 	{
-		if (FlxG.keyboard.anyPressed(Reg.P2_KEYS_UP))
+		if (FlxG.keyboard.anyPressed(Reg.P1_KEYS_UP))
 		{
 			MovePaddle(_sprPlayer1, FlxObject.UP);
 		}
@@ -380,8 +397,16 @@ class PlayState extends FlxState
 	
 	private function BallHitPlayer(P:FlxObject, B:FlxObject):Void
 	{
-		if (P.x == 16) _lastHitBy = 1;
-		else _lastHitBy = 2;
+		if (P.x == 16)
+		{
+			_ball.animation.play("p1");
+			_lastHitBy = 1;
+		}
+		else
+		{
+			_ball.animation.play("p2");
+			_lastHitBy = 2;
+		}
 		var playerMid:Int = Std.int(P.y + (Reg.PLAYER_HEIGHT / 2));
 		var ballMid:Int = Std.int(B.y + (Reg.BALL_SIZE / 2));
 		var diff:Int;
