@@ -54,6 +54,8 @@ class Reg
 	static public var P2_KEYS_UP:Array<String> = ["UP", "RIGHT"];
 	static public var P2_KEYS_DOWN:Array<String> = ["DOWN", "LEFT"];
 	
+	static public var GAME_TIME:Int = 90;
+	
 	static public function LoadLevels():Void
 	{
 		levels.push("001");

@@ -39,6 +39,7 @@ class PlayState extends FlxState
 	
 	private var _sprFade:FlxSprite;
 	private var _grpBallTrail:FlxGroup;
+	private var _grpPlayerTrail:FlxGroup;
 	private var _collisionMap:FlxTilemapExt;
 	
 	private var _state:Int = 0;
@@ -60,9 +61,18 @@ class PlayState extends FlxState
 	private var _lastHitBy:Int = 0;
 	
 	private var _ballTrail:FlxTrail;
+	private var _p1Trail:FlxTrail;
+	private var _p2Trail:FlxTrail;
 	
 	private var AITimer:Float;
 	private var AIDir:Int;
+	
+	private var _sprGrad:FlxSprite;
+	private var _sprGrad2:FlxSprite;
+	
+	private var _gameTimer:Float;
+	
+	private var _txtTimer:FlxText;
 	
 	
 	/**
@@ -105,8 +115,15 @@ class PlayState extends FlxState
 		_background.x = (FlxG.width - _background.width) / 2; 
 		_background.y = (FlxG.height - _background.height) / 2; 
 		
+		_sprGrad = new FlxSprite(0, 0, "images/gradient.png");
+		_sprGrad.blend = BlendMode.OVERLAY;
+		_sprGrad2 = new FlxSprite(0, 0, "images/gradient.png");
+		_sprGrad2.blend = BlendMode.OVERLAY;
+		
+		
 		_grpWalls = new FlxGroup(1);
 		_grpBallTrail = new FlxGroup(1);
+		_grpPlayerTrail = new FlxGroup(2);
 		_grpPlayers = new FlxGroup(2);
 		_grpEnemies = new FlxGroup(1);
 		_grpBall = new FlxGroup(1);
@@ -130,8 +147,8 @@ class PlayState extends FlxState
 		_ball.animation.add("p1", [3, 4, 5, 4], 6);
 		_ball.animation.add("p2", [6, 7, 8, 7], 6);
 		_ball.animation.play("neutral");
-		_ball.elasticity = 1;
-		_ball.maxVelocity.set(400, 400);
+		_ball.elasticity = 1.02;
+		_ball.maxVelocity.set(600, 600);
 		_ball.animation.add("normal", [0], 0, true);
 		_ball.animation.play("normal");
 		
@@ -161,13 +178,31 @@ class PlayState extends FlxState
 		_txtP2Score.scrollFactor.x = _txtP2Score.scrollFactor.y = 0;
 		_grpUI.add(_txtP2Score);
 		
-		_ballTrail = new FlxTrail(_ball,null,6,3,.2,.03);
+		_ballTrail = new FlxTrail(_ball, null, 6, 3, .6, .1);
+		_ballTrail.setAll("blend", BlendMode.HARDLIGHT);
 		_grpBallTrail.add(_ballTrail);
 		
+		_p1Trail = new FlxTrail(_sprPlayer1, null, 6, 3, .6, .1);
+		_p1Trail.setAll("blend", BlendMode.HARDLIGHT);
+		_grpPlayerTrail.add(_p1Trail);
+		
+		_p2Trail = new FlxTrail(_sprPlayer2, null, 6, 3, .6, .1);
+		_p2Trail.setAll("blend", BlendMode.HARDLIGHT);
+		_grpPlayerTrail.add(_p2Trail);
+		
+		_txtTimer = new FlxText(4, 0, 100, "0:00",16);
+		_txtTimer.borderStyle = FlxText.BORDER_OUTLINE;
+		_txtTimer.alignment = "center";
+		_txtTimer.x = (FlxG.width - _txtTimer.width) / 2;
+		_txtTimer.scrollFactor.x = _txtTimer.scrollFactor.y = 0;
+		_grpUI.add(_txtTimer);
 		
 		add(_background);
+		add(_sprGrad);
+		add(_sprGrad2);
 		add(_grpWalls);
 		add(_grpBallTrail);
+		add(_grpPlayerTrail);
 		add(_grpPlayers);
 		add(_grpEnemies);
 		add(_grpBall);
@@ -194,7 +229,8 @@ class PlayState extends FlxState
 			_grpEnemies.replace(_grpEnemies.members[0], level.enemies);
 		else
 			_grpEnemies.add(level.enemies);
-
+		
+		_gameTimer = Reg.GAME_TIME;
 		ResetBall();
 	}
 	
@@ -234,40 +270,40 @@ class PlayState extends FlxState
 		var paddleMid:Float = _sprPlayer2.y + (Reg.PLAYER_HEIGHT / 2);
 		var targetY:Float;
 		
-		if (_ball.velocity.x < 0)
-			targetY =  ballMid.y  + (FlxRandom.sign() * Reg.PLAYER_HEIGHT);
+		if (_ball.velocity.x < 0 || _ball.x < FlxG.width * 0.8)
+			targetY =  ballMid.y  + (FlxRandom.sign() * Reg.PLAYER_HEIGHT * 2);
 		else
 			targetY =  ballMid.y;
 		
-		targetY += FlxRandom.sign() * FlxRandom.floatRanged(0, Reg.PLAYER_HEIGHT*FlxRandom.floatRanged(.2,.4));
+		targetY += FlxRandom.sign() * FlxRandom.floatRanged(0, Reg.PLAYER_HEIGHT*FlxRandom.floatRanged(.2,.5) +(FlxRandom.sign() * Math.floor(FlxRandom.floatRanged(0,1)) * (Reg.PLAYER_HEIGHT*.7)));
 		
-		if (targetY < paddleMid - Reg.PLAYER_HEIGHT * FlxRandom.floatRanged(0.2,0.6))
+		if (targetY < paddleMid - Reg.PLAYER_HEIGHT * FlxRandom.floatRanged(0.2,0.3))
 		{
 			if (AIDir == FlxObject.UP || AITimer <= 0)
 			{
 				MovePaddle(_sprPlayer2, FlxObject.UP);
 				AIDir = FlxObject.UP;
-				AITimer = 1;
+				AITimer = FlxRandom.floatRanged(.9,1.2);
 			}
 			else if (AITimer > 0)
-				AITimer -= FlxG.elapsed * 4;
+				AITimer -= FlxG.elapsed * 12;
 			
 			
 		}
-		else if (targetY > paddleMid + Reg.PLAYER_HEIGHT *  FlxRandom.floatRanged(0.2,0.6))
+		else if (targetY > paddleMid + Reg.PLAYER_HEIGHT *  FlxRandom.floatRanged(0.2,0.4))
 		{
 			if (AIDir == FlxObject.DOWN || AITimer <= 0)
 			{
 				MovePaddle(_sprPlayer2, FlxObject.DOWN);
 				AIDir = FlxObject.DOWN;
-				AITimer = 1;
+				AITimer = FlxRandom.floatRanged(.9,1.2);
 			}
 			else if (AITimer > 0)
-				AITimer -= FlxG.elapsed * 4;
+				AITimer -= FlxG.elapsed * 12;
 		}
 		else
 		{
-			AITimer = 1;
+			AITimer = FlxRandom.floatRanged(.9,1.4);
 			AIDir = -1;
 		}
 		
@@ -276,6 +312,8 @@ class PlayState extends FlxState
 	
 	private function GamePlay():Void
 	{
+		
+		
 		if (FlxG.keyboard.anyPressed(Reg.P1_KEYS_UP))
 		{
 			MovePaddle(_sprPlayer1, FlxObject.UP);
@@ -303,7 +341,11 @@ class PlayState extends FlxState
 		
 		FlxG.collide(_ball, _grpWalls);
 		FlxG.collide(_grpPlayers, _ball, BallHitPlayer);
-		FlxG.collide(_grpEnemies, _ball, BallHitEnemy);
+		
+		if (_lastHitBy != 0)
+			FlxG.collide(_grpEnemies, _ball, BallHitEnemy);
+		
+		
 		
 		if (!_ballLaunched)
 		{
@@ -318,6 +360,11 @@ class PlayState extends FlxState
 			else
 				_p1score += 100;
 			ResetBall();
+		}
+		else
+		{
+			_gameTimer -= FlxG.elapsed;
+			
 		}
 	}
 	
@@ -438,6 +485,21 @@ class PlayState extends FlxState
 	override public function update():Void
 	{
 		
+		_txtTimer.text =  StringTools.lpad( Std.string(Math.ceil(_gameTimer) ), '0', 2) ;
+		if (_gameTimer < 10)
+			_txtTimer.color = 0xffff9999;
+		else
+			_txtTimer.color = 0xffffffff;
+		
+		
+		if (_lastHitBy <= 0)
+			_ball.alpha = .6;
+		else
+		{
+			_ball.alpha = 1;
+			//FlxG.collide(_grpEnemies, _ball, BallHitEnemy);
+		}
+		
 		_sprPlayer1.velocity.y = 0;
 		_sprPlayer2.velocity.y = 0;
 		
@@ -471,6 +533,17 @@ class PlayState extends FlxState
 		if (_sprPlayer2.y < 16) _sprPlayer2.y = _levelBounds.top;
 		else if (_sprPlayer2.y > _levelBounds.bottom - Reg.PLAYER_HEIGHT) _sprPlayer2.y = _levelBounds.bottom - Reg.PLAYER_HEIGHT;
 		
-	}	
+	}
+	
+	override public function draw():Void
+	{
+		
+		_sprGrad.x = _ball.x + ((_ball.width - _sprGrad.width) / 2);
+		_sprGrad.y = _ball.y + ((_ball.height - _sprGrad.height) / 2);
+		_sprGrad2.x = _ball.x + ((_ball.width - _sprGrad2.width) / 2);
+		_sprGrad2.y = _ball.y + ((_ball.height - _sprGrad2.height) / 2);
+		super.draw();
+		
+	}
 	
 }
