@@ -2,6 +2,7 @@ package;
 
 import flash.display.BlendMode;
 import flixel.addons.tile.FlxTilemapExt;
+import flixel.effects.particles.FlxEmitterExt;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -32,6 +33,7 @@ class PlayState extends FlxState
 	
 	private var _levelBounds:FlxRect;
 	private var _grpWalls:FlxGroup;
+	private var _grpParticles:FlxGroup;
 	private var _grpPlayers:FlxGroup;
 	private var _grpEnemies:FlxGroup;
 	private var _grpBall:FlxGroup;
@@ -48,6 +50,7 @@ class PlayState extends FlxState
 	private inline static var STATE_FADEOUT:Int = 2;
 	private inline static var STATE_PLAY:Int = 3;
 	private inline static var STATE_LEVELEND:Int = 4;
+	
 	
 	private var _ballLaunched:Bool = false;
 	private var _ballLaunchTimer:Float;
@@ -74,6 +77,7 @@ class PlayState extends FlxState
 	private var _gameTimer:Float;
 	
 	private var _txtTimer:FlxText;
+	private var _burstEmitter:FlxEmitterExt;
 	
 	
 	/**
@@ -84,9 +88,7 @@ class PlayState extends FlxState
 		// Set a background color
 		FlxG.cameras.bgColor = 0xff131c1b;
 		// Show the mouse (in case it hasn't been disabled)
-		#if !FLX_NO_MOUSE
-		FlxG.mouse.show();
-		#end
+		FlxG.mouse.hide();
 		
 		_state = STATE_LOADING;
 		_ballLaunched = false;
@@ -125,6 +127,7 @@ class PlayState extends FlxState
 		_grpWalls = new FlxGroup(1);
 		_grpBallTrail = new FlxGroup(1);
 		_grpPlayerTrail = new FlxGroup(2);
+		_grpParticles = new FlxGroup();
 		_grpPlayers = new FlxGroup(2);
 		_grpEnemies = new FlxGroup(1);
 		_grpBall = new FlxGroup(1);
@@ -142,13 +145,15 @@ class PlayState extends FlxState
 		_sprPlayer2.animation.play("normal");
 		_sprPlayer1.immovable = true;
 		_sprPlayer2.immovable = true;
+		_sprPlayer1.allowCollisions = FlxObject.RIGHT;
+		_sprPlayer2.allowCollisions = FlxObject.LEFT;
 		
 		_ball = new FlxSprite((FlxG.width - Reg.BALL_SIZE) / 2, (FlxG.height - Reg.BALL_SIZE) / 2).loadGraphic("images/Ball.png", true, false, 16, 16); // .makeGraphic(Reg.BALL_SIZE, Reg.BALL_SIZE, 0xffffffff);
 		_ball.animation.add("neutral", [0, 1, 2, 1], 6);
 		_ball.animation.add("p1", [3, 4, 5, 4], 6);
 		_ball.animation.add("p2", [6, 7, 8, 7], 6);
 		_ball.animation.play("neutral");
-		_ball.elasticity = 1.02;
+		_ball.elasticity = 1.025;
 		_ball.maxVelocity.set(600, 600);
 		_ball.animation.add("normal", [0], 0, true);
 		_ball.animation.play("normal");
@@ -198,12 +203,20 @@ class PlayState extends FlxState
 		_txtTimer.scrollFactor.x = _txtTimer.scrollFactor.y = 0;
 		_grpUI.add(_txtTimer);
 		
+		_burstEmitter = new FlxEmitterExt();
+		_burstEmitter.setRotation(0, 0);
+		_burstEmitter.setMotion(0, 5,2, 360, 100, 4);
+		_burstEmitter.makeParticles("images/particles.png", 1200, 0, true, 0);
+		_burstEmitter.blend = BlendMode.SCREEN;
+        _grpParticles.add(_burstEmitter);
+		
 		add(_background);
 		add(_sprGrad);
 		add(_sprGrad2);
 		add(_grpWalls);
 		add(_grpBallTrail);
 		add(_grpPlayerTrail);
+		add(_grpParticles);
 		add(_grpPlayers);
 		add(_grpEnemies);
 		add(_grpBall);
@@ -211,6 +224,14 @@ class PlayState extends FlxState
 		add(_sprFade);
 
 		
+	}
+	
+	private function burst():Void
+	{
+		_burstEmitter.x = _ball.x + (Reg.BALL_SIZE/2);
+		_burstEmitter.y = _ball.y + (Reg.BALL_SIZE/2);
+		_burstEmitter.start(true, 0, 0, 40,1);
+		_burstEmitter.update();
 	}
 	
 	private function LoadLevel():Void
@@ -271,7 +292,7 @@ class PlayState extends FlxState
 		var paddleMid:Float = _sprPlayer2.y + (Reg.PLAYER_HEIGHT / 2);
 		var targetY:Float;
 		
-		if (_ball.velocity.x < 0 || _ball.x < FlxG.width * 0.8)
+		if (_ball.velocity.x < 0 || _ball.x < FlxG.width * 0.4)
 			targetY =  ballMid.y  + (FlxRandom.sign() * Reg.PLAYER_HEIGHT * 2);
 		else
 			targetY =  ballMid.y;
@@ -340,7 +361,7 @@ class PlayState extends FlxState
 			P2AI();
 		}
 		
-		FlxG.collide(_ball, _grpWalls);
+		FlxG.collide(_ball, _grpWalls, BallHitWall);
 		FlxG.collide(_grpPlayers, _ball, BallHitPlayer);
 		
 		if (_lastHitBy != 0)
@@ -369,6 +390,7 @@ class PlayState extends FlxState
 			{
 				_gameTimer = 0;
 				_state = STATE_LEVELEND;
+				Reg.scores.push([_p1score, _p2score]);
 				_ball.velocity.x = _ball.velocity.y = 0;
 			}
 			
@@ -447,6 +469,7 @@ class PlayState extends FlxState
 				_p2score += 100;
 			}
 		}
+		burst();
 	}
 	
 	private function BallHitPlayer(P:FlxObject, B:FlxObject):Void
@@ -482,7 +505,12 @@ class PlayState extends FlxState
 			// randomize!
 			B.velocity.y = 2 + Std.int(Math.random() * 8);
 		}
-		
+		burst();
+	}
+	
+	private function BallHitWall(W:FlxObject, B:FlxObject):Void
+	{
+		burst();
 	}
 
 
@@ -521,6 +549,11 @@ class PlayState extends FlxState
 					_state = STATE_PLAY;
 			case STATE_PLAY:
 				GamePlay();
+			case STATE_LEVELEND:
+				if (_sprFade.alpha < 1)
+					_sprFade.alpha += FlxG.elapsed * 6;
+				else
+					FlxG.switchState(new ScoreBoardState());
 		}
 		
 		if (_p1score != Std.parseInt(_txtP1Score.text))

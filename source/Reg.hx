@@ -48,13 +48,15 @@ class Reg
 	static public inline var BALL_SIZE:Int = 16;
 	
 	static public var numPlayers:Int;
+	static public var numMatches:Int;
+	static public var curMatch:Int;
 	
 	static public var P1_KEYS_UP:Array<String> = ["W", "D"];
 	static public var P1_KEYS_DOWN:Array<String> = ["S", "A"];
 	static public var P2_KEYS_UP:Array<String> = ["UP", "RIGHT"];
 	static public var P2_KEYS_DOWN:Array<String> = ["DOWN", "LEFT"];
 	
-	static public var GAME_TIME:Int = 90;
+	static public var GAME_TIME:Int = 10;// 90; // TESTING = 10
 	
 	static public function LoadLevels():Void
 	{
