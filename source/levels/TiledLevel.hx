@@ -180,7 +180,11 @@ class TiledLevel extends TiledMap
 	public function loadObject(o:TiledObject, g:TiledObjectGroup):Void
 	{
 		var x:Float = o.x; // Std.int((Math.floor(o.x) / 16)) * 16;
+		
 		var y:Float = o.y; // Std.int((Math.floor(o.y) / 16)) * 16;
+		
+		x +=(FlxG.width - fullWidth) / 2;
+		y +=(FlxG.height - fullHeight) / 2;
 		var width:Float = o.width;
 		var height:Float = o.height;
 		

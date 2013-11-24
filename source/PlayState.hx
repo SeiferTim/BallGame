@@ -47,6 +47,7 @@ class PlayState extends FlxState
 	private inline static var STATE_FADEIN:Int = 1;
 	private inline static var STATE_FADEOUT:Int = 2;
 	private inline static var STATE_PLAY:Int = 3;
+	private inline static var STATE_LEVELEND:Int = 4;
 	
 	private var _ballLaunched:Bool = false;
 	private var _ballLaunchTimer:Float;
@@ -364,6 +365,12 @@ class PlayState extends FlxState
 		else
 		{
 			_gameTimer -= FlxG.elapsed;
+			if (_gameTimer <= 0)
+			{
+				_gameTimer = 0;
+				_state = STATE_LEVELEND;
+				_ball.velocity.x = _ball.velocity.y = 0;
+			}
 			
 		}
 	}
