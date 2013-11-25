@@ -1,5 +1,6 @@
 package;
 
+import flixel.addons.text.FlxBitmapFont;
 import flixel.addons.ui.FlxButtonPlus;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -30,6 +31,8 @@ class MenuState extends FlxState
 	private inline static var STATE_MATCH:Int = 4;
 	private inline static var STATE_UNLOADING:Int = 5;
 	private var justTriggered:Bool;
+	
+	private var txtClickToPlay:FlxBitmapFont;
 	
 	private var _sprBlack:FlxSprite;
 	
@@ -63,9 +66,12 @@ class MenuState extends FlxState
 		_grpMatchesChoices.visible = false;
 		
 		
-		var txtClickToPlay:FlxText = new FlxText(0, 4, 300, "Click to Play", 16);
-		txtClickToPlay.alignment = "center";
+		txtClickToPlay = new FlxBitmapFont(Reg.FONT_LIGHTGREY, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		txtClickToPlay.setText("Click to Play", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
+		txtClickToPlay.y = 16;
 		txtClickToPlay.x = (FlxG.width - txtClickToPlay.width ) / 2;
+		
+		trace(txtClickToPlay.visible);
 		_grpMain.add(txtClickToPlay);
 		
 		var p1:FlxButtonPlus = new FlxButtonPlus(0, 0, Start1Player, null, "1 Player", 100, 20);  //(0, 0, "1 Player", Start1Player);
@@ -188,6 +194,7 @@ class MenuState extends FlxState
 	 */
 	override public function update():Void
 	{
+		
 		switch(_state)
 		{
 			case STATE_UNLOADED:

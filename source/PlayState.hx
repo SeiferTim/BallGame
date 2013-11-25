@@ -1,6 +1,7 @@
 package;
 
 import flash.display.BlendMode;
+import flixel.addons.text.FlxBitmapFont;
 import flixel.addons.tile.FlxTilemapExt;
 import flixel.effects.particles.FlxEmitterExt;
 import flixel.FlxG;
@@ -10,6 +11,8 @@ import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.text.FlxText;
 import flixel.tile.FlxTileblock;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
 import flixel.util.FlxMath;
@@ -59,8 +62,8 @@ class PlayState extends FlxState
 	private var _p1score:Int;
 	private var _p2score:Int;
 	
-	private var _txtP1Score:FlxText;
-	private var _txtP2Score:FlxText;
+	private var _txtP1Score:FlxBitmapFont;
+	private var _txtP2Score:FlxBitmapFont;
 	
 	private var _lastHitBy:Int = 0;
 	
@@ -76,8 +79,11 @@ class PlayState extends FlxState
 	
 	private var _gameTimer:Float;
 	
-	private var _txtTimer:FlxText;
+	private var _txtTimer:FlxBitmapFont;
 	private var _burstEmitter:FlxEmitterExt;
+	private var _ballFollow:Int;
+	private var _timerIsRed:Bool;
+	private var _timerTween:FlxTween;
 	
 	
 	/**
@@ -172,15 +178,23 @@ class PlayState extends FlxState
 		_ballLaunchTimer = 2;
 		_grpUI.add(_ballLaunchDisplay);
 		
-		_txtP1Score = new FlxText(4, 4, 200, "0",16);
-		_txtP1Score.borderStyle = FlxText.BORDER_OUTLINE;
-		_txtP1Score.alignment="left";
+		//_txtP1Score = new FlxText(4, 4, 200, "0",16);
+		_txtP1Score = new FlxBitmapFont(Reg.FONT_BLUE, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		_txtP1Score.setText("0", false, 0, 0, FlxBitmapFont.ALIGN_LEFT);
+		//_txtP1Score.borderStyle = FlxText.BORDER_OUTLINE;
+		//_txtP1Score.alignment="left";
+		_txtP1Score.y = 4;
+		_txtP1Score.x = 4;
 		_txtP1Score.scrollFactor.x = _txtP1Score.scrollFactor.y = 0;
 		_grpUI.add(_txtP1Score);
 		
-		_txtP2Score = new FlxText(FlxG.width - 204, 4, 200, "0",16);
-		_txtP2Score.borderStyle = FlxText.BORDER_OUTLINE;
-		_txtP2Score.alignment="right";
+		//_txtP2Score = new FlxText(FlxG.width - 204, 4, 200, "0",16);
+		//_txtP2Score.borderStyle = FlxText.BORDER_OUTLINE;
+		//_txtP2Score.alignment="right";
+		_txtP2Score = new FlxBitmapFont(Reg.FONT_RED, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		_txtP2Score.setText("0", false, 0, 0, FlxBitmapFont.ALIGN_RIGHT);
+		_txtP2Score.y = 4;
+		_txtP2Score.x = FlxG.width - _txtP2Score.width - 4;
 		_txtP2Score.scrollFactor.x = _txtP2Score.scrollFactor.y = 0;
 		_grpUI.add(_txtP2Score);
 		
@@ -196,9 +210,12 @@ class PlayState extends FlxState
 		_p2Trail.setAll("blend", BlendMode.HARDLIGHT);
 		_grpPlayerTrail.add(_p2Trail);
 		
-		_txtTimer = new FlxText(4, 0, 100, "0:00",16);
-		_txtTimer.borderStyle = FlxText.BORDER_OUTLINE;
-		_txtTimer.alignment = "center";
+		//_txtTimer = new FlxText(4, 0, 100, "0:00",16);
+		//_txtTimer.borderStyle = FlxText.BORDER_OUTLINE;
+		//_txtTimer.alignment = "center";
+		_txtTimer = new FlxBitmapFont(Reg.FONT_RED, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		_txtTimer.setText("0:00", false, 0, 0, FlxBitmapFont.ALIGN_CENTER);
+		_txtTimer.y = 4;
 		_txtTimer.x = (FlxG.width - _txtTimer.width) / 2;
 		_txtTimer.scrollFactor.x = _txtTimer.scrollFactor.y = 0;
 		_grpUI.add(_txtTimer);
@@ -230,7 +247,7 @@ class PlayState extends FlxState
 	{
 		_burstEmitter.x = _ball.x + (Reg.BALL_SIZE/2);
 		_burstEmitter.y = _ball.y + (Reg.BALL_SIZE/2);
-		_burstEmitter.start(true, 0, 0, 40,1);
+		_burstEmitter.start(true, 0, 0, 80,1);
 		_burstEmitter.update();
 	}
 	
@@ -258,10 +275,9 @@ class PlayState extends FlxState
 	
 	private function ResetBall():Void
 	{
-		_ball.x = (FlxG.width - Reg.BALL_SIZE) / 2;
-		_ball.y = (FlxG.height - Reg.BALL_SIZE) / 2;
-		_ball.velocity.x = 0;
-		_ball.velocity.y = 0;
+		
+		
+		SnapBall();
 		_ballLaunchDisplay.animation.frameIndex = 0;
 		_ballLaunchDisplay.alpha = 0;
 		//_ballLaunchDisplay.scale.x = _ballLaunchDisplay.scale.y = 1;
@@ -378,9 +394,15 @@ class PlayState extends FlxState
 		{
 			// reset the ball!
 			if (_ball.x < 0)
+			{
+				_ballFollow = 1;
 				_p2score += 100;
+			}
 			else
+			{
+				_ballFollow = 2;
 				_p1score += 100;
+			}
 			ResetBall();
 		}
 		else
@@ -397,12 +419,36 @@ class PlayState extends FlxState
 		}
 	}
 	
-	private function LaunchBall():Void
+	
+	private function SnapBall():Void
 	{
-		_ball.x = (FlxG.width - Reg.BALL_SIZE) / 2;
-		_ball.y = (FlxG.height - Reg.BALL_SIZE) / 2;
+		if (_ballFollow == 0)
+		{
+			_ball.x = (FlxG.width - Reg.BALL_SIZE) / 2;
+			_ball.y = (FlxG.height - Reg.BALL_SIZE) / 2;
+		}
+		else if (_ballFollow == 1)
+		{
+			_ball.x = _sprPlayer1.x + Reg.PLAYER_WIDTH + 2;
+			_ball.y = _sprPlayer1.y + ((Reg.PLAYER_HEIGHT - Reg.BALL_SIZE) / 2);
+		}
+		else if (_ballFollow == 2)
+		{
+			_ball.x = _sprPlayer2.x + Reg.PLAYER_WIDTH + 2;
+			_ball.y = _sprPlayer2.y + ((Reg.PLAYER_HEIGHT - Reg.BALL_SIZE) / 2);
+		}
 		_ball.velocity.x = 0;
 		_ball.velocity.y = 0;
+	}
+	
+	private function LaunchBall():Void
+	{
+		/*_ball.x = (FlxG.width - Reg.BALL_SIZE) / 2;
+		_ball.y = (FlxG.height - Reg.BALL_SIZE) / 2;
+		_ball.velocity.x = 0;
+		_ball.velocity.y = 0;*/
+		
+		SnapBall();
 		if (_ballLaunchTimer > 0)
 		{
 			_ballLaunchTimer -= FlxG.elapsed * 3;
@@ -428,8 +474,27 @@ class PlayState extends FlxState
 		else if (_ballLaunchDisplay.animation.frameIndex == 3)
 		{
 			_ballLaunchDisplay.visible = false;
-			_ball.velocity.x = FlxRandom.sign() * 200;
-			_ball.velocity.y = FlxRandom.sign() * FlxRandom.intRanged(0, 20);
+			if (_ballFollow==0)
+			{
+				_ball.velocity.x = FlxRandom.sign() * 200;
+				_ball.velocity.y = FlxRandom.sign() * FlxRandom.intRanged(0, 20);
+			}
+			else
+			{
+				if (_ballFollow == 1)
+				{
+					_ball.velocity.x = 200;
+					_ball.velocity.y = FlxRandom.sign() * FlxRandom.intRanged(0, 20) + _sprPlayer1.velocity.y * .2;
+					ChangeOwner(1);
+				}
+				else if (_ballFollow == 2)
+				{
+					_ball.velocity.x = -200;
+					_ball.velocity.y = FlxRandom.sign() * FlxRandom.intRanged(0, 20) + _sprPlayer2.velocity.y * .2;
+					ChangeOwner(2);
+				}
+			}
+			_ballFollow = 0;
 			_ballLaunched = true;
 		}
 	}
@@ -472,17 +537,21 @@ class PlayState extends FlxState
 		burst();
 	}
 	
+	private function ChangeOwner(WhichPlayer:Int):Void
+	{
+		_ball.animation.play("p" + Std.string(WhichPlayer));
+		_lastHitBy = WhichPlayer;
+	}
+	
 	private function BallHitPlayer(P:FlxObject, B:FlxObject):Void
 	{
 		if (P.x == 16)
 		{
-			_ball.animation.play("p1");
-			_lastHitBy = 1;
+			ChangeOwner(1);
 		}
 		else
 		{
-			_ball.animation.play("p2");
-			_lastHitBy = 2;
+			ChangeOwner(2);
 		}
 		var playerMid:Int = Std.int(P.y + (Reg.PLAYER_HEIGHT / 2));
 		var ballMid:Int = Std.int(B.y + (Reg.BALL_SIZE / 2));
@@ -491,19 +560,19 @@ class PlayState extends FlxState
 		{
 			// ball hit the 'top' of the paddle
 			diff = playerMid - ballMid;
-			B.velocity.y = ( -4 * Math.abs(diff));
+			B.velocity.y = ( -4 * Math.abs(diff)) + (P.velocity.y * 0.2);
 		}
 		else if (ballMid > playerMid)
 		{
 			// ball hit the 'bottom' of the paddle
 			diff = playerMid - ballMid;
-			B.velocity.y = ( 4 * Math.abs(diff));
+			B.velocity.y = ( 4 * Math.abs(diff)) + (P.velocity.y *0.2);
 		}
 		else
 		{
 			// ball hit right in the middle...
 			// randomize!
-			B.velocity.y = 2 + Std.int(Math.random() * 8);
+			B.velocity.y = 2 + Std.int(Math.random() * 8) + (P.velocity.y *0.2);
 		}
 		burst();
 	}
@@ -521,10 +590,16 @@ class PlayState extends FlxState
 	{
 		
 		_txtTimer.text =  StringTools.lpad( Std.string(Math.ceil(_gameTimer) ), '0', 2) ;
-		if (_gameTimer < 10)
-			_txtTimer.color = 0xffff9999;
-		else
-			_txtTimer.color = 0xffffffff;
+		_txtTimer.x = (FlxG.width - _txtTimer.width) / 2;
+		if (_gameTimer < 10 && !_timerIsRed)
+		{
+			//_txtTimer.color = 0xffff9999;
+			_txtTimer.setFontGraphics( FlxG.bitmap.add(Reg.FONT_RED));
+			_timerTween = FlxTween.multiVar(_txtTimer, { alpha:.6 }, .3, { type: FlxTween.PINGPONG, ease: FlxEase.expoInOut } );
+			_timerIsRed = true;
+			
+		}
+		
 		
 		
 		if (_lastHitBy <= 0)
@@ -563,6 +638,7 @@ class PlayState extends FlxState
 		if (_p2score != Std.parseInt(_txtP2Score.text))
 		{
 			_txtP2Score.text = Std.string(Std.parseInt(_txtP2Score.text) + 1);
+			_txtP2Score.x = FlxG.width - _txtP2Score.width - 4;
 		}
 		
 		super.update();
