@@ -6,7 +6,7 @@ class FakeBall extends FlxSprite
 {
 
 	private var _trail:FlxTrail;
-	private var _grad:FlxSprite;
+	private var _grad:FlxTrail;
 	
 	public function new(X:Int, Y:Int, VelX:Float, VelY:Float)
 	{
@@ -31,7 +31,7 @@ class FakeBall extends FlxSprite
 	{
 		super.kill();
 		_trail.kill();
-		//_grad.kill();
+		_grad.kill();
 	}
 	
 	private function set_trail(value:FlxTrail):FlxTrail 
@@ -41,11 +41,11 @@ class FakeBall extends FlxSprite
 	
 	public var trail(null, set_trail):FlxTrail;
 	
-	private function set_grad(value:FlxSprite):FlxSprite 
+	private function set_grad(value:FlxTrail):FlxTrail 
 	{
 		return _grad = value;
 	}
 	
-	public var grad(null, set_grad):FlxSprite;
+	public var grad(null, set_grad):FlxTrail;
 	
 }

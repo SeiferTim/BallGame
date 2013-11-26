@@ -1,8 +1,11 @@
 package;
 
 import flash.display.BlendMode;
+import flash.filters.GlowFilter;
+import flash.geom.Point;
 import flixel.addons.text.FlxBitmapFont;
 import flixel.addons.tile.FlxTilemapExt;
+import flixel.effects.FlxSpriteFilter;
 import flixel.effects.particles.FlxEmitterExt;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -45,7 +48,9 @@ class PlayState extends FlxState
 	
 	private var _sprFade:FlxSprite;
 	private var _grpBallTrail:FlxGroup;
+	private var _grpLightTrail:FlxGroup;
 	private var _grpPlayerTrail:FlxGroup;
+	private var _grpNodes:FlxGroup;
 	private var _collisionMap:FlxTilemapExt;
 	
 	private var _state:Int = 0;
@@ -54,7 +59,6 @@ class PlayState extends FlxState
 	private inline static var STATE_FADEOUT:Int = 2;
 	private inline static var STATE_PLAY:Int = 3;
 	private inline static var STATE_LEVELEND:Int = 4;
-	
 	
 	private var _ballLaunched:Bool = false;
 	private var _ballLaunchTimer:Float;
@@ -69,14 +73,16 @@ class PlayState extends FlxState
 	private var _lastHitBy:Int = 0;
 	
 	private var _ballTrail:FlxTrail;
+	private var _lightTrail:FlxTrail;
 	private var _p1Trail:FlxTrail;
 	private var _p2Trail:FlxTrail;
 	
 	private var AITimer:Float;
 	private var AIDir:Int;
 	
-	private var _sprGrad:FlxSprite;
-	private var _sprGrad2:FlxSprite;
+	//private var _sprGrad:FlxSprite;
+	//private var _sprGrad2:FlxSprite;
+	//private var _sprGrad3:FlxSprite;
 	
 	private var _gameTimer:Float;
 	
@@ -119,32 +125,25 @@ class PlayState extends FlxState
 	
 	private function InitGameScreen():Void
 	{
-		//_background =  FlxGridOverlay.create(8,8,-1,-1,false,true, 0x33d83aad, 0x66d83aad ); //new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, 0xff666666);
-		
 		_background = new FlxTileblock(0, 0, 704, 400).loadTiles("images/Tile.png", 16, 16);
 		_background.scrollFactor.x = _background.scrollFactor.y = 0;
 		_background.x = (FlxG.width - _background.width) / 2; 
 		_background.y = (FlxG.height - _background.height) / 2; 
-		
-		_sprGrad = new FlxSprite(0, 0, "images/gradient.png");
-		_sprGrad.blend = BlendMode.OVERLAY;
-		_sprGrad2 = new FlxSprite(0, 0, "images/gradient.png");
-		_sprGrad2.blend = BlendMode.OVERLAY;
-		
+		//_background.blend = BlendMode.OVERLAY;
 		
 		_grpWalls = new FlxGroup(1);
 		_grpBallTrail = new FlxGroup();
+		_grpLightTrail = new FlxGroup();
 		_grpPlayerTrail = new FlxGroup(2);
 		_grpParticles = new FlxGroup();
 		_grpPlayers = new FlxGroup(2);
 		_grpEnemies = new FlxGroup(1);
+		_grpNodes = new FlxGroup(1);
 		_grpFakeBalls = new FlxGroup();
 		_grpBall = new FlxGroup(1);
 		_grpUI = new FlxGroup();
 		
-		
 		_sprFade = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		
 		
 		_sprPlayer1 = new FlxSprite(16, 16).loadGraphic("images/Left Bumper Ship 1.png", true, false, 16, 48);//.makeGraphic(Reg.PLAYER_WIDTH, Reg.PLAYER_HEIGHT, FlxColor.BLUE);
 		_sprPlayer1.animation.add("normal", [0, 1, 2, 1],6);
@@ -164,9 +163,13 @@ class PlayState extends FlxState
 		_ball.animation.play("neutral");
 		_ball.elasticity = 1.025;
 		_ball.maxVelocity.set(600, 600);
-		_ball.animation.add("normal", [0], 0, true);
-		_ball.animation.play("normal");
+		//_ball.animation.add("normal", [0], 0, true);
+		//_ball.animation.play("normal");
 		
+		
+		/*var _filter:FlxSpriteFilter = new FlxSpriteFilter(_ball, 18, 18);
+		_filter.addFilter(new GlowFilter(0xffccff, .6, 10, 10, 2, 1));
+		*/
 		_grpPlayers.add(_sprPlayer1);
 		_grpPlayers.add(_sprPlayer2);
 		_grpBall.add(_ball);
@@ -181,25 +184,28 @@ class PlayState extends FlxState
 		_ballLaunchTimer = 2;
 		_grpUI.add(_ballLaunchDisplay);
 		
-		//_txtP1Score = new FlxText(4, 4, 200, "0",16);
 		_txtP1Score = new FlxBitmapFont(Reg.FONT_BLUE, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		_txtP1Score.setText("0", false, 0, 0, FlxBitmapFont.ALIGN_LEFT);
-		//_txtP1Score.borderStyle = FlxText.BORDER_OUTLINE;
-		//_txtP1Score.alignment="left";
 		_txtP1Score.y = 4;
 		_txtP1Score.x = 4;
 		_txtP1Score.scrollFactor.x = _txtP1Score.scrollFactor.y = 0;
 		_grpUI.add(_txtP1Score);
 		
-		//_txtP2Score = new FlxText(FlxG.width - 204, 4, 200, "0",16);
-		//_txtP2Score.borderStyle = FlxText.BORDER_OUTLINE;
-		//_txtP2Score.alignment="right";
 		_txtP2Score = new FlxBitmapFont(Reg.FONT_RED, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		_txtP2Score.setText("0", false, 0, 0, FlxBitmapFont.ALIGN_RIGHT);
 		_txtP2Score.y = 4;
 		_txtP2Score.x = FlxG.width - _txtP2Score.width - 4;
 		_txtP2Score.scrollFactor.x = _txtP2Score.scrollFactor.y = 0;
 		_grpUI.add(_txtP2Score);
+		
+		
+		_lightTrail = new FlxTrail(_ball, "images/gradient.png", 4, 1, 1, .25);
+		_lightTrail.setAll("width", Reg.BALL_SIZE);
+		_lightTrail.setAll("height", Reg.BALL_SIZE);
+		_lightTrail.setAll("offset", new FlxPoint((300 - Reg.BALL_SIZE) / 2, (300 - Reg.BALL_SIZE) / 2));
+		
+		_lightTrail.setAll("blend", BlendMode.OVERLAY);
+		_grpLightTrail.add(_lightTrail);
 		
 		_ballTrail = new FlxTrail(_ball, null, 6, 3, .6, .1);
 		_ballTrail.setAll("blend", BlendMode.HARDLIGHT);
@@ -213,10 +219,7 @@ class PlayState extends FlxState
 		_p2Trail.setAll("blend", BlendMode.HARDLIGHT);
 		_grpPlayerTrail.add(_p2Trail);
 		
-		//_txtTimer = new FlxText(4, 0, 100, "0:00",16);
-		//_txtTimer.borderStyle = FlxText.BORDER_OUTLINE;
-		//_txtTimer.alignment = "center";
-		_txtTimer = new FlxBitmapFont(Reg.FONT_RED, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		_txtTimer = new FlxBitmapFont(Reg.FONT_YELLOW, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		_txtTimer.setText("0:00", false, 0, 0, FlxBitmapFont.ALIGN_CENTER);
 		_txtTimer.y = 4;
 		_txtTimer.x = (FlxG.width - _txtTimer.width) / 2;
@@ -227,23 +230,28 @@ class PlayState extends FlxState
 		_burstEmitter.setRotation(0, 0);
 		_burstEmitter.setMotion(0, 5,2, 360, 100, 4);
 		_burstEmitter.makeParticles("images/particles.png", 1200, 0, true, 0);
-		_burstEmitter.blend = BlendMode.SCREEN;
+		_burstEmitter.blend = BlendMode.HARDLIGHT;
         _grpParticles.add(_burstEmitter);
 		
 		add(_background);
-		add(_sprGrad);
-		add(_sprGrad2);
+		//add(_sprGrad);
+		//add(_sprGrad2);
+		//add(_sprGrad3);
+		
+		add(_grpLightTrail);
+		
 		add(_grpWalls);
+		
 		add(_grpBallTrail);
 		add(_grpPlayerTrail);
 		add(_grpParticles);
 		add(_grpPlayers);
 		add(_grpEnemies);
+		add(_grpNodes);
 		add(_grpFakeBalls);
 		add(_grpBall);
 		add(_grpUI);
 		add(_sprFade);
-
 		
 	}
 	
@@ -261,7 +269,7 @@ class PlayState extends FlxState
 		}
 		
 		
-		_burstEmitter.start(true, 0, 0, 80,1);
+		_burstEmitter.start(true, 0, 0, 120,1);
 		_burstEmitter.update();
 	}
 	
@@ -283,6 +291,11 @@ class PlayState extends FlxState
 		else
 			_grpEnemies.add(level.enemies);
 		
+		if (_grpNodes.members.length > 0)
+			_grpNodes.replace(_grpNodes.members[0], level.objects);
+		else
+			_grpNodes.add(level.objects);
+		
 		_gameTimer = Reg.GAME_TIME;
 		ResetBall();
 	}
@@ -294,7 +307,6 @@ class PlayState extends FlxState
 		SnapBall();
 		_ballLaunchDisplay.animation.frameIndex = 0;
 		_ballLaunchDisplay.alpha = 0;
-		//_ballLaunchDisplay.scale.x = _ballLaunchDisplay.scale.y = 1;
 		_ballLaunchDisplay.visible = true;
 		_ballLaunchTimer = 2;
 		_ballLaunched = false;
@@ -397,7 +409,10 @@ class PlayState extends FlxState
 		FlxG.collide(_grpPlayers, _grpFakeBalls, FakeBallHitsPlayer);
 		
 		if (_lastHitBy != 0)
+		{
 			FlxG.collide(_grpEnemies, _ball, BallHitEnemy);
+			FlxG.collide(_grpNodes, _ball, BallHitNode);
+		}
 		
 		
 		
@@ -431,6 +446,8 @@ class PlayState extends FlxState
 				Reg.scores.push([_p1score, _p2score]);
 				_ball.velocity.x = _ball.velocity.y = 0;
 			}
+			if (_ball.velocity.x > -10 && _ball.velocity.x < 10)
+				_ball.velocity.x *= 10;
 			
 		}
 	}
@@ -459,11 +476,6 @@ class PlayState extends FlxState
 	
 	private function LaunchBall():Void
 	{
-		/*_ball.x = (FlxG.width - Reg.BALL_SIZE) / 2;
-		_ball.y = (FlxG.height - Reg.BALL_SIZE) / 2;
-		_ball.velocity.x = 0;
-		_ball.velocity.y = 0;*/
-		
 		SnapBall();
 		if (_ballLaunchTimer > 0)
 		{
@@ -475,8 +487,6 @@ class PlayState extends FlxState
 			}
 			else
 			{
-				//_ballLaunchDisplay.scale.x +=FlxG.elapsed * 6;
-				//_ballLaunchDisplay.scale.y +=FlxG.elapsed * 6;
 				_ballLaunchDisplay.alpha = _ballLaunchTimer;
 			}
 		}
@@ -485,7 +495,6 @@ class PlayState extends FlxState
 			_ballLaunchDisplay.animation.frameIndex++;
 			_ballLaunchTimer = 2;
 			_ballLaunchDisplay.alpha = 1;
-			//_ballLaunchDisplay.scale.x = _ballLaunchDisplay.scale.y = 1;
 		}
 		else if (_ballLaunchDisplay.animation.frameIndex == 3)
 		{
@@ -515,6 +524,25 @@ class PlayState extends FlxState
 		}
 	}
 	
+	private function BallHitNode(N:FlxObject, B:FlxObject):Void
+	{
+		if (cast(N, PointNode).owner != _lastHitBy)
+		{
+			cast(N, PointNode).owner = _lastHitBy;
+			if (_lastHitBy == 1)
+			{
+				_p1score += 10;
+			}
+			else if (_lastHitBy == 2)
+			{
+				_p2score += 10;
+			}
+		}
+		_ball.velocity.x *= 1.25;
+		_ball.velocity.y *= 1.25;
+		burst();
+	}
+	
 	private function BallHitEnemy(E:FlxObject, B:FlxObject):Void
 	{
 		var enemyMid:Int = Std.int(E.y + (E.height / 2));
@@ -527,11 +555,11 @@ class PlayState extends FlxState
 		{
 			if (_lastHitBy == 1)
 			{
-				_p1score += 100;
+				_p1score += 25;
 			}
 			else if (_lastHitBy == 2)
 			{
-				_p2score += 100;
+				_p2score += 25;
 			}
 		}
 		burst();
@@ -581,6 +609,12 @@ class PlayState extends FlxState
 			fb1.alpha = .6;
 			_grpBallTrail.add(fTrail);
 			
+			var lTrail:FlxTrail = new FlxTrail(fb1, "images/gradient.png", 10, 1, 1, .1);
+			lTrail.setAll("offset", new FlxPoint((300 - Reg.BALL_SIZE) / 2,(300 - Reg.BALL_SIZE) / 2));
+			lTrail.setAll("blend", BlendMode.OVERLAY);
+			_grpLightTrail.add(lTrail);
+			fb1.grad = lTrail;
+			
 			newAngle = FlxAngle.rotatePoint(B.velocity.x, B.velocity.y, 0, 0, FlxRandom.floatRanged( -180, 180));
 			var fb2:FakeBall = cast _grpFakeBalls.recycle(FakeBall, [B.x, B.y, newAngle.x, newAngle.y]);
 			var fTrail:FlxTrail = new FlxTrail(fb2, null, 6, 3, .6, .1);
@@ -588,6 +622,12 @@ class PlayState extends FlxState
 			fb2.trail = fTrail;
 			fb2.alpha = .6;
 			_grpBallTrail.add(fTrail);
+			
+			var lTrail2:FlxTrail = new FlxTrail(fb2, "images/gradient.png", 10, 1, 1, .1);
+			lTrail2.setAll("offset", new FlxPoint((300 - Reg.BALL_SIZE) / 2,(300 - Reg.BALL_SIZE) / 2));
+			lTrail2.setAll("blend", BlendMode.OVERLAY);
+			_grpLightTrail.add(lTrail2);
+			fb2.grad = lTrail2;
 			
 			
 		}
@@ -601,7 +641,7 @@ class PlayState extends FlxState
 			_ball.animation.play("neutral");
 		else
 			_ball.animation.play("p" + Std.string(WhichPlayer));
-			_lastHitBy = WhichPlayer;
+		_lastHitBy = WhichPlayer;
 	}
 	
 	private function FakeBallHitsPlayer(P:FlxObject, B:FlxObject):Void
@@ -654,33 +694,33 @@ class PlayState extends FlxState
 		burst(B.x, B.y);
 	}
 
+	
+	private function SetTimerText():Void
+	{
+		_txtTimer.text =  StringTools.lpad( Std.string(Math.ceil(_gameTimer) ), '0', 2) ;
+		_txtTimer.x = (FlxG.width - _txtTimer.width) / 2;
+		if (_gameTimer < 10 && !_timerIsRed)
+		{
+			_txtTimer.setFontGraphics( FlxG.bitmap.add(Reg.FONT_RED));
+			_timerTween = FlxTween.multiVar(_txtTimer, { alpha:.6 }, .3, { type: FlxTween.PINGPONG, ease: FlxEase.expoInOut } );
+			_timerIsRed = true;
+		}
+	}
 
 	/**
 	 * Function that is called once every frame.
 	 */
 	override public function update():Void
 	{
-		
-		_txtTimer.text =  StringTools.lpad( Std.string(Math.ceil(_gameTimer) ), '0', 2) ;
-		_txtTimer.x = (FlxG.width - _txtTimer.width) / 2;
-		if (_gameTimer < 10 && !_timerIsRed)
-		{
-			//_txtTimer.color = 0xffff9999;
-			_txtTimer.setFontGraphics( FlxG.bitmap.add(Reg.FONT_RED));
-			_timerTween = FlxTween.multiVar(_txtTimer, { alpha:.6 }, .3, { type: FlxTween.PINGPONG, ease: FlxEase.expoInOut } );
-			_timerIsRed = true;
-			
-		}
-		
-		
+		SetTimerText();
 		
 		if (_lastHitBy <= 0)
 			_ball.alpha = .6;
 		else
 		{
 			_ball.alpha = 1;
-			//FlxG.collide(_grpEnemies, _ball, BallHitEnemy);
 		}
+		
 		
 		_sprPlayer1.velocity.y = 0;
 		_sprPlayer2.velocity.y = 0;
@@ -703,15 +743,7 @@ class PlayState extends FlxState
 					FlxG.switchState(new ScoreBoardState());
 		}
 		
-		if (_p1score != Std.parseInt(_txtP1Score.text))
-		{
-			_txtP1Score.text = Std.string(Std.parseInt(_txtP1Score.text) + 1);
-		}
-		if (_p2score != Std.parseInt(_txtP2Score.text))
-		{
-			_txtP2Score.text = Std.string(Std.parseInt(_txtP2Score.text) + 1);
-			_txtP2Score.x = FlxG.width - _txtP2Score.width - 4;
-		}
+		SetScoreText();
 		
 		super.update();
 		
@@ -723,13 +755,21 @@ class PlayState extends FlxState
 		
 	}
 	
+	private function SetScoreText():Void
+	{
+		if (_p1score != Std.parseInt(_txtP1Score.text))
+		{
+			_txtP1Score.text = Std.string(Std.parseInt(_txtP1Score.text) + 1);
+		}
+		if (_p2score != Std.parseInt(_txtP2Score.text))
+		{
+			_txtP2Score.text = Std.string(Std.parseInt(_txtP2Score.text) + 1);
+			_txtP2Score.x = FlxG.width - _txtP2Score.width - 4;
+		}
+	}
+	
 	override public function draw():Void
 	{
-		
-		_sprGrad.x = _ball.x + ((_ball.width - _sprGrad.width) / 2);
-		_sprGrad.y = _ball.y + ((_ball.height - _sprGrad.height) / 2);
-		_sprGrad2.x = _ball.x + ((_ball.width - _sprGrad2.width) / 2);
-		_sprGrad2.y = _ball.y + ((_ball.height - _sprGrad2.height) / 2);
 		super.draw();
 		
 	}

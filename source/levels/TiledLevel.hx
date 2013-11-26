@@ -193,6 +193,9 @@ class TiledLevel extends TiledMap
 			case "enemy":
 				var enemy:Enemy = new Enemy(x,y,  Std.parseInt(o.name));
 				_enemies.add(enemy);
+			case "node":
+				var node:PointNode = new PointNode(x-4, y-4);
+				_objects.add(node);
 			
 		}
 	}
