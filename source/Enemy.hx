@@ -3,7 +3,9 @@ package ;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
+import flixel.util.FlxAngle;
 import flixel.util.FlxColor;
+import flixel.util.FlxMath;
 import flixel.util.FlxPoint;
 
 class Enemy extends FlxSprite
@@ -13,25 +15,36 @@ class Enemy extends FlxSprite
 	var _dying:Bool;
 	var _startingPos:FlxPoint;
 	var _moveDir:Int;
+	var _rotAngle:Float;
 	
 	public function new(X:Float=0, Y:Float=0, EType:Int)
 	{
 		super(X, Y);
-		makeGraphic(16, 16, FlxColor.RED);
+		
 		_etype = EType;
 		_dying = false;
 		immovable = true;
-		_startingPos = new FlxPoint(X, Y);
+		_startingPos = new FlxPoint(X,Y);
+		_rotAngle = 0;
 		switch(_etype)
 		{
 			case 0:
+				makeGraphic(16, 16, FlxColor.RED);
 				_moveDir = FlxObject.UP;
 				health = 1;
 			case 1:
+				makeGraphic(16, 16, FlxColor.RED);
 				_moveDir = FlxObject.DOWN;
+				health = 1;
+			case 2:
+				makeGraphic(16, 16, FlxColor.BLUE);
+				health = 1;
+			case 3:
+				makeGraphic(32, 32, FlxColor.YELLOW);
 				health = 1;
 				
 		}
+		trace(_etype);
 	}
 	
 	override public function update():Void
@@ -50,26 +63,62 @@ class Enemy extends FlxSprite
 		}
 		else
 		{
-			if (_moveDir == FlxObject.UP)
+			
+			switch(_etype)
 			{
-				if (y <= _startingPos.y - 16)
-				{
-					_moveDir = FlxObject.DOWN;
-					velocity.y = 0;
-				}
-				else
-					velocity.y = -10;
+				case 0:
+					if (_moveDir == FlxObject.UP)
+					{
+						if (y  <= _startingPos.y - 32)
+						{
+							_moveDir = FlxObject.DOWN;
+							velocity.y = 0;
+						}
+						else
+							velocity.y = -24;
+					}
+					else if (_moveDir == FlxObject.DOWN)
+					{
+						if (y  >= _startingPos.y + 32)
+						{
+							_moveDir = FlxObject.UP;
+							velocity.y = 0;
+						}
+						else
+							velocity.y = 24;
+					}
+				case 1:
+					if (_moveDir == FlxObject.UP)
+					{
+						if (y  <= _startingPos.y - 32)
+						{
+							_moveDir = FlxObject.DOWN;
+							velocity.y = 0;
+						}
+						else
+							velocity.y = -24;
+					}
+					else if (_moveDir == FlxObject.DOWN)
+					{
+						if (y  >= _startingPos.y + 32)
+						{
+							_moveDir = FlxObject.UP;
+							velocity.y = 0;
+						}
+						else
+							velocity.y = 24;
+					}
+				case 2:
+					var pt:FlxPoint = FlxAngle.rotatePoint(_startingPos.x  + 32, _startingPos.y , _startingPos.x, _startingPos.y, _rotAngle);				
+					x = pt.x;
+					y = pt.y;
+					_rotAngle += FlxG.elapsed * 120;
+					if (_rotAngle > 360) _rotAngle-= _rotAngle;
+				case 3:
+					
+
 			}
-			else if (_moveDir == FlxObject.DOWN)
-			{
-				if (y >= _startingPos.y + 16)
-				{
-					_moveDir = FlxObject.UP;
-					velocity.y = 0;
-				}
-				else
-					velocity.y = 10;
-			}
+			
 		}
 		super.update();
 	}

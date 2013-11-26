@@ -14,6 +14,7 @@ import flixel.tile.FlxTileblock;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.ui.FlxButton;
+import flixel.util.FlxAngle;
 import flixel.util.FlxColor;
 import flixel.util.FlxMath;
 import flixel.util.FlxPoint;
@@ -84,6 +85,7 @@ class PlayState extends FlxState
 	private var _ballFollow:Int;
 	private var _timerIsRed:Bool;
 	private var _timerTween:FlxTween;
+	private var _grpFakeBalls:FlxGroup;
 	
 	
 	/**
@@ -131,11 +133,12 @@ class PlayState extends FlxState
 		
 		
 		_grpWalls = new FlxGroup(1);
-		_grpBallTrail = new FlxGroup(1);
+		_grpBallTrail = new FlxGroup();
 		_grpPlayerTrail = new FlxGroup(2);
 		_grpParticles = new FlxGroup();
 		_grpPlayers = new FlxGroup(2);
 		_grpEnemies = new FlxGroup(1);
+		_grpFakeBalls = new FlxGroup();
 		_grpBall = new FlxGroup(1);
 		_grpUI = new FlxGroup();
 		
@@ -236,6 +239,7 @@ class PlayState extends FlxState
 		add(_grpParticles);
 		add(_grpPlayers);
 		add(_grpEnemies);
+		add(_grpFakeBalls);
 		add(_grpBall);
 		add(_grpUI);
 		add(_sprFade);
@@ -243,10 +247,20 @@ class PlayState extends FlxState
 		
 	}
 	
-	private function burst():Void
+	private function burst(X:Float = -1, Y:Float = -1):Void
 	{
-		_burstEmitter.x = _ball.x + (Reg.BALL_SIZE/2);
-		_burstEmitter.y = _ball.y + (Reg.BALL_SIZE/2);
+		if (X == -1 && Y == -1)
+		{
+			_burstEmitter.x = _ball.x + (Reg.BALL_SIZE/2);
+			_burstEmitter.y = _ball.y + (Reg.BALL_SIZE / 2);
+		}
+		else
+		{
+			_burstEmitter.x = X + (Reg.BALL_SIZE/2);
+			_burstEmitter.y = Y + (Reg.BALL_SIZE / 2);
+		}
+		
+		
 		_burstEmitter.start(true, 0, 0, 80,1);
 		_burstEmitter.update();
 	}
@@ -379,6 +393,8 @@ class PlayState extends FlxState
 		
 		FlxG.collide(_ball, _grpWalls, BallHitWall);
 		FlxG.collide(_grpPlayers, _ball, BallHitPlayer);
+		FlxG.collide(_grpFakeBalls, _grpWalls, FakeBallHitWall);
+		FlxG.collide(_grpPlayers, _grpFakeBalls, FakeBallHitsPlayer);
 		
 		if (_lastHitBy != 0)
 			FlxG.collide(_grpEnemies, _ball, BallHitEnemy);
@@ -434,7 +450,7 @@ class PlayState extends FlxState
 		}
 		else if (_ballFollow == 2)
 		{
-			_ball.x = _sprPlayer2.x + Reg.PLAYER_WIDTH + 2;
+			_ball.x = _sprPlayer2.x - Reg.BALL_SIZE - 2;
 			_ball.y = _sprPlayer2.y + ((Reg.PLAYER_HEIGHT - Reg.BALL_SIZE) / 2);
 		}
 		_ball.velocity.x = 0;
@@ -504,24 +520,8 @@ class PlayState extends FlxState
 		var enemyMid:Int = Std.int(E.y + (E.height / 2));
 		var ballMid:Int = Std.int(B.y + (Reg.BALL_SIZE / 2));
 		var diff:Int;
-		if (ballMid < enemyMid)
-		{
-			// ball hit the 'top' of the paddle
-			diff = enemyMid - ballMid;
-			B.velocity.y = ( -8 * Math.abs(diff));
-		}
-		else if (ballMid > enemyMid)
-		{
-			// ball hit the 'bottom' of the paddle
-			diff = enemyMid - ballMid;
-			B.velocity.y = ( 8 * Math.abs(diff));
-		}
-		else
-		{
-			// ball hit right in the middle...
-			// randomize!
-			B.velocity.y = 2 + Std.int(Math.random() * 16);
-		}
+		var eType:Int = cast(E, Enemy).etype;
+		
 		E.hurt(1);
 		if (cast(E, Enemy).dying)
 		{
@@ -535,12 +535,79 @@ class PlayState extends FlxState
 			}
 		}
 		burst();
+		
+		if ( eType <= 1)
+		{
+			/*if (ballMid < enemyMid)
+			{
+				// ball hit the 'top' of the paddle
+				diff = enemyMid - ballMid;
+				B.velocity.y = ( -8 * Math.abs(diff));
+			}
+			else if (ballMid > enemyMid)
+			{
+				// ball hit the 'bottom' of the paddle
+				diff = enemyMid - ballMid;
+				B.velocity.y = ( 8 * Math.abs(diff));
+			}
+			else
+			{
+				// ball hit right in the middle...
+				// randomize!
+				B.velocity.y = 2 + Std.int(Math.random() * 16);
+			}*/
+			
+			
+		}
+		else if (eType == 2)
+		{
+			var newAngle:FlxPoint = FlxAngle.rotatePoint(B.velocity.x, B.velocity.y, 0,0, FlxRandom.floatRanged( -180, 180));
+			B.velocity.x = newAngle.x;
+			B.velocity.y = newAngle.y;
+		}
+		else if (eType == 3)
+		{
+			
+			var newAngle:FlxPoint = FlxAngle.rotatePoint(B.velocity.x, B.velocity.y, 0,0, FlxRandom.floatRanged( -180, 180));
+			B.velocity.x = newAngle.x;
+			B.velocity.y = newAngle.y;
+			ChangeOwner(0);
+			
+			newAngle = FlxAngle.rotatePoint(B.velocity.x, B.velocity.y, 0, 0, FlxRandom.floatRanged( -180, 180));
+			var fb1:FakeBall = cast _grpFakeBalls.recycle(FakeBall, [B.x, B.y, newAngle.x, newAngle.y]);
+			var fTrail:FlxTrail = new FlxTrail(fb1, null, 6, 3, .6, .1);
+			fTrail.setAll("blend", BlendMode.HARDLIGHT);
+			fb1.trail = fTrail;
+			fb1.alpha = .6;
+			_grpBallTrail.add(fTrail);
+			
+			newAngle = FlxAngle.rotatePoint(B.velocity.x, B.velocity.y, 0, 0, FlxRandom.floatRanged( -180, 180));
+			var fb2:FakeBall = cast _grpFakeBalls.recycle(FakeBall, [B.x, B.y, newAngle.x, newAngle.y]);
+			var fTrail:FlxTrail = new FlxTrail(fb2, null, 6, 3, .6, .1);
+			fTrail.setAll("blend", BlendMode.HARDLIGHT);
+			fb2.trail = fTrail;
+			fb2.alpha = .6;
+			_grpBallTrail.add(fTrail);
+			
+			
+		}
+		
+		
 	}
 	
 	private function ChangeOwner(WhichPlayer:Int):Void
 	{
-		_ball.animation.play("p" + Std.string(WhichPlayer));
-		_lastHitBy = WhichPlayer;
+		if (WhichPlayer == 0)
+			_ball.animation.play("neutral");
+		else
+			_ball.animation.play("p" + Std.string(WhichPlayer));
+			_lastHitBy = WhichPlayer;
+	}
+	
+	private function FakeBallHitsPlayer(P:FlxObject, B:FlxObject):Void
+	{
+		burst(B.x, B.y);
+		B.kill();
 	}
 	
 	private function BallHitPlayer(P:FlxObject, B:FlxObject):Void
@@ -580,6 +647,11 @@ class PlayState extends FlxState
 	private function BallHitWall(W:FlxObject, B:FlxObject):Void
 	{
 		burst();
+	}
+	
+	private function FakeBallHitWall(W:FlxObject, B:FlxObject):Void
+	{
+		burst(B.x, B.y);
 	}
 
 

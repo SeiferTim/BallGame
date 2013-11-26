@@ -71,10 +71,10 @@ class Reg
 	static public var FONT_INVERT:String = 		"images/font_invert.png";
 	
 	
-	static public var GAME_TIME:Int =  10; // TESTING = 10, LIVE = 90;
+	static public var GAME_TIME:Int =  60; // TESTING = 10, LIVE = 90;
 	
 	static public function LoadLevels():Void
 	{
-		levels.push("001");
+		levels.push("002");
 	}
 }
