@@ -16,6 +16,7 @@ class Enemy extends FlxSprite
 	var _startingPos:FlxPoint;
 	var _moveDir:Int;
 	var _rotAngle:Float;
+	var _score:Int;
 	
 	public function new(X:Float=0, Y:Float=0, EType:Int)
 	{
@@ -32,19 +33,22 @@ class Enemy extends FlxSprite
 				makeGraphic(16, 16, FlxColor.RED);
 				_moveDir = FlxObject.UP;
 				health = 1;
+				_score = 15;
 			case 1:
 				makeGraphic(16, 16, FlxColor.RED);
 				_moveDir = FlxObject.DOWN;
 				health = 1;
+				_score = 15;
 			case 2:
 				makeGraphic(16, 16, FlxColor.BLUE);
 				health = 1;
+				_score = 25;
 			case 3:
 				makeGraphic(32, 32, FlxColor.YELLOW);
 				health = 1;
+				_score = 30;
 				
 		}
-		trace(_etype);
 	}
 	
 	override public function update():Void
@@ -136,6 +140,13 @@ class Enemy extends FlxSprite
 	}
 	
 	public var etype(get_etype, null):Int;
+	
+	function get_score():Int 
+	{
+		return _score;
+	}
+	
+	public var score(get_score, null):Int;
 	
 	override public function hurt(Damage:Float):Void
 	{

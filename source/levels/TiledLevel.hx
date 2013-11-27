@@ -187,7 +187,6 @@ class TiledLevel extends TiledMap
 		y +=(FlxG.height - fullHeight) / 2;
 		var width:Float = o.width;
 		var height:Float = o.height;
-		trace(x + " " + y);
 		switch(o.type.toLowerCase())
 		{
 			case "enemy":

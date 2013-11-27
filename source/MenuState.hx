@@ -71,7 +71,6 @@ class MenuState extends FlxState
 		txtClickToPlay.y = 16;
 		txtClickToPlay.x = (FlxG.width - txtClickToPlay.width ) / 2;
 		
-		trace(txtClickToPlay.visible);
 		_grpMain.add(txtClickToPlay);
 		
 		var p1:FlxButtonPlus = new FlxButtonPlus(0, 0, Start1Player, null, "1 Player", 100, 20);  //(0, 0, "1 Player", Start1Player);
@@ -154,7 +153,6 @@ class MenuState extends FlxState
 	
 	private function Start1Player():Void
 	{
-		trace("play 1 click?");
 		if (_state != STATE_PLAY || justTriggered) return;
 		FlxG.mouse.reset();
 		justTriggered = true;
@@ -167,7 +165,6 @@ class MenuState extends FlxState
 	
 	private function Start2Player():Void
 	{
-		trace("play 2 click?");
 		if (_state != STATE_PLAY || justTriggered) return;
 		FlxG.mouse.reset();
 		justTriggered = true;
