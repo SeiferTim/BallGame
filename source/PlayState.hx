@@ -107,7 +107,9 @@ class PlayState extends FlxState
 		// Set a background color
 		FlxG.cameras.bgColor = 0xff4e1c8d;
 		// Show the mouse (in case it hasn't been disabled)
+		#if !FLX_NO_MOUSE
 		FlxG.mouse.hide();
+		#end
 		
 		_state = STATE_LOADING;
 		_ballLaunched = false;
@@ -473,7 +475,7 @@ class PlayState extends FlxState
 	private function GamePlay():Void
 	{
 		
-		
+		#if !FLX_NO_KEYBOARD
 		if (FlxG.keyboard.anyPressed(Reg.P1_KEYS_UP))
 		{
 			MovePaddle(_sprPlayer1, FlxObject.UP);
@@ -482,9 +484,10 @@ class PlayState extends FlxState
 		{
 			MovePaddle(_sprPlayer1, FlxObject.DOWN);
 		}
-		
+		#end
 		if (Reg.numPlayers == 2)
 		{
+			#if !FLX_NO_KEYBOARD
 			if (FlxG.keyboard.anyPressed(Reg.P2_KEYS_UP))
 			{
 				MovePaddle(_sprPlayer2, FlxObject.UP);
@@ -493,6 +496,7 @@ class PlayState extends FlxState
 			{
 				MovePaddle(_sprPlayer2, FlxObject.DOWN);
 			}
+			#end
 		}
 		else
 		{
@@ -719,7 +723,7 @@ class PlayState extends FlxState
 	
 	private function BallHitPlayer(P:FlxObject, B:FlxObject):Void
 	{
-		if (P.x == 16)
+		if (P.x == _sprPlayer1.x)
 		{
 			ChangeOwner(1);
 		}

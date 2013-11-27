@@ -4,6 +4,9 @@ import flash.display.StageDisplayState;
 import flash.events.Event;
 import flash.Lib;
 import flixel.*;
+import flixel.FlxCamera;
+import flixel.FlxG;
+import flixel.FlxGame;
 
 	
 class GameClass extends FlxGame
@@ -14,7 +17,7 @@ class GameClass extends FlxGame
 	
 	public function new()
 	{
-		
+		Reg.instance = this;
 		var stageWidth:Int = Lib.current.stage.stageWidth;
 		var stageHeight:Int = Lib.current.stage.stageHeight;
 		
@@ -22,18 +25,14 @@ class GameClass extends FlxGame
 		var ratioY:Float = stageHeight / gameHeight;
 		var ratio:Float = Math.min(ratioX, ratioY);
 		
-		
-		var fps:Int = 60;
+		var fps:Int = 120;
 		
 		x = (stageWidth - (gameWidth * ratio)) * .5;
 		y = (stageHeight - (gameHeight * ratio)) * .5;
 		
-		super(gameWidth, gameHeight, MenuState, ratio, fps, fps);
+		super(gameWidth, gameHeight, MenuState, ratio, fps, 60);
 		
 		Lib.current.stage.addEventListener(Event.RESIZE, window_resized);
-		
-		
-		
 		
 	}
 	
@@ -50,7 +49,11 @@ class GameClass extends FlxGame
 	
 	private function window_resized(?E:Event = null):Void
 	{
-		
+		FitWindow();
+	}
+	
+	public function FitWindow():Void 
+	{
 		var stageWidth:Int = Lib.current.stage.stageWidth;
 		var stageHeight:Int = Lib.current.stage.stageHeight;
 		
@@ -63,17 +66,17 @@ class GameClass extends FlxGame
 		
 		FlxCamera.defaultZoom = ratio;
 		FlxG.camera.zoom = ratio;
-		
-			
-		
 	}
 	
 	override public function update():Void 
 	{
 		super.update();
-		
-		//if (FlxG.keyboard.justReleased("ESCAPE"))
-		//	toggle_fullscreen();
+		#if !FLX_NO_KEYBOARD
+		#if !web
+		if (FlxG.keyboard.justReleased("ESCAPE"))
+			toggle_fullscreen();
+		#end
+		#end
 	}
 	
 	

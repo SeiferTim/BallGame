@@ -71,6 +71,8 @@ class Reg
 	static public var FONT_INVERT:String = 		"images/font_invert.png";
 	
 	
+	static public var instance:GameClass;
+	
 	static public var GAME_TIME:Int =  60; // TESTING = 10, LIVE = 90;
 	
 	static public function LoadLevels():Void

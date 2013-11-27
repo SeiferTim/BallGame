@@ -4,12 +4,13 @@ import flixel.FlxSprite;
 
 class PointNode extends FlxSpriteAniRot
 {
-
 	private var _owner:Int;
 	
 	public function new(X:Float, Y:Float) 
 	{
+
 		super("images/nodes.png", 360, X, Y);
+
 		//loadGraphic("images/nodes.png", true, false, 16, 16);
 		//loadRotatedGraphic("images/nodes.png", 360, -1, true, true);
 		animation.add("neutral", [0]);

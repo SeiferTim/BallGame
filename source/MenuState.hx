@@ -48,6 +48,8 @@ class MenuState extends FlxState
 		FlxG.mouse.show();
 		#end
 		
+		Reg.instance.FitWindow();
+		
 		_state = STATE_UNLOADED;
 		
 		_grpMain = new FlxGroup();
@@ -73,32 +75,38 @@ class MenuState extends FlxState
 		
 		_grpMain.add(txtClickToPlay);
 		
-		var p1:FlxButtonPlus = new FlxButtonPlus(0, 0, Start1Player, null, "1 Player", 100, 20);  //(0, 0, "1 Player", Start1Player);
+		//var p1:FlxButtonPlus = new FlxButtonPlus(0, 0, Start1Player, null, "1 Player", 100, 20);  //(0, 0, "1 Player", Start1Player);
+		var p1:FlxButton = new FlxButton(0, 0, "1 Player", Start1Player); //(0, 0, Start1Player, null, "1 Player", 100, 20);  //(0, 0, "1 Player", Start1Player);
 		p1.x = (FlxG.width - p1.width) / 2;
 		p1.y = (FlxG.height / 2) - p1.height - 4;
 		_grpPlayChoices.add(p1);
 		
-		var p2:FlxButtonPlus = new FlxButtonPlus(0, 0, Start2Player, null, "2 Players", 100, 20);//(0, 0, "2 Players", Start2Player);
+		//var p2:FlxButtonPlus = new FlxButtonPlus(0, 0, Start2Player, null, "2 Players", 100, 20);//(0, 0, "2 Players", Start2Player);
+		var p2:FlxButton = new FlxButton(0, 0, "2 Players", Start2Player); //(0, 0, Start2Player, null, "2 Players", 100, 20);//(0, 0, "2 Players", Start2Player);
 		p2.x = (FlxG.width - p2.width) / 2;
 		p2.y = (FlxG.height / 2 ) + 4;
 		_grpPlayChoices.add(p2);
 		
-		var playButton:FlxButtonPlus = new FlxButtonPlus(0, 0, PlayGameClick, null, "Play Game", 100, 20);//(0, 0, "Play Game", PlayGameClick);
+		//var playButton:FlxButtonPlus = new FlxButtonPlus(0, 0, PlayGameClick, null, "Play Game", 100, 20);//(0, 0, "Play Game", PlayGameClick);
+		var playButton:FlxButton = new FlxButton(0, 0, "Play Game", PlayGameClick);//(0, 0, PlayGameClick, null, "Play Game", 100, 20);//(0, 0, "Play Game", PlayGameClick);
 		playButton.x = (FlxG.width - playButton.width) / 2;
 		playButton.y = (FlxG.height - playButton.height) / 2;
  		_grpMenuChoices.add(playButton);
 		
-		var matchButton1:FlxButtonPlus = new FlxButtonPlus(0, 0, PlaySingleMatch, null, "Single Match", 100, 20);//(0, 0, "Single Match", PlaySingleMatch);
+		//var matchButton1:FlxButtonPlus = new FlxButtonPlus(0, 0, PlaySingleMatch, null, "Single Match", 100, 20);//(0, 0, "Single Match", PlaySingleMatch);
+		var matchButton1:FlxButton = new FlxButton(0, 0, "Single Match", PlaySingleMatch);//(0, 0, PlaySingleMatch, null, "Single Match", 100, 20);//(0, 0, "Single Match", PlaySingleMatch);
 		matchButton1.x = (FlxG.width - matchButton1.width) / 2;
 		matchButton1.y = (FlxG.height - matchButton1.height) / 2 - matchButton1.height - 4;
 		_grpMatchesChoices.add(matchButton1);
 		
-		var matchButton2:FlxButtonPlus = new FlxButtonPlus(0, 0, Play2OO3Match, null, "Best of 3");//(0, 0, "Best 2 out of 3", Play2OO3Match);
+		//var matchButton2:FlxButtonPlus = new FlxButtonPlus(0, 0, Play2OO3Match, null, "Best of 3");//(0, 0, "Best 2 out of 3", Play2OO3Match);
+		var matchButton2:FlxButton = new FlxButton(0, 0, "Best of 3", Play2OO3Match);//(0, 0, Play2OO3Match, null, "Best of 3");//(0, 0, "Best 2 out of 3", Play2OO3Match);
 		matchButton2.x = (FlxG.width - matchButton2.width) / 2;
 		matchButton2.y = (FlxG.height - matchButton2.height) / 2;
 		_grpMatchesChoices.add(matchButton2);
 		
-		var matchButton3:FlxButtonPlus = new FlxButtonPlus(0, 0, Play3OO5Match, null, "Best of 5", 100, 20); //(0, 0, "Best 3 out of 5", Play3OO5Match);
+		//var matchButton3:FlxButtonPlus = new FlxButtonPlus(0, 0, Play3OO5Match, null, "Best of 5", 100, 20); //(0, 0, "Best 3 out of 5", Play3OO5Match);
+		var matchButton3:FlxButton = new FlxButton(0, 0, "Best of 5", Play3OO5Match);//(0, 0, Play3OO5Match, null, "Best of 5", 100, 20); //(0, 0, "Best 3 out of 5", Play3OO5Match);
 		matchButton3.x = (FlxG.width - matchButton3.width) / 2;
 		matchButton3.y = (FlxG.height - matchButton3.height) / 2 + matchButton1.height + 4;
 		_grpMatchesChoices.add(matchButton3);
@@ -114,7 +122,9 @@ class MenuState extends FlxState
 	private function PlaySingleMatch():Void
 	{
 		if (_state != STATE_MATCH || justTriggered) return;
+		#if !FLX_NO_MOUSE
 		FlxG.mouse.reset();
+		#end
 		justTriggered = true;
 		_state = STATE_UNLOADING;
 		Reg.numMatches = 1;
@@ -124,7 +134,9 @@ class MenuState extends FlxState
 	private function Play2OO3Match():Void
 	{
 		if (_state != STATE_MATCH || justTriggered) return;
+		#if !FLX_NO_MOUSE
 		FlxG.mouse.reset();
+		#end
 		justTriggered = true;
 		_state = STATE_UNLOADING;
 		Reg.numMatches = 3;
@@ -134,7 +146,9 @@ class MenuState extends FlxState
 	private function Play3OO5Match():Void
 	{
 		if (_state != STATE_MATCH || justTriggered) return;
+		#if !FLX_NO_MOUSE
 		FlxG.mouse.reset();
+		#end
 		justTriggered = true;
 		_state = STATE_UNLOADING;
 		Reg.numMatches = 5;
@@ -144,7 +158,9 @@ class MenuState extends FlxState
 	private function PlayGameClick():Void
 	{
 		if (_state != STATE_MENU || justTriggered) return;
+		#if !FLX_NO_MOUSE
 		FlxG.mouse.reset();
+		#end
 		justTriggered = true;
 		_state = STATE_PLAY;
 		_grpMenuChoices.visible = false;
@@ -154,7 +170,9 @@ class MenuState extends FlxState
 	private function Start1Player():Void
 	{
 		if (_state != STATE_PLAY || justTriggered) return;
+		#if !FLX_NO_MOUSE
 		FlxG.mouse.reset();
+		#end
 		justTriggered = true;
 		_state = STATE_MATCH;
 		Reg.numPlayers = 1;
@@ -166,7 +184,9 @@ class MenuState extends FlxState
 	private function Start2Player():Void
 	{
 		if (_state != STATE_PLAY || justTriggered) return;
+		#if !FLX_NO_MOUSE
 		FlxG.mouse.reset();
+		#end
 		justTriggered = true;
 		_state = STATE_MATCH;
 		Reg.numPlayers = 2;
@@ -200,6 +220,7 @@ class MenuState extends FlxState
 				else
 					_state = STATE_MAIN;
 			case STATE_MAIN:
+				#if !FLX_NO_MOUSE
 				if (FlxG.mouse.justReleased)
 				{
 					FlxG.mouse.reset();
@@ -207,6 +228,18 @@ class MenuState extends FlxState
 					_grpMain.visible = false;
 					_grpMenuChoices.visible = true;
 				}
+				#end
+				#if !FLX_NO_TOUCH
+				for (touch in FlxG.touches.list)
+				{
+					if (touch.justReleased && _state == STATE_MAIN)
+					{
+						_state = STATE_MENU;
+						_grpMain.visible = false;
+						_grpMenuChoices.visible = true;	
+					}
+				}
+				#end
 			case STATE_UNLOADING:
 				if (_sprBlack.alpha < 1)
 					_sprBlack.alpha += FlxG.elapsed * 3;
