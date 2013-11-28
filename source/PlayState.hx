@@ -99,6 +99,13 @@ class PlayState extends FlxState
 	private var _p2Emit:FlxEmitter;
 	private var _grpPlayerEmits:FlxGroup;
 	
+	#if !FLX_NO_TOUCH
+	private var _rectP1Up:FlxRect;
+	private var _rectP1Down:FlxRect;
+	private var _rectP2Up:FlxRect;
+	private var _rectP2Down:FlxRect;
+	#end
+	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -155,7 +162,12 @@ class PlayState extends FlxState
 	private function InitGameScreen():Void
 	{
 		
-		
+		#if !FLX_NO_TOUCH
+		_rectP1Up =  new FlxRect(0, 0, FlxG.width / 2 , FlxG.height / 2);
+		_rectP1Down = new FlxRect(0, FlxG.height / 2, FlxG.width / 2, FlxG.height / 2); 
+		_rectP2Up =  new FlxRect(FlxG.width / 2, 0, FlxG.width / 2, FlxG.height / 2);
+		_rectP2Down = new FlxRect(FlxG.width / 2, FlxG.height / 2, FlxG.width / 2, FlxG.height / 2);
+		#end
 		
 		_background = new FlxTileblock(0, 0, 704, 400).loadTiles("images/Tile-Top.png", 16, 16);
 		_background.scrollFactor.x = _background.scrollFactor.y = 0;
@@ -351,6 +363,7 @@ class PlayState extends FlxState
 		add(_grpUI);
 		add(_sprFade);
 		
+		
 	}
 	
 	private function burst(X:Float = -1, Y:Float = -1):Void
@@ -474,17 +487,47 @@ class PlayState extends FlxState
 	
 	private function GamePlay():Void
 	{
+		var p1Up:Bool = false;
+		var p1Down:Bool = false;
+		var p2Up:Bool = false;
+		var p2Down:Bool = false;
 		
 		#if !FLX_NO_KEYBOARD
 		if (FlxG.keyboard.anyPressed(Reg.P1_KEYS_UP))
 		{
-			MovePaddle(_sprPlayer1, FlxObject.UP);
+			p1Up = true;
 		}
 		else if (FlxG.keyboard.anyPressed(Reg.P1_KEYS_DOWN))
 		{
-			MovePaddle(_sprPlayer1, FlxObject.DOWN);
+			p1Down = true;	
 		}
 		#end
+		
+		#if !FLX_NO_TOUCH
+		for (touch in FlxG.touches.list)
+		{
+			if (touch.pressed)
+			{
+				if (FlxMath.pointInFlxRect(touch.x, touch.y, _rectP1Up))
+					p1Up = true;
+				if (FlxMath.pointInFlxRect(touch.x, touch.y, _rectP1Down))
+					p1Down = true;
+				if (FlxMath.pointInFlxRect(touch.x, touch.y, _rectP2Up))
+					p2Up = true;
+				if (FlxMath.pointInFlxRect(touch.x, touch.y, _rectP2Down))
+					p2Down = true;
+			}
+		}
+		#end
+		
+		if (!(p1Up && p1Down))
+		{
+			if (p1Up)
+				MovePaddle(_sprPlayer1, FlxObject.UP);
+			else if (p1Down)
+				MovePaddle(_sprPlayer1, FlxObject.DOWN);
+		}
+		
 		if (Reg.numPlayers == 2)
 		{
 			#if !FLX_NO_KEYBOARD
@@ -636,8 +679,8 @@ class PlayState extends FlxState
 			_multi[_lastHitBy]++;
 			if (_multi[_lastHitBy] > 9) _multi[_lastHitBy] = 9;
 		}
-		_ball.velocity.x *= 1.25;
-		_ball.velocity.y *= 1.25;
+		_ball.velocity.x *= 1.1;
+		_ball.velocity.y *= 1.1;
 		burst();
 	}
 	

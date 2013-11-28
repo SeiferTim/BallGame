@@ -116,6 +116,7 @@ class MenuState extends FlxState
 		_sprBlack = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		add(_sprBlack);
 		justTriggered = true;
+		
 		super.create();
 	}
 	

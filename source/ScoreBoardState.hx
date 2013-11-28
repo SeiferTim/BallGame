@@ -9,6 +9,7 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.text.FlxText;
+import flixel.ui.FlxButton;
 
 
 class ScoreBoardState extends FlxState
@@ -28,8 +29,8 @@ class ScoreBoardState extends FlxState
 	private var _txtScoresP2:Array<FlxBitmapFont>;
 	private var _sprBacksP1:Array<FlxSprite>;
 	private var _sprBacksP2:Array<FlxSprite>;
-	private var _btnNextMatch:FlxButtonPlus;
-	private var _btnQuit:FlxButtonPlus;
+	private var _btnNextMatch:FlxButton;
+	private var _btnQuit:FlxButton;
 	
 	private var _grpBlack:FlxSprite;
 	private var _loaded:Bool;
@@ -232,14 +233,14 @@ class ScoreBoardState extends FlxState
 		_fadeGroups.push([p1WinText, p1Count]);
 		_fadeGroups.push([p2WinText, p2Count]);
 		
-		_btnQuit = new FlxButtonPlus(16, FlxG.height - 36, ClickQuit, null, "Exit", 100, 20);
+		_btnQuit = new FlxButton(16, FlxG.height - 36, "Exit", ClickQuit);//Plus(16, FlxG.height - 36, ClickQuit, null, "Exit", 100, 20);
 		_btnQuit.visible = false;
 		add(_btnQuit);
 		
 		
 		if (Reg.curMatch < Reg.numMatches-1)
 		{
-			_btnNextMatch = new FlxButtonPlus(FlxG.width - 116, FlxG.height - 36, ClickNextMatch, null, "Next Match", 100, 20);
+			_btnNextMatch = new FlxButton(FlxG.width - 116, FlxG.height - 36, "Next Match", ClickNextMatch );//Plus(FlxG.width - 116, FlxG.height - 36, ClickNextMatch, null, "Next Match", 100, 20);
 			add(_btnNextMatch);
 			_btnNextMatch.visible = false;
 		

@@ -7,6 +7,7 @@ import flixel.util.FlxAngle;
 import flixel.util.FlxColor;
 import flixel.util.FlxMath;
 import flixel.util.FlxPoint;
+import flixel.util.FlxRandom;
 
 class Enemy extends FlxSprite
 {
@@ -17,6 +18,7 @@ class Enemy extends FlxSprite
 	var _moveDir:Int;
 	var _rotAngle:Float;
 	var _score:Int;
+	var _rotDir:Int;
 	
 	public function new(X:Float=0, Y:Float=0, EType:Int)
 	{
@@ -27,21 +29,42 @@ class Enemy extends FlxSprite
 		immovable = true;
 		_startingPos = new FlxPoint(X,Y);
 		_rotAngle = 0;
+		_rotDir = 0;
 		switch(_etype)
 		{
 			case 0:
-				makeGraphic(16, 16, FlxColor.RED);
+				//makeGraphic(16, 16, FlxColor.RED);
+				loadGraphic("images/Baddie 1 throwing star.png", true, false, 16, 16);
+				animation.add("normal", [0, 1, 2], 6);
+				animation.play("normal");
 				_moveDir = FlxObject.UP;
 				health = 1;
 				_score = 15;
 			case 1:
-				makeGraphic(16, 16, FlxColor.RED);
+				//makeGraphic(16, 16, FlxColor.RED);
+				loadGraphic("images/Baddie 1 throwing star.png", true, false, 16, 16);
+				animation.add("normal", [0, 1, 2], 6);
+				animation.play("normal");
 				_moveDir = FlxObject.DOWN;
 				health = 1;
 				_score = 15;
 			case 2:
-				makeGraphic(16, 16, FlxColor.BLUE);
+				//makeGraphic(16, 16, FlxColor.BLUE);
+				loadGraphic("images/Baddie-2-Ghost.png", true, true, 16, 16);
+				animation.add("normal", [0, 1], 6);
+				animation.play("normal");
+				if (X < FlxG.width / 2)
+				{
+					_rotDir = -1;
+					facing = FlxObject.RIGHT;
+				}
+				else
+				{
+					_rotDir = 1;
+					facing = FlxObject.LEFT;
+				}
 				health = 1;
+				_rotAngle = FlxRandom.intRanged( -180, 180);
 				_score = 25;
 			case 3:
 				makeGraphic(32, 32, FlxColor.YELLOW);
@@ -116,7 +139,7 @@ class Enemy extends FlxSprite
 					var pt:FlxPoint = FlxAngle.rotatePoint(_startingPos.x  + 32, _startingPos.y , _startingPos.x, _startingPos.y, _rotAngle);				
 					x = pt.x;
 					y = pt.y;
-					_rotAngle += FlxG.elapsed * 120;
+					_rotAngle += FlxG.elapsed * 120 *_rotDir;
 					if (_rotAngle > 360) _rotAngle-= _rotAngle;
 				case 3:
 					
