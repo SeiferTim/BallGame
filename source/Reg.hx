@@ -70,6 +70,8 @@ class Reg
 	static public var FONT_PEACH:String = 		"images/font_peach.png";
 	static public var FONT_INVERT:String = 		"images/font_invert.png";
 	
+	static public var BUTTON_WIDTH:Int = 240;
+	static public var BUTTON_HEIGHT:Int = 32;
 	
 	static public var instance:GameClass;
 	

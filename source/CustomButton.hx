@@ -1,15 +1,25 @@
 package ;
 
+import flash.display.BitmapDataChannel;
 import flash.events.Event;
 import flash.events.MouseEvent;
+import flash.filters.GlowFilter;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 import flash.Lib;
 import flixel.addons.text.FlxBitmapFont;
+import flixel.effects.FlxSpriteFilter;
+import flixel.effects.particles.FlxEmitter;
+import flixel.effects.particles.FlxParticle;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
+import flixel.util.FlxArrayUtil;
+import flixel.util.FlxGradient;
 import flixel.util.FlxMath;
 import flixel.util.FlxPoint;
 import flixel.util.FlxRect;
+import flixel.util.FlxSpriteUtil;
 
 class CustomButton extends FlxGroup
 {
@@ -32,28 +42,118 @@ class CustomButton extends FlxGroup
 	private var _initialized:Bool;
 	private var _touchPointID:Int;
 	private var _buttonRect:FlxRect;
+	private var _lEmitter:FlxEmitter;
+	private var _rEmitter:FlxEmitter;
 	
 	public function new(X:Float, Y:Float, Width:Float, Height:Float, ?Label:String, ?OnClick:Dynamic) 
 	{
-		super(3);
+		super(5);
 		_x = X;
 		_y = Y;
 		_width = Width;
 		_height = Height;
 		_scrollFactor = new FlxPoint(1, 1);
 		_onUp = OnClick;
+		/*
+		var tmpMask:FlxSprite = new FlxSprite(0, 0).makeGraphic(Std.int(Width), Std.int(Height), 0x0);
+		FlxSpriteUtil.drawRoundRect(tmpMask, 0, 0, Width, Height, 8, 8, 0xff000000);
 		
-		_button_up = new FlxSprite(_x, _y);
-		_button_up.makeGraphic(Std.int(_width), Std.int(_height), 0xff00cc00);
+		var tmpLine:FlxSprite = new FlxSprite(0, 0).makeGraphic(Std.int(Width), Std.int(Height), 0xff33ffff);
+		
+		var tmpLineMask:FlxSprite = new FlxSprite(0, 0).makeGraphic(Std.int(Width), Std.int(Height), 0xff000000);
+		FlxSpriteUtil.drawRoundRect(tmpLineMask, 1, 1, Width-2, Height-2, 8, 8, 0xffffffff);
+		FlxSpriteUtil.drawRoundRect(tmpLineMask, 2, 2, Width - 4, Height - 4, 8, 8, 0xff000000);
+		
+		tmpLine.pixels.copyChannel(tmpLineMask.pixels, new Rectangle(0, 0, tmpLine.width, tmpLine.height), new Point(), BitmapDataChannel.RED, BitmapDataChannel.ALPHA);
+
+		_button_up = new FlxSprite();
+		FlxSpriteUtil.alphaMaskFlxSprite(FlxGradient.createGradientFlxSprite(Std.int(Width), Std.int(Height), [0xffcc66cc, 0xffcc66cc, 0xffcc66cc, 0xff660066, 0xffcc66cc, 0xff993399], 1, 90), tmpMask, _button_up);
+		FlxSpriteUtil.mergeFlxSprite(_button_up, tmpLine,_button_up);
+		_button_up.setPosition(_x, _y);
 		add(_button_up);
 		
-		_button_down = new FlxSprite(_x, _y);
-		_button_down.makeGraphic(Std.int(_width), Std.int(_height), 0xffcc0000);
+		
+		_button_down = new FlxSprite();
+		FlxSpriteUtil.alphaMaskFlxSprite(FlxGradient.createGradientFlxSprite(Std.int(Width), Std.int(Height), [0xffee88ee, 0xffee88ee, 0xff882288, 0xffee88ee,0xffee88ee,  0xffbb55bb], 1, 90), tmpMask, _button_down);
+		FlxSpriteUtil.mergeFlxSprite(_button_down, tmpLine,_button_down);
+		_button_down.setPosition(_x, _y);
 		add(_button_down);
 		
 		_button_down.visible = false;
 		
-		_label = new FlxBitmapFont(Reg.FONT_YELLOW, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		*/
+		
+		_button_up = new FlxSprite(_x, _y).makeGraphic(Std.int(Width), Std.int(Height), 0xff99ffff);
+		_button_down = new FlxSprite(_x, _y).makeGraphic(Std.int(Width), Std.int(Height), 0xffccffff);
+		_button_down.visible = false;
+		
+		
+		var particles:Int = 48;
+		var particle:BoundedParticle;
+		var size:Int;
+		var sizes:Array<Int> = [1,2,4,6,8,10,12];//[1, 1, 1, 1, 2, 2, 2, 4, 4, 6,8,10,12,14,16];
+		//var alphas:Array<Float> = [.04,.05,.06,.07,.1];
+		//var pBlend:BlendMode = BlendMode.LIGHTEN;
+		var rate:Float = 0.05;
+		var lspan:Int = 2;
+		
+		
+		_lEmitter = new FlxEmitter(_x,_y, particles);
+		_lEmitter.width = 1;
+		_lEmitter.height = Height;
+		_lEmitter.gravity = 0;
+		_lEmitter.setXSpeed(-20, -10);
+		_lEmitter.setYSpeed(0, 0);
+		_lEmitter.setRotation(0, 0);
+		_lEmitter.setAlpha(1, 1, 0, 0);
+		_lEmitter.setColor(0x99ffff, 0xffffff);
+		_lEmitter.particleClass = BoundedParticle;
+		
+		for (i in 0...particles)
+		{
+			size = sizes[i%sizes.length];
+			particle = new BoundedParticle();
+			particle.makeGraphic(size, size, 0xffffffff);
+			particle.exists = false;
+			//particle.useFading = true;
+			particle.useColoring = true;
+			particle.bounds = new FlxRect(_x, _y, 1, Height);
+			_lEmitter.add(particle);
+		}
+		_lEmitter.start(false, lspan, rate,0,1);
+		add(_lEmitter);
+		
+		_rEmitter = new FlxEmitter(_x+Width-1,_y, particles);
+		_rEmitter.width = 1;
+		_rEmitter.height = Height;
+		_rEmitter.gravity = 0;
+		_rEmitter.setXSpeed(10, 20);
+		_rEmitter.setYSpeed(0, 0);
+		_rEmitter.setRotation(0, 0);
+		_rEmitter.setAlpha(1,1, 0, 0);
+		_rEmitter.setColor(0x99ffff, 0xffffff);
+		_rEmitter.particleClass = BoundedParticle;
+		
+		for (i in 0...particles)
+		{
+			size = sizes[i%sizes.length];
+			particle = new BoundedParticle();
+			particle.makeGraphic(size, size, 0xffffffff);
+			particle.exists = false;
+			
+			particle.useColoring = true;
+			particle.bounds = new FlxRect(_x+Width-1, _y, 1, Height);
+			_rEmitter.add(particle);
+		}
+		_rEmitter.start(false, lspan, rate,0,1);
+		add(_rEmitter);
+		
+		
+		add(_button_up);
+		add(_button_down);
+		
+		
+		_label = new FlxBitmapFont(Reg.FONT_VIOLET, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		_label.setText(Label == null ? "" : Label, false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_label.setPosition(_x + ((_width - _label.width) / 2), _y + ((_height - _label.height) / 2));
 		add(_label);
@@ -160,9 +260,17 @@ class CustomButton extends FlxGroup
 				case STATE_DOWN:
 					_button_down.visible = true;
 					_button_up.visible = false;
+					_lEmitter.setColor(0xccffff, 0xffffff);
+					_lEmitter.setXSpeed( -30, -20);
+					_rEmitter.setColor(0xccffff, 0xffffff);
+					_rEmitter.setXSpeed( 20, 30);
 				case STATE_UP:
 					_button_down.visible = false;
 					_button_up.visible = true;
+					_lEmitter.setColor(0x99ffff, 0xffffff);
+					_lEmitter.setXSpeed( -20, -10);
+					_rEmitter.setColor(0x99ffff, 0xffffff);
+					_rEmitter.setXSpeed( 10, 20);
 			}
 			_state = NewState;
 		}
@@ -204,9 +312,9 @@ class CustomButton extends FlxGroup
 	function set_x(value:Float):Float 
 	{
 		_x = value;
-		_button_down.x = _button_up.x = _x;
+		_lEmitter.x = _button_down.x = _button_up.x = _x;
 		_label.setPosition(_x + ((_width - _label.width) / 2), _y + ((_height - _label.height) / 2));
-		
+		_lEmitter.setAll("bounds", new FlxRect(_x,_y,width,height));
 		updateRect();
 		return _x;
 	}
@@ -221,9 +329,9 @@ class CustomButton extends FlxGroup
 	function set_y(value:Float):Float 
 	{
 		_y = value;
-		_button_down.y = _button_up.y = _y;
+		_lEmitter.y = _button_down.y = _button_up.y = _y;
 		_label.setPosition(_x + ((_width - _label.width) / 2), _y + ((_height - _label.height) / 2));
-		
+		_lEmitter.setAll("bounds", new FlxRect(_x,_y,width,height));
 		updateRect();
 		return _y;
 	}
