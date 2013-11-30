@@ -2,16 +2,16 @@ package ;
 import flixel.addons.display.FlxSpriteAniRot;
 import flixel.FlxSprite;
 
-class PointNode extends FlxSpriteAniRot
+class PointNode extends FlxSprite//AniRot
 {
 	private var _owner:Int;
 	
 	public function new(X:Float, Y:Float) 
 	{
 
-		super("images/nodes.png", 360, X, Y);
-
-		//loadGraphic("images/nodes.png", true, false, 16, 16);
+		//super("images/nodes.png", 360, X, Y);
+		super(X, Y);
+		loadGraphic("images/nodes.png", true, false, 24, 24);
 		//loadRotatedGraphic("images/nodes.png", 360, -1, true, true);
 		animation.add("neutral", [0]);
 		animation.add("p1", [1]);

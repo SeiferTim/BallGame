@@ -74,6 +74,7 @@ class Reg
 	static public var instance:GameClass;
 	
 	static public var GAME_TIME:Int =  60; // TESTING = 10, LIVE = 90;
+	static public var Freeze:Bool = true;
 	
 	static public function LoadLevels():Void
 	{

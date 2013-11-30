@@ -1,15 +1,11 @@
 package;
 
 import flixel.addons.text.FlxBitmapFont;
-import flixel.addons.ui.FlxButtonPlus;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
-import flixel.text.FlxText;
-import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
-import flixel.util.FlxMath;
 
 /**
  * A FlxState which can be used for the game's menu.
@@ -67,7 +63,6 @@ class MenuState extends FlxState
 		_grpPlayChoices.visible = false;
 		_grpMatchesChoices.visible = false;
 		
-		
 		txtClickToPlay = new FlxBitmapFont(Reg.FONT_LIGHTGREY, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		txtClickToPlay.setText("Click to Play", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		txtClickToPlay.y = 16;
@@ -75,43 +70,35 @@ class MenuState extends FlxState
 		
 		_grpMain.add(txtClickToPlay);
 		
-		//var p1:FlxButtonPlus = new FlxButtonPlus(0, 0, Start1Player, null, "1 Player", 100, 20);  //(0, 0, "1 Player", Start1Player);
-		var p1:FlxButton = new FlxButton(0, 0, "1 Player", Start1Player); //(0, 0, Start1Player, null, "1 Player", 100, 20);  //(0, 0, "1 Player", Start1Player);
+		var p1:CustomButton = new CustomButton(0, 0, 200, 26, "1 Player", Start1Player);
 		p1.x = (FlxG.width - p1.width) / 2;
-		p1.y = (FlxG.height / 2) - p1.height - 4;
+		p1.y = (FlxG.height / 2) - p1.height - 8;
 		_grpPlayChoices.add(p1);
 		
-		//var p2:FlxButtonPlus = new FlxButtonPlus(0, 0, Start2Player, null, "2 Players", 100, 20);//(0, 0, "2 Players", Start2Player);
-		var p2:FlxButton = new FlxButton(0, 0, "2 Players", Start2Player); //(0, 0, Start2Player, null, "2 Players", 100, 20);//(0, 0, "2 Players", Start2Player);
+		var p2:CustomButton = new CustomButton(0, 0,200,26, "2 Players", Start2Player);
 		p2.x = (FlxG.width - p2.width) / 2;
-		p2.y = (FlxG.height / 2 ) + 4;
+		p2.y = (FlxG.height / 2 ) + 8;
 		_grpPlayChoices.add(p2);
 		
-		//var playButton:FlxButtonPlus = new FlxButtonPlus(0, 0, PlayGameClick, null, "Play Game", 100, 20);//(0, 0, "Play Game", PlayGameClick);
-		var playButton:FlxButton = new FlxButton(0, 0, "Play Game", PlayGameClick);//(0, 0, PlayGameClick, null, "Play Game", 100, 20);//(0, 0, "Play Game", PlayGameClick);
+		var playButton:CustomButton = new CustomButton(0, 0, 200, 26, "Play Game", PlayGameClick);
 		playButton.x = (FlxG.width - playButton.width) / 2;
 		playButton.y = (FlxG.height - playButton.height) / 2;
  		_grpMenuChoices.add(playButton);
 		
-		//var matchButton1:FlxButtonPlus = new FlxButtonPlus(0, 0, PlaySingleMatch, null, "Single Match", 100, 20);//(0, 0, "Single Match", PlaySingleMatch);
-		var matchButton1:FlxButton = new FlxButton(0, 0, "Single Match", PlaySingleMatch);//(0, 0, PlaySingleMatch, null, "Single Match", 100, 20);//(0, 0, "Single Match", PlaySingleMatch);
+		var matchButton1:CustomButton = new CustomButton(0, 0,200,26, "Single Match", PlaySingleMatch);
 		matchButton1.x = (FlxG.width - matchButton1.width) / 2;
-		matchButton1.y = (FlxG.height - matchButton1.height) / 2 - matchButton1.height - 4;
+		matchButton1.y = ((FlxG.height - playButton.height) / 2) - matchButton1.height - 16;
 		_grpMatchesChoices.add(matchButton1);
 		
-		//var matchButton2:FlxButtonPlus = new FlxButtonPlus(0, 0, Play2OO3Match, null, "Best of 3");//(0, 0, "Best 2 out of 3", Play2OO3Match);
-		var matchButton2:FlxButton = new FlxButton(0, 0, "Best of 3", Play2OO3Match);//(0, 0, Play2OO3Match, null, "Best of 3");//(0, 0, "Best 2 out of 3", Play2OO3Match);
+		var matchButton2:CustomButton = new CustomButton(0, 0, 200,26,"Best of 3", Play2OO3Match);
 		matchButton2.x = (FlxG.width - matchButton2.width) / 2;
 		matchButton2.y = (FlxG.height - matchButton2.height) / 2;
 		_grpMatchesChoices.add(matchButton2);
 		
-		//var matchButton3:FlxButtonPlus = new FlxButtonPlus(0, 0, Play3OO5Match, null, "Best of 5", 100, 20); //(0, 0, "Best 3 out of 5", Play3OO5Match);
-		var matchButton3:FlxButton = new FlxButton(0, 0, "Best of 5", Play3OO5Match);//(0, 0, Play3OO5Match, null, "Best of 5", 100, 20); //(0, 0, "Best 3 out of 5", Play3OO5Match);
+		var matchButton3:CustomButton = new CustomButton(0, 0, 200,26,"Best of 5", Play3OO5Match);
 		matchButton3.x = (FlxG.width - matchButton3.width) / 2;
-		matchButton3.y = (FlxG.height - matchButton3.height) / 2 + matchButton1.height + 4;
+		matchButton3.y = ((FlxG.height - playButton.height) / 2) + matchButton3.height + 16;
 		_grpMatchesChoices.add(matchButton3);
-		
-		
 		
 		_sprBlack = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		add(_sprBlack);
