@@ -791,19 +791,19 @@ class PlayState extends FlxState
 		{
 			// ball hit the 'top' of the paddle
 			diff = playerMid - ballMid;
-			B.velocity.y = ( -4 * Math.abs(diff)) + (P.velocity.y * 0.2);
+			B.velocity.y = ( -4 * Math.abs(diff));
 		}
 		else if (ballMid > playerMid)
 		{
 			// ball hit the 'bottom' of the paddle
 			diff = playerMid - ballMid;
-			B.velocity.y = ( 4 * Math.abs(diff)) + (P.velocity.y *0.2);
+			B.velocity.y = ( 4 * Math.abs(diff));
 		}
 		else
 		{
 			// ball hit right in the middle...
 			// randomize!
-			B.velocity.y = 2 + Std.int(Math.random() * 8) + (P.velocity.y *0.2);
+			B.velocity.y = 2 + Std.int(Math.random() * 8);
 		}
 		burst();
 	}
@@ -867,14 +867,14 @@ class PlayState extends FlxState
 				
 			case STATE_FADEIN:
 				if (_sprFade.alpha > 0)
-					_sprFade.alpha -= FlxG.elapsed * 6;
+					_sprFade.alpha -= FlxG.elapsed * 3;
 				else
 					_state = STATE_PLAY;
 			case STATE_PLAY:
 				GamePlay();
 			case STATE_LEVELEND:
 				if (_sprFade.alpha < 1)
-					_sprFade.alpha += FlxG.elapsed * 6;
+					_sprFade.alpha += FlxG.elapsed * 3;
 				else
 					FlxG.switchState(new ScoreBoardState());
 		}

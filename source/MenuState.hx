@@ -33,6 +33,8 @@ class MenuState extends FlxState
 	private var txtClickToPlay:FlxBitmapFont;
 	
 	private var _sprBlack:FlxSprite;
+	private var _goingToCredits:Bool;
+	private var _goingToOptions:Bool;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -40,7 +42,7 @@ class MenuState extends FlxState
 	override public function create():Void
 	{
 		// Set a background color
-		FlxG.cameras.bgColor = 0xff660066;
+		FlxG.cameras.bgColor = 0xff330033;
 		// Show the mouse (in case it hasn't been disabled)
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.show();
@@ -74,14 +76,23 @@ class MenuState extends FlxState
 		
 		_grpMain.add(txtClickToPlay);
 		
+		var playButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, ((FlxG.height - Reg.BUTTON_HEIGHT) / 2) - Reg.BUTTON_HEIGHT - 16, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Play Game", PlayGameClick);
+ 		_grpMenuChoices.add(playButton);
+		
+		var optionsButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2,  (FlxG.height - Reg.BUTTON_HEIGHT) / 2, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Options", OptionsClick);
+ 		_grpMenuChoices.add(optionsButton);
+		
+		var creditsButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2,((FlxG.height - Reg.BUTTON_HEIGHT) / 2) + Reg.BUTTON_HEIGHT+ 16, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Credits", CreditsClick);
+ 		_grpMenuChoices.add(creditsButton);
+		
+		
 		var p1:CustomButton = new CustomButton((FlxG.width -Reg.BUTTON_WIDTH) / 2, (FlxG.height / 2) - Reg.BUTTON_HEIGHT - 8, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "1 Player", Start1Player);
 		_grpPlayChoices.add(p1);
 		
 		var p2:CustomButton = new CustomButton((FlxG.width -Reg.BUTTON_WIDTH) / 2, (FlxG.height / 2 ) + 8, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "2 Players", Start2Player);
 		_grpPlayChoices.add(p2);
 		
-		var playButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, (FlxG.height -Reg.BUTTON_HEIGHT) / 2, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Play Game", PlayGameClick);
- 		_grpMenuChoices.add(playButton);
+		
 		
 		var matchButton1:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, ((FlxG.height - Reg.BUTTON_HEIGHT) / 2) - Reg.BUTTON_HEIGHT - 16,Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT, "Single Match", PlaySingleMatch);
 		_grpMatchesChoices.add(matchButton1);
@@ -175,6 +186,29 @@ class MenuState extends FlxState
 
 	}
 	
+	private function CreditsClick():Void
+	{
+		if (_state != STATE_MENU || justTriggered) return;
+		#if !FLX_NO_MOUSE
+		FlxG.mouse.reset();
+		#end
+		justTriggered = true;
+		_state = STATE_UNLOADING;
+		_goingToCredits = true;
+		
+	}
+	
+	private function OptionsClick():Void
+	{
+		if (_state != STATE_MENU || justTriggered) return;
+		#if !FLX_NO_MOUSE
+		FlxG.mouse.reset();
+		#end
+		justTriggered = true;
+		_state = STATE_UNLOADING;
+		_goingToOptions = true;
+		
+	}
 	
 	
 	/**
@@ -224,7 +258,14 @@ class MenuState extends FlxState
 				if (_sprBlack.alpha < 1)
 					_sprBlack.alpha += FlxG.elapsed * 3;
 				else
-					FlxG.switchState(new PlayState());
+				{
+					if (_goingToCredits)
+						FlxG.switchState(new CreditsState());
+					else if (_goingToOptions)
+						FlxG.switchState(new OptionsState());
+					else
+						FlxG.switchState(new PlayState());
+				}
 		}
 		
 		super.update();

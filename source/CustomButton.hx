@@ -94,8 +94,8 @@ class CustomButton extends FlxGroup
 		var sizes:Array<Int> = [1,2,4,6,8,10,12];//[1, 1, 1, 1, 2, 2, 2, 4, 4, 6,8,10,12,14,16];
 		//var alphas:Array<Float> = [.04,.05,.06,.07,.1];
 		//var pBlend:BlendMode = BlendMode.LIGHTEN;
-		var rate:Float = 0.05;
-		var lspan:Int = 2;
+		var rate:Float = 0.025;
+		var lspan:Float = .4;
 		
 		
 		_lEmitter = new FlxEmitter(_x,_y, particles);
@@ -106,7 +106,7 @@ class CustomButton extends FlxGroup
 		_lEmitter.setYSpeed(0, 0);
 		_lEmitter.setRotation(0, 0);
 		_lEmitter.setAlpha(1, 1, 0, 0);
-		_lEmitter.setColor(0x99ffff, 0xffffff);
+		_lEmitter.setColor(0x99ffff, 0x660066);
 		_lEmitter.particleClass = BoundedParticle;
 		
 		for (i in 0...particles)
@@ -117,7 +117,7 @@ class CustomButton extends FlxGroup
 			particle.exists = false;
 			//particle.useFading = true;
 			particle.useColoring = true;
-			particle.bounds = new FlxRect(_x, _y, 1, Height);
+			particle.bounds = new FlxRect(_x, _y, Width, Height);
 			_lEmitter.add(particle);
 		}
 		_lEmitter.start(false, lspan, rate,0,1);
@@ -131,7 +131,7 @@ class CustomButton extends FlxGroup
 		_rEmitter.setYSpeed(0, 0);
 		_rEmitter.setRotation(0, 0);
 		_rEmitter.setAlpha(1,1, 0, 0);
-		_rEmitter.setColor(0x99ffff, 0xffffff);
+		_rEmitter.setColor(0x99ffff, 0x660066);
 		_rEmitter.particleClass = BoundedParticle;
 		
 		for (i in 0...particles)
@@ -142,7 +142,7 @@ class CustomButton extends FlxGroup
 			particle.exists = false;
 			
 			particle.useColoring = true;
-			particle.bounds = new FlxRect(_x+Width-1, _y, 1, Height);
+			particle.bounds = new FlxRect(_x, _y, Width, Height);
 			_rEmitter.add(particle);
 		}
 		_rEmitter.start(false, lspan, rate,0,1);
@@ -165,7 +165,7 @@ class CustomButton extends FlxGroup
 		_touchPointID = -1;
 		_buttonRect = new FlxRect(_x, _y, _width, _height);
 		
-		FlxG.watch.add(this, "_state");
+		//FlxG.watch.add(this, "_state");
 		
 	}
 	
@@ -365,6 +365,10 @@ class CustomButton extends FlxGroup
 			_button_up.alpha = value;
 		else 
 			_button_down.alpha = value;
+		_lEmitter.startAlpha.max = value;
+		_lEmitter.startAlpha.min = value;
+		_rEmitter.startAlpha.max = value;
+		_rEmitter.startAlpha.min = value;
 		return  _label.alpha = _alpha = value;
 		
 	}

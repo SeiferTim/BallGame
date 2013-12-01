@@ -41,6 +41,7 @@ class Reg
 	 */
 	static public var save:FlxSave;
 	
+	
 	static public inline var PLAYER_WIDTH:Int = 16;
 	static public inline var PLAYER_HEIGHT:Int = 48;
 	static public inline var PLAYER_SPEED:Int = 320;
