@@ -1,6 +1,7 @@
 package;
 
 import flash.display.BlendMode;
+import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.text.FlxBitmapFont;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -52,6 +53,7 @@ class MenuState extends FlxState
 		
 		_state = STATE_UNLOADED;
 		
+		add(FlxGridOverlay.create(8, 8, Std.int(FlxG.width), Std.int(FlxG.height), false,true, 0xff330033, 0xff660066));
 		
 		
 		_grpMain = new FlxGroup();

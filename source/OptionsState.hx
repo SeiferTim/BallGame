@@ -110,7 +110,7 @@ class OptionsState extends FlxState
 		_exitButton.alpha = 0;
 		add(_exitButton);
 		
-		//_fadeObjs.push([_exitButton]);
+		_fadeObjs.push([_exitButton]);
 		
 		
 		super.create();
@@ -132,7 +132,7 @@ class OptionsState extends FlxState
 	{
 		if (_loaded && _state == STATE_IN)
 		{
-			if (_exitButton.alpha < 1)
+			if (_fadeObjs[_fadeObjs.length-1][0].alpha < 1)
 			{
 				alphaLevel += FlxG.elapsed * 6;
 				
@@ -144,7 +144,7 @@ class OptionsState extends FlxState
 					}
 				}
 				
-				_exitButton.alpha = alphaLevel - (_fadeObjs.length * .3);
+				//_exitButton.alpha = alphaLevel - (_fadeObjs.length * .3);
 			}
 			else
 			{
@@ -155,7 +155,7 @@ class OptionsState extends FlxState
 		}
 		else if (_state == STATE_OUT)
 		{
-			if (_exitButton.alpha >0)
+			if (_fadeObjs[_fadeObjs.length-1][0].alpha >0)
 			{
 				alphaLevel -= FlxG.elapsed * 6;
 				
@@ -167,7 +167,7 @@ class OptionsState extends FlxState
 					}
 				}
 				
-				_exitButton.alpha = alphaLevel + (_fadeObjs.length * .3);
+				//_exitButton.alpha = alphaLevel + (_fadeObjs.length * .3);
 			}
 			else
 			{

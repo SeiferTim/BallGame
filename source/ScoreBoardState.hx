@@ -229,7 +229,7 @@ class ScoreBoardState extends FlxState
 		_fadeGroups.push([p2WinText, p2Count]);
 		
 		_btnQuit = new CustomButton(16, FlxG.height - Reg.BUTTON_HEIGHT - 16,Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT, "Exit", ClickQuit);//Plus(16, FlxG.height - 36, ClickQuit, null, "Exit", 100, 20);
-		_btnQuit.visible = false;
+		//_btnQuit.visible = false;
 		add(_btnQuit);
 		
 		
@@ -237,10 +237,11 @@ class ScoreBoardState extends FlxState
 		{
 			_btnNextMatch = new CustomButton(FlxG.width - Reg.BUTTON_WIDTH - 16, FlxG.height - Reg.BUTTON_HEIGHT - 16,Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT, "Next Match", ClickNextMatch );//Plus(FlxG.width - 116, FlxG.height - 36, ClickNextMatch, null, "Next Match", 100, 20);
 			add(_btnNextMatch);
-			_btnNextMatch.visible = false;
-		
+			//_btnNextMatch.visible = false;
+			_fadeGroups.push([_btnQuit,_btnNextMatch]);
 		}
-		
+		else
+			_fadeGroups.push([_btnQuit]);
 		
 		for (i in 0..._fadeGroups.length)
 		{
@@ -273,9 +274,9 @@ class ScoreBoardState extends FlxState
 			{
 				alphaLevel = 1;
 				_state = STATE_WAIT;
-				if (_btnNextMatch != null)
+				/*if (_btnNextMatch != null)
 					_btnNextMatch.visible = true;
-				_btnQuit.visible = true;
+				_btnQuit.visible = true;*/
 			}
 		}
 		else if (_state == STATE_OUT)
@@ -310,8 +311,8 @@ class ScoreBoardState extends FlxState
 		doingQuit = false;
 		Reg.curMatch++;
 		_state = STATE_OUT;
-		_btnNextMatch.visible = false;
-		_btnQuit.visible = false;
+		/*_btnNextMatch.visible = false;
+		_btnQuit.visible = false;*/
 	}
 	
 	private function ClickQuit():Void
@@ -319,9 +320,9 @@ class ScoreBoardState extends FlxState
 		if (_state == STATE_WAIT)
 		doingQuit = true;
 		_state = STATE_OUT;
-		if (_btnNextMatch != null)
+		/*if (_btnNextMatch != null)
 			_btnNextMatch.visible = false;
-		_btnQuit.visible = false;
+		_btnQuit.visible = false;*/
 	}
 	
 }

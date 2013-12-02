@@ -57,19 +57,20 @@ class Reg
 	static public var P2_KEYS_UP:Array<String> = ["UP", "RIGHT"];
 	static public var P2_KEYS_DOWN:Array<String> = ["DOWN", "LEFT"];
 	
-	static public var FONT_LIGHTGREY:String = 	"images/font_light_grey.png";
-	static public var FONT_CYAN:String = 		"images/font_cyan.png";
-	static public var FONT_VIOLET:String = 		"images/font_violet.png";
-	static public var FONT_YELLOW:String = 		"images/font_yellow.png";
-	static public var FONT_BLUE:String =	 	"images/font_blue.png";
-	static public var FONT_GREEN:String = 		"images/font_green.png";
-	static public var FONT_RED:String = 		"images/font_red.png";
-	static public var FONT_TAN:String = 		"images/font_tan.png";
-	static public var FONT_GOLD:String = 		"images/font_gold.png";
-	static public var FONT_DARKGREY:String = 	"images/font_dark_grey.png";
-	static public var FONT_DARKGREEN:String = 	"images/font_dark_green.png";
-	static public var FONT_PEACH:String = 		"images/font_peach.png";
-	static public var FONT_INVERT:String = 		"images/font_invert.png";
+	static public var FONT_LIGHTGREY:String = 			"images/font_light_grey.png";
+	static public var FONT_CYAN:String = 				"images/font_cyan.png";
+	static public var FONT_VIOLET:String = 				"images/font_violet.png";
+	static public var FONT_YELLOW:String = 				"images/font_yellow.png";
+	static public var FONT_BLUE:String =	 			"images/font_blue.png";
+	static public var FONT_GREEN:String = 				"images/font_green.png";
+	static public var FONT_RED:String = 				"images/font_red.png";
+	static public var FONT_TAN:String = 				"images/font_tan.png";
+	static public var FONT_GOLD:String = 				"images/font_gold.png";
+	static public var FONT_DARKGREY:String = 			"images/font_dark_grey.png";
+	static public var FONT_DARKGREEN:String = 			"images/font_dark_green.png";
+	static public var FONT_PEACH:String = 				"images/font_peach.png";
+	static public var FONT_INVERT:String = 				"images/font_invert.png";
+	static public var FONT_BRIGHTVIOLET:String = 		"images/font_bright_violet.png";
 	
 	static public var BUTTON_WIDTH:Int = 240;
 	static public var BUTTON_HEIGHT:Int = 32;

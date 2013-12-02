@@ -3,12 +3,13 @@ package ;
 import flash.events.IOErrorEvent;
 import flixel.addons.text.FlxBitmapFont;
 import flixel.FlxG;
+import flixel.FlxSprite;
 import flixel.FlxState;
 
 class CreditsState extends FlxState
 {
 
-	private var _texts:Array<FlxBitmapFont>;
+	private var _texts:Array<FlxSprite>;
 	private var _btnBack:CustomButton;
 	
 	private var _state:Int;
@@ -31,35 +32,35 @@ class CreditsState extends FlxState
 		_state = STATE_IN;
 		alphaLevel = 0;
 		
-		_texts = new Array<FlxBitmapFont>();
+		_texts = new Array<FlxSprite>();
 		
 		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
-		_texts[0].setText("This Game was Made By:", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
+		cast(_texts[0],FlxBitmapFont).setText("This Game was Made By:", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[0].setPosition((FlxG.width - _texts[0].width) / 2, 32);
 		_texts[0].alpha = 0;
 		
 		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
-		_texts[1].setText("Jevion White", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
+		cast(_texts[1],FlxBitmapFont).setText("Jevion White", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[1].setPosition((FlxG.width - _texts[1].width) / 2, 80);
 		_texts[1].alpha = 0;
 		
 		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
-		_texts[2].setText("Tim I Hely", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
+		cast(_texts[2],FlxBitmapFont).setText("Tim I Hely", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[2].setPosition((FlxG.width - _texts[2].width) / 2, 112);
 		_texts[2].alpha = 0;
 		
 		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
-		_texts[3].setText("Isaac Benrubi", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
+		cast(_texts[3],FlxBitmapFont).setText("Isaac Benrubi", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[3].setPosition((FlxG.width - _texts[3].width) / 2, 144);
 		_texts[3].alpha = 0;
 		
 		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
-		_texts[4].setText("Visit us on the Web at:", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
+		cast(_texts[4],FlxBitmapFont).setText("Visit us on the Web at:", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[4].setPosition((FlxG.width - _texts[4].width) / 2, 192);
 		_texts[4].alpha = 0;
 		
 		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
-		_texts[5].setText("tileisle.net", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
+		cast(_texts[5],FlxBitmapFont).setText("tileisle.net", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[5].setPosition((FlxG.width - _texts[5].width) / 2, 224);
 		_texts[5].alpha = 0;
 	
@@ -67,6 +68,7 @@ class CreditsState extends FlxState
 		_btnBack.alpha = 0;
 		//_btnBack.visible = false;
 		add(_btnBack);
+		_texts.push(_btnBack);
 		
 		super.create();
 		_loaded = true;
@@ -76,7 +78,7 @@ class CreditsState extends FlxState
 	{
 		if (_loaded && _state == STATE_IN)
 		{
-			if (_btnBack.alpha < 1)
+			if (_texts[_texts.length-1].alpha < 1)
 			{
 				alphaLevel += FlxG.elapsed * 3;
 				
@@ -85,7 +87,7 @@ class CreditsState extends FlxState
 					_texts[i].alpha = alphaLevel - (i*.3);	
 				}
 				
-				_btnBack.alpha = alphaLevel - (_texts.length * .3);
+				//_btnBack.alpha = alphaLevel - (_texts.length * .3);
 			}
 			else
 			{
@@ -96,7 +98,7 @@ class CreditsState extends FlxState
 		}
 		else if (_state == STATE_OUT)
 		{
-			if (_btnBack.alpha >0)
+			if (_texts[_texts.length-1].alpha >0)
 			{
 				alphaLevel -= FlxG.elapsed * 3;
 				
@@ -105,7 +107,7 @@ class CreditsState extends FlxState
 					_texts[i].alpha = alphaLevel + (i*.3);
 				}
 				
-				_btnBack.alpha = alphaLevel + (_texts.length * .3);
+				//_btnBack.alpha = alphaLevel + (_texts.length * .3);
 			}
 			else
 			{
