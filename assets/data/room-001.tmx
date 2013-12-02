@@ -4,7 +4,7 @@
   <image source="../images/tiles.png" width="32" height="16"/>
  </tileset>
  <tileset firstgid="3" name="Enemies" tilewidth="16" tileheight="16">
-  <image source="../images/enemies.png" width="16" height="16"/>
+  <image source="../images/enemies.png" width="32" height="16"/>
  </tileset>
  <layer name="Tiles" width="44" height="25">
   <properties>

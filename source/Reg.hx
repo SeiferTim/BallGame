@@ -44,7 +44,7 @@ class Reg
 	
 	static public inline var PLAYER_WIDTH:Int = 16;
 	static public inline var PLAYER_HEIGHT:Int = 48;
-	static public inline var PLAYER_SPEED:Int = 320;
+	static public inline var PLAYER_SPEED:Int = 640;
 	
 	static public inline var BALL_SIZE:Int = 16;
 	

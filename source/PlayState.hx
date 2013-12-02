@@ -13,6 +13,7 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
+import flixel.system.input.touch.FlxTouch;
 import flixel.tile.FlxTileblock;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -95,10 +96,8 @@ class PlayState extends FlxState
 	private var _grpPlayerEmits:FlxGroup;
 	
 	#if !FLX_NO_TOUCH
-	private var _rectP1Up:FlxRect;
-	private var _rectP1Down:FlxRect;
-	private var _rectP2Up:FlxRect;
-	private var _rectP2Down:FlxRect;
+	private var _p1TouchZone:FlxRect;
+	private var _p2TouchZone:FlxRect;
 	#end
 	
 	/**
@@ -159,10 +158,12 @@ class PlayState extends FlxState
 	{
 		
 		#if !FLX_NO_TOUCH
-		_rectP1Up =  new FlxRect(0, 0, FlxG.width / 2 , FlxG.height / 2);
+		/*_rectP1Up =  new FlxRect(0, 0, FlxG.width / 2 , FlxG.height / 2);
 		_rectP1Down = new FlxRect(0, FlxG.height / 2, FlxG.width / 2, FlxG.height / 2); 
 		_rectP2Up =  new FlxRect(FlxG.width / 2, 0, FlxG.width / 2, FlxG.height / 2);
-		_rectP2Down = new FlxRect(FlxG.width / 2, FlxG.height / 2, FlxG.width / 2, FlxG.height / 2);
+		_rectP2Down = new FlxRect(FlxG.width / 2, FlxG.height / 2, FlxG.width / 2, FlxG.height / 2);*/
+		_p1TouchZone = new FlxRect(0, 0, FlxG.width / 4, FlxG.height);
+		_p2TouchZone = new FlxRect(0, FlxG.width - (FlxG.width / 4), FlxG.width / 4, FlxG.height);
 		#end
 		
 		_background = new FlxTileblock(0, 0, 704, 400).loadTiles("images/Tile-Top.png", 16, 16);
@@ -514,14 +515,13 @@ class PlayState extends FlxState
 		{
 			if (touch.pressed)
 			{
-				if (FlxMath.pointInFlxRect(touch.x, touch.y, _rectP1Up))
-					p1Up = true;
-				if (FlxMath.pointInFlxRect(touch.x, touch.y, _rectP1Down))
-					p1Down = true;
-				if (FlxMath.pointInFlxRect(touch.x, touch.y, _rectP2Up))
-					p2Up = true;
-				if (FlxMath.pointInFlxRect(touch.x, touch.y, _rectP2Down))
-					p2Down = true;
+				if (touch.inFlxRect(_p1TouchZone))
+				{
+					if (touch.y < _sprPlayer1.y + (Reg.PLAYER_HEIGHT / 2))
+						p1Up = true;
+					else if (touch.y > _sprPlayer1.y + (Reg.PLAYER_HEIGHT / 2))
+						p1Down = true;
+				}
 			}
 		}
 		#end
@@ -539,13 +539,37 @@ class PlayState extends FlxState
 			#if !FLX_NO_KEYBOARD
 			if (FlxG.keyboard.anyPressed(Reg.P2_KEYS_UP))
 			{
-				MovePaddle(_sprPlayer2, FlxObject.UP);
+				p2Up = true;
 			}
 			else if (FlxG.keyboard.anyPressed(Reg.P2_KEYS_DOWN))
 			{
-				MovePaddle(_sprPlayer2, FlxObject.DOWN);
+				p2Down = true;	
 			}
 			#end
+			
+			#if !FLX_NO_TOUCH
+			for (touch in FlxG.touches.list)
+			{
+				if (touch.pressed)
+				{
+					if (touch.inFlxRect(_p2TouchZone))
+					{
+						if (touch.y < _sprPlayer2.y + (Reg.PLAYER_HEIGHT / 2))
+							p2Up = true;
+						else if (touch.y > _sprPlayer2.y + (Reg.PLAYER_HEIGHT / 2))
+							p2Down = true;
+					}
+				}
+			}
+			#end
+			
+			if (!(p2Up && p2Down))
+			{
+				if (p2Up)
+					MovePaddle(_sprPlayer2, FlxObject.UP);
+				else if (p2Down)
+					MovePaddle(_sprPlayer2, FlxObject.DOWN);
+			}
 		}
 		else
 		{

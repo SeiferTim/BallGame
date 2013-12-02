@@ -105,7 +105,7 @@ class CreditsState extends FlxState
 					_texts[i].alpha = alphaLevel + (i*.3);
 				}
 				
-				_btnBack.alpha = alphaLevel - (_texts.length * .3);
+				_btnBack.alpha = alphaLevel + (_texts.length * .3);
 			}
 			else
 			{
