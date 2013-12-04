@@ -34,6 +34,8 @@ class CreditsState extends FlxState
 		
 		_texts = new Array<FlxSprite>();
 		
+		add(new FlxSprite(0, 0, "images/background.png"));
+		
 		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
 		cast(_texts[0],FlxBitmapFont).setText("This Game was Made By:", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[0].setPosition((FlxG.width - _texts[0].width) / 2, 32);
@@ -64,7 +66,7 @@ class CreditsState extends FlxState
 		_texts[5].setPosition((FlxG.width - _texts[5].width) / 2, 224);
 		_texts[5].alpha = 0;
 	
-		_btnBack = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH)/2, FlxG.height - Reg.BUTTON_HEIGHT - 16,Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT, "Exit", ClickBack);//Plus(16, FlxG.height - 36, ClickQuit, null, "Exit", 100, 20);
+		_btnBack = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH)/2, FlxG.height - Reg.BUTTON_HEIGHT - 32,Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT, "Exit", ClickBack);//Plus(16, FlxG.height - 36, ClickQuit, null, "Exit", 100, 20);
 		_btnBack.alpha = 0;
 		//_btnBack.visible = false;
 		add(_btnBack);

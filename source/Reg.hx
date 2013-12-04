@@ -1,6 +1,9 @@
 package;
 
+import flixel.util.FlxArrayUtil;
+import flixel.util.FlxRandom;
 import flixel.util.FlxSave;
+import levels.TiledLevel;
 
 /**
 * Handy, pre-built Registry class that can be used to store 
@@ -14,6 +17,9 @@ class Reg
 	 * Example usage: Storing the levels of a platformer.
 	 */
 	static public var levels:Array<Dynamic> = [];
+	
+	static public var levelList:Array<String> = [];
+	
 	/**
 	 * Generic level variable that can be used for cross-state stuff.
 	 * Example usage: Storing the current level number.
@@ -82,6 +88,22 @@ class Reg
 	
 	static public function LoadLevels():Void
 	{
-		levels.push("002");
+		levelList = new Array<String>();
+		levelList.push("001");
+		levelList.push("001");
 	}
+	
+	static public function PickLevels(Rounds:Int):Void 
+	{
+		var tLevel:String;
+		Reg.level = 0;
+		for (i in 0...Rounds)
+		{
+			trace(i);
+			tLevel = FlxArrayUtil.getRandom(levelList);
+			levels.push(tLevel);
+			levelList.remove(tLevel);
+		}
+	}
+	
 }

@@ -27,5 +27,43 @@
   <object name="2" type="enemy" gid="17" x="256" y="256"/>
   <object name="2" type="enemy" gid="17" x="416" y="256"/>
   <object name="3" type="enemy" gid="17" x="336" y="224"/>
+  <object name="4" type="enemy" gid="17" x="112" y="64"/>
+  <object name="4" type="enemy" gid="17" x="112" y="80"/>
+  <object name="4" type="enemy" gid="17" x="112" y="96"/>
+  <object name="4" type="enemy" gid="17" x="112" y="112"/>
+  <object name="4" type="enemy" gid="17" x="112" y="128"/>
+  <object name="4" type="enemy" gid="17" x="112" y="144"/>
+  <object name="4" type="enemy" gid="17" x="112" y="160"/>
+  <object name="4" type="enemy" gid="17" x="112" y="176"/>
+  <object name="4" type="enemy" gid="17" x="112" y="192"/>
+  <object name="4" type="enemy" gid="17" x="112" y="208"/>
+  <object name="4" type="enemy" gid="17" x="112" y="224"/>
+  <object name="4" type="enemy" gid="17" x="112" y="240"/>
+  <object name="4" type="enemy" gid="17" x="112" y="256"/>
+  <object name="4" type="enemy" gid="17" x="112" y="272"/>
+  <object name="4" type="enemy" gid="17" x="112" y="288"/>
+  <object name="4" type="enemy" gid="17" x="112" y="304"/>
+  <object name="4" type="enemy" gid="17" x="112" y="320"/>
+  <object name="4" type="enemy" gid="17" x="112" y="336"/>
+  <object name="4" type="enemy" gid="17" x="112" y="352"/>
+  <object name="4" type="enemy" gid="17" x="544" y="352"/>
+  <object name="4" type="enemy" gid="17" x="544" y="64"/>
+  <object name="4" type="enemy" gid="17" x="544" y="112"/>
+  <object name="4" type="enemy" gid="17" x="544" y="208"/>
+  <object name="4" type="enemy" gid="17" x="544" y="288"/>
+  <object name="4" type="enemy" gid="17" x="544" y="224"/>
+  <object name="4" type="enemy" gid="17" x="544" y="80"/>
+  <object name="4" type="enemy" gid="17" x="544" y="272"/>
+  <object name="4" type="enemy" gid="17" x="544" y="240"/>
+  <object name="4" type="enemy" gid="17" x="544" y="128"/>
+  <object name="4" type="enemy" gid="17" x="544" y="96"/>
+  <object name="4" type="enemy" gid="17" x="544" y="192"/>
+  <object name="4" type="enemy" gid="17" x="544" y="336"/>
+  <object name="4" type="enemy" gid="17" x="544" y="144"/>
+  <object name="4" type="enemy" gid="17" x="544" y="304"/>
+  <object name="4" type="enemy" gid="17" x="544" y="176"/>
+  <object name="4" type="enemy" gid="17" x="544" y="320"/>
+  <object name="4" type="enemy" gid="17" x="544" y="160"/>
+  <object name="4" type="enemy" gid="17" x="544" y="256"/>
  </objectgroup>
 </map>

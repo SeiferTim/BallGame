@@ -1,18 +1,28 @@
 package ;
+#if flash
 import flixel.addons.display.FlxSpriteAniRot;
+#end
 import flixel.FlxSprite;
-
-class PointNode extends FlxSprite//AniRot
+#if flash
+class PointNode extends FlxSpriteAniRot
+#end
+#if !flash
+class PointNode extends FlxSprite
+#end
 {
 	private var _owner:Int;
 	
 	public function new(X:Float, Y:Float) 
 	{
-
-		//super("images/nodes.png", 360, X, Y);
+		#if !flash
 		super(X, Y);
 		loadGraphic("images/nodes.png", true, false, 24, 24);
-		//loadRotatedGraphic("images/nodes.png", 360, -1, true, true);
+		#end
+		
+		#if flash
+		super("images/nodes.png", 360, X, Y);
+		#end
+		
 		animation.add("neutral", [0]);
 		animation.add("p1", [1]);
 		animation.add("p2", [2]);

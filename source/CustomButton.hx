@@ -35,6 +35,7 @@ class CustomButton extends FlxSpriteGroup
 	private var _button_up:FlxSprite;
 	private var _button_down:FlxSprite;
 	private var _label:FlxBitmapFont;
+	//private var _text:String;
 	//private var _width:Float;
 	//private var _height:Float;
 	//private var _x:Float;
@@ -87,13 +88,13 @@ class CustomButton extends FlxSpriteGroup
 		
 		_button_down.visible = false;
 		
-		_glow = FlxGradient.createGradientFlxSprite(Std.int(Width - 4), Std.int(Height - 4), [0x33ffffff,0x11ffffff, 0x00ffffff,0x00ffffff, 0x11ffffff,0x33ffffff], 1, 90);
-		_glow.setPosition(2, 2);
-		_glow.blend = BlendMode.ADD;
+		//_glow = FlxGradient.createGradientFlxSprite(Std.int(Width - 4), Std.int(Height - 4), [0x33ffffff,0x11ffffff, 0x00ffffff,0x00ffffff, 0x11ffffff,0x33ffffff], 1, 90);
+		//_glow.setPosition(2, 2);
+	//	_glow.blend = BlendMode.ADD;
 		
 		add(_button_up);
 		add(_button_down);
-		add(_glow);
+		//add(_glow);
 		
 		
 		_label = new FlxBitmapFont(Reg.FONT_BRIGHTVIOLET, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
@@ -108,6 +109,7 @@ class CustomButton extends FlxSpriteGroup
 		_touchPointID = -1;
 		_buttonRect = new FlxRect(x, y, Width, Height);
 	}
+	
 	
 	override public function update():Void
 	{
@@ -343,5 +345,17 @@ class CustomButton extends FlxSpriteGroup
 		_touchPointID = -1;
 		updateButtonState(STATE_UP);
 	}
+	
+	function get_text():String 
+	{
+		return _label.text;
+	}
+	
+	function set_text(value:String):String 
+	{
+		return _label.text = value;
+	}
+	
+	public var text(get_text, set_text):String;
 	
 }

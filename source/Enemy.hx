@@ -1,5 +1,4 @@
 package ;
-
 import flixel.effects.FlxTrail;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -23,6 +22,22 @@ class Enemy extends FlxSprite
 	
 	public function new(X:Float=0, Y:Float=0, EType:Int)
 	{
+		var img:String = "";
+		switch (EType)
+		{
+			case 0:
+				img = "images/Baddie 1 throwing star.png";
+			case 1:
+				img = "images/Baddie 1 throwing star.png";
+			case 2:
+				img = "images/Baddie-2-Ghost.png";
+			case 3:
+				img = "images/Ball Keeper.png";
+			case 4:
+				img = "images/stationary_block.png";
+		}
+		
+		
 		super(X, Y);
 		
 		_etype = EType;
@@ -34,24 +49,21 @@ class Enemy extends FlxSprite
 		switch(_etype)
 		{
 			case 0:
-				//makeGraphic(16, 16, FlxColor.RED);
-				loadGraphic("images/Baddie 1 throwing star.png", true, false, 16, 16);
+				loadGraphic(img, true, false, 16, 16);
 				animation.add("normal", [0, 1, 2], 6);
 				animation.play("normal");
 				_moveDir = FlxObject.UP;
 				health = 1;
 				_score = 15;
 			case 1:
-				//makeGraphic(16, 16, FlxColor.RED);
-				loadGraphic("images/Baddie 1 throwing star.png", true, false, 16, 16);
+				loadGraphic(img, true, false, 16, 16);
 				animation.add("normal", [0, 1, 2], 6);
 				animation.play("normal");
 				_moveDir = FlxObject.DOWN;
 				health = 1;
 				_score = 15;
 			case 2:
-				//makeGraphic(16, 16, FlxColor.BLUE);
-				loadGraphic("images/Baddie-2-Ghost.png", true, true, 16, 16);
+				loadGraphic(img, true, true, 16, 16);
 				animation.add("normal", [0, 1], 6);
 				animation.play("normal");
 				if (X < FlxG.width / 2)
@@ -71,9 +83,19 @@ class Enemy extends FlxSprite
 				x = pt.x;
 				y = pt.y;
 			case 3:
-				makeGraphic(32, 32, FlxColor.YELLOW);
+				loadGraphic(img, true, false, 32, 32);
+				animation.add("normal", [0, 1, 2, 3, 2, 1], 6);
+				animation.play("normal");
+				angularVelocity = -60;
 				health = 1;
 				_score = 30;
+			case 4:
+				loadGraphic(img, true, false, 16, 16);
+				animation.add("normal", [0, 1, 2, 3, 4, 5], 6);
+				animation.play("normal");
+				
+				health = 1;
+				_score = 10;
 				
 		}
 	}

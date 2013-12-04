@@ -1,4 +1,5 @@
 package ;
+import flash.display.StageDisplayState;
 import flixel.addons.text.FlxBitmapFont;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -21,6 +22,7 @@ class OptionsState extends FlxState
 	private var _fadeObjs:Array<Array<FlxSprite>>;
 	
 	private var _exitButton:CustomButton;
+	private var _optButton2:CustomButton;
 	
 	override public function create():Void 
 	{
@@ -34,11 +36,13 @@ class OptionsState extends FlxState
 		_state = STATE_IN;
 		alphaLevel = 0;
 		
+		add(new FlxSprite(0, 0, "images/background.png"));
+		
 		_fadeObjs = new Array<Array<FlxSprite>>();
 		
 		var text:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		text.setText("Options", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
-		text.setPosition((FlxG.width - text.width) / 2, 32);
+		text.setPosition((FlxG.width - text.width) / 2, 48);
 		text.alpha = 0;
 		add(text);
 		
@@ -46,11 +50,11 @@ class OptionsState extends FlxState
 		
 		var optText1:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		optText1.setText("Sound FX:", false, 0, 0, FlxBitmapFont.ALIGN_RIGHT, true);
-		optText1.setPosition(16, 80);
+		optText1.setPosition(32, 80);
 		optText1.alpha = 0;
 		add(optText1);
 		
-		var optSlide1:CustomSlider = new CustomSlider(Std.int(optText1.x + optText1.width + 16),Std.int(optText1.y), Std.int(FlxG.width - optText1.width - 64),64,16,14,0,1,SlideChange);
+		var optSlide1:CustomSlider = new CustomSlider(Std.int(optText1.x + optText1.width + 16),Std.int(optText1.y), Std.int(FlxG.width - optText1.width - 80),64,16,14,0,1,SlideChange);
 		optSlide1.decimals = 1;
 		optSlide1.value = FlxG.sound.volume;
 		
@@ -106,7 +110,25 @@ class OptionsState extends FlxState
 		_fadeObjs.push([optText2, optSlide2]);
 		*/
 		
-		_exitButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, FlxG.height - Reg.BUTTON_HEIGHT - 16, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Back", ClickBack);
+		
+		#if desktop
+		
+		var optText2:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		optText2.setText("Screen:", false, 0, 0, FlxBitmapFont.ALIGN_RIGHT, true);
+		optText2.setFixedWidth(144, FlxBitmapFont.ALIGN_RIGHT);
+		optText2.setPosition(32, 112);
+		optText2.alpha = 0;
+		add(optText2);
+		
+		_optButton2 = new CustomButton((optText2.x + optText2.width + 16) + ((FlxG.width - optText2.x - optText2.width - 48 - Reg.BUTTON_WIDTH) / 2), 112, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, FlxG.stage.displayState == StageDisplayState.FULL_SCREEN ? "Fullscreen" : "Window", ChangeScreen);
+		_optButton2.alpha = 0;
+		add(_optButton2);
+		
+		_fadeObjs.push([optText2, _optButton2]);
+		
+		#end
+		
+		_exitButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, FlxG.height - Reg.BUTTON_HEIGHT - 32, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Back", ClickBack);
 		_exitButton.alpha = 0;
 		add(_exitButton);
 		
@@ -117,9 +139,22 @@ class OptionsState extends FlxState
 		_loaded = true;
 	}
 	
+	private function ChangeScreen():Void
+	{
+		Reg.instance.toggle_fullscreen();
+		if (FlxG.stage.displayState == StageDisplayState.FULL_SCREEN)
+			_optButton2.text = "Fullscreen";
+		else
+			_optButton2.text = "Window";
+		Reg.save.data.screenstate = FlxG.stage.displayState;
+		Reg.save.flush();
+	}
+	
 	private function SlideChange(Value:Float):Void
 	{
 		FlxG.sound.volume = Value;
+		Reg.save.data.volume = FlxG.sound.volume;
+		Reg.save.flush();
 	}
 	
 	private function ClickBack():Void

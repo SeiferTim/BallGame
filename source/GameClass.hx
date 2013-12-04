@@ -52,6 +52,12 @@ class GameClass extends FlxGame
 		FitWindow();
 	}
 	
+	public function set_screenmode(State:StageDisplayState):Void
+	{
+		FlxG.stage.displayState = State;
+		window_resized();
+	}
+	
 	public function FitWindow():Void 
 	{
 		var stageWidth:Int = Lib.current.stage.stageWidth;

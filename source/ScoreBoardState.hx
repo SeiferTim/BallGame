@@ -50,6 +50,8 @@ class ScoreBoardState extends FlxState
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.show();
 		#end
+		
+		add(new FlxSprite(0, 0, "images/background.png"));
 		_state = STATE_IN;
 		BuildScreen();
 		
@@ -228,14 +230,14 @@ class ScoreBoardState extends FlxState
 		_fadeGroups.push([p1WinText, p1Count]);
 		_fadeGroups.push([p2WinText, p2Count]);
 		
-		_btnQuit = new CustomButton(16, FlxG.height - Reg.BUTTON_HEIGHT - 16,Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT, "Exit", ClickQuit);//Plus(16, FlxG.height - 36, ClickQuit, null, "Exit", 100, 20);
+		_btnQuit = new CustomButton(32, FlxG.height - Reg.BUTTON_HEIGHT - 32,Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT, "Exit", ClickQuit);//Plus(16, FlxG.height - 36, ClickQuit, null, "Exit", 100, 20);
 		//_btnQuit.visible = false;
 		add(_btnQuit);
 		
 		
 		if (Reg.curMatch < Reg.numMatches-1)
 		{
-			_btnNextMatch = new CustomButton(FlxG.width - Reg.BUTTON_WIDTH - 16, FlxG.height - Reg.BUTTON_HEIGHT - 16,Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT, "Next Match", ClickNextMatch );//Plus(FlxG.width - 116, FlxG.height - 36, ClickNextMatch, null, "Next Match", 100, 20);
+			_btnNextMatch = new CustomButton(FlxG.width - Reg.BUTTON_WIDTH - 32, FlxG.height - Reg.BUTTON_HEIGHT - 32,Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT, "Next Match", ClickNextMatch );//Plus(FlxG.width - 116, FlxG.height - 36, ClickNextMatch, null, "Next Match", 100, 20);
 			add(_btnNextMatch);
 			//_btnNextMatch.visible = false;
 			_fadeGroups.push([_btnQuit,_btnNextMatch]);

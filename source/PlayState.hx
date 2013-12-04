@@ -122,7 +122,7 @@ class PlayState extends FlxState
 		_multi[1] = _multi[2] = 1;
 		_lastHitBy = 0;
 		
-		Reg.LoadLevels();
+		
 		InitGameScreen();
 		
 		_levelBounds = new FlxRect(16, 16, FlxG.width - 32, FlxG.height - 32);
@@ -385,7 +385,7 @@ class PlayState extends FlxState
 	
 	private function LoadLevel():Void
 	{
-		
+		trace("data/room-" + Reg.levels[Reg.level] + ".tmx");
 		var level:TiledLevel = new TiledLevel("data/room-" + Reg.levels[Reg.level] + ".tmx", "data/tiles.tanim");
 		
 		_grpWalls.add(level.wallTiles);

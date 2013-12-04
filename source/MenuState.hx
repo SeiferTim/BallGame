@@ -1,6 +1,9 @@
 package;
 
 import flash.display.BlendMode;
+import flash.display.StageDisplayState;
+import flash.events.Event;
+import flash.system.System;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.text.FlxBitmapFont;
 import flixel.FlxG;
@@ -9,6 +12,9 @@ import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.util.FlxColor;
 import flixel.util.FlxGradient;
+import flixel.util.FlxMath;
+import flixel.util.FlxPoint;
+import flixel.util.FlxSave;
 
 /**
  * A FlxState which can be used for the game's menu.
@@ -37,24 +43,45 @@ class MenuState extends FlxState
 	private var _goingToCredits:Bool;
 	private var _goingToOptions:Bool;
 	
+	private var _sprTitle:FlxSprite;
+	
+	#if (desktop && !FLX_NO_MOUSE)
+	private var _sprExit:FlxSprite;
+	
+	#end
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
 	override public function create():Void
 	{
+		
+		Reg.save = new FlxSave();
+		Reg.save.bind("Options");
+		if (Reg.save.data.volume != null)
+			FlxG.sound.volume = Reg.save.data.volume;
+		else
+			FlxG.sound.volume = 0.5;
+			
+		#if desktop
+			if (Reg.save.data.screenstate != null)
+				Reg.instance.set_screenmode(Reg.save.data.screenstate);
+			else
+				Reg.instance.set_screenmode(StageDisplayState.FULL_SCREEN);
+		#end
+		
 		// Set a background color
 		FlxG.cameras.bgColor = 0xff330033;
 		// Show the mouse (in case it hasn't been disabled)
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.show();
 		#end
-		
+		Reg.LoadLevels();
 		Reg.instance.FitWindow();
 		
 		_state = STATE_UNLOADED;
 		
-		add(FlxGridOverlay.create(8, 8, Std.int(FlxG.width), Std.int(FlxG.height), false,true, 0xff330033, 0xff660066));
-		
+		//add(FlxGridOverlay.create(8, 8, Std.int(FlxG.width), Std.int(FlxG.height), false,true, 0xff330033, 0xff660066));
+		add(new FlxSprite(0, 0, "images/background.png"));
 		
 		_grpMain = new FlxGroup();
 		_grpMenuChoices = new FlxGroup();
@@ -76,7 +103,13 @@ class MenuState extends FlxState
 		txtClickToPlay.y = 16;
 		txtClickToPlay.x = (FlxG.width - txtClickToPlay.width ) / 2;
 		
+		_sprTitle = new FlxSprite(0, 0, "images/title-card.png");
+		_sprTitle.alpha = 0;
+		_grpMain.add(_sprTitle);
+		
 		_grpMain.add(txtClickToPlay);
+		
+		
 		
 		var playButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, ((FlxG.height - Reg.BUTTON_HEIGHT) / 2) - Reg.BUTTON_HEIGHT - 16, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Play Game", PlayGameClick);
  		_grpMenuChoices.add(playButton);
@@ -109,6 +142,15 @@ class MenuState extends FlxState
 		add(_sprBlack);
 		justTriggered = true;
 		
+		#if (desktop && !FLX_NO_MOUSE)
+		_sprExit = new FlxSprite(FlxG.width - 32, 16).loadGraphic("images/exit.png", true, false, 16, 16);
+		_sprExit.animation.add("off", [0]);
+		_sprExit.animation.add("on", [1]);
+		_sprExit.animation.play("off");
+		_sprExit.visible = false;
+		add(_sprExit);
+		#end
+		
 		super.create();
 	}
 	
@@ -133,6 +175,7 @@ class MenuState extends FlxState
 		justTriggered = true;
 		_state = STATE_UNLOADING;
 		Reg.numMatches = 3;
+		
 		
 	}
 	
@@ -212,6 +255,16 @@ class MenuState extends FlxState
 		
 	}
 	
+	private function ExitGame():Void
+	{
+		if (_state == STATE_UNLOADED || _state == STATE_UNLOADING) return;
+		#if !FLX_NO_MOUSE
+		FlxG.mouse.reset();
+		#end
+		justTriggered = true;
+		System.exit(0);
+	}
+	
 	
 	/**
 	 * Function that is called when this state is destroyed - you might want to 
@@ -234,7 +287,12 @@ class MenuState extends FlxState
 				if (_sprBlack.alpha > 0)
 					_sprBlack.alpha -= FlxG.elapsed * 3;
 				else
-					_state = STATE_MAIN;
+				{
+					if (_sprTitle.alpha < 1)
+						_sprTitle.alpha += FlxG.elapsed * 3;
+					else
+						_state = STATE_MAIN;
+				}
 			case STATE_MAIN:
 				#if !FLX_NO_MOUSE
 				if (FlxG.mouse.justReleased)
@@ -243,6 +301,9 @@ class MenuState extends FlxState
 					_state = STATE_MENU;
 					_grpMain.visible = false;
 					_grpMenuChoices.visible = true;
+					#if (desktop && !FLX_NO_MOUSE)
+					_sprExit.visible = true;
+					#end
 				}
 				#end
 				#if !FLX_NO_TOUCH
@@ -256,6 +317,7 @@ class MenuState extends FlxState
 					}
 				}
 				#end
+				
 			case STATE_UNLOADING:
 				if (_sprBlack.alpha < 1)
 					_sprBlack.alpha += FlxG.elapsed * 3;
@@ -266,10 +328,29 @@ class MenuState extends FlxState
 					else if (_goingToOptions)
 						FlxG.switchState(new OptionsState());
 					else
+					{
+						Reg.PickLevels(Reg.numMatches);
 						FlxG.switchState(new PlayState());
+					}
 				}
 		}
 		
+		if (_state != STATE_UNLOADED && _state != STATE_UNLOADING)
+		{
+			#if (desktop && !FLX_NO_MOUSE)
+			if (_sprExit.overlapsPoint(new FlxPoint(FlxG.mouse.x, FlxG.mouse.y)))
+			{ 
+				if (FlxG.mouse.justReleased) ExitGame();
+				if (_sprExit.animation.name != "on")
+					_sprExit.animation.play("on");
+			}
+			else
+			{
+				if (_sprExit.animation.name != "off")
+					_sprExit.animation.play("off");
+			}
+			#end
+		}
 		super.update();
 		justTriggered = false;
 	}	
