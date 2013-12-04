@@ -3,6 +3,7 @@ package;
 import flash.display.BlendMode;
 import flash.display.StageDisplayState;
 import flash.events.Event;
+import flash.Lib;
 import flash.system.System;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.text.FlxBitmapFont;
@@ -10,6 +11,8 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxGradient;
 import flixel.util.FlxMath;
@@ -47,8 +50,16 @@ class MenuState extends FlxState
 	
 	#if (desktop && !FLX_NO_MOUSE)
 	private var _sprExit:FlxSprite;
-	
 	#end
+	
+	private var _twnTitle:FlxTween;
+	private var _outMenu:FlxGroup;
+	private var _inMenu:FlxGroup;
+	private var _switchToState:Int;
+	private var _switchingMenu:Bool;
+	private var _outAlpha:Float;
+	private var _inAlpha:Float;
+	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -75,7 +86,12 @@ class MenuState extends FlxState
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.show();
 		#end
+		
+		_inAlpha = 0;
+		_outAlpha = 0;
+		
 		Reg.LoadLevels();
+		
 		Reg.instance.FitWindow();
 		
 		_state = STATE_UNLOADED;
@@ -100,7 +116,7 @@ class MenuState extends FlxState
 		
 		txtClickToPlay = new FlxBitmapFont(Reg.FONT_LIGHTGREY, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		txtClickToPlay.setText("Click to Play", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
-		txtClickToPlay.y = 16;
+		txtClickToPlay.y = FlxG.height -32;
 		txtClickToPlay.x = (FlxG.width - txtClickToPlay.width ) / 2;
 		
 		_sprTitle = new FlxSprite(0, 0, "images/title-card.png");
@@ -108,6 +124,8 @@ class MenuState extends FlxState
 		_grpMain.add(_sprTitle);
 		
 		_grpMain.add(txtClickToPlay);
+		
+		
 		
 		
 		
@@ -147,112 +165,121 @@ class MenuState extends FlxState
 		_sprExit.animation.add("off", [0]);
 		_sprExit.animation.add("on", [1]);
 		_sprExit.animation.play("off");
-		_sprExit.visible = false;
+		_sprExit.visible = true;
+		_sprExit.alpha = 0;
 		add(_sprExit);
 		#end
-		
+		StartFadeInTween();
 		super.create();
+	}
+	
+	private function TitleTweenDone(Tween:FlxTween):Void
+	{
+		_state = STATE_MAIN;
 	}
 	
 	private function PlaySingleMatch():Void
 	{
-		if (_state != STATE_MATCH || justTriggered) return;
+		if (_state != STATE_MATCH || justTriggered || _switchingMenu) return;
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.reset();
 		#end
 		justTriggered = true;
 		_state = STATE_UNLOADING;
 		Reg.numMatches = 1;
+		StartFadeOutTween();
 		
 	}
 	
 	private function Play2OO3Match():Void
 	{
-		if (_state != STATE_MATCH || justTriggered) return;
+		if (_state != STATE_MATCH || justTriggered || _switchingMenu) return;
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.reset();
 		#end
 		justTriggered = true;
 		_state = STATE_UNLOADING;
 		Reg.numMatches = 3;
-		
+		StartFadeOutTween();
 		
 	}
 	
 	private function Play3OO5Match():Void
 	{
-		if (_state != STATE_MATCH || justTriggered) return;
+		if (_state != STATE_MATCH || justTriggered || _switchingMenu) return;
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.reset();
 		#end
 		justTriggered = true;
 		_state = STATE_UNLOADING;
 		Reg.numMatches = 5;
-		
+		StartFadeOutTween();
 	}
 	
 	private function PlayGameClick():Void
 	{
-		if (_state != STATE_MENU || justTriggered) return;
+		if (_state != STATE_MENU || justTriggered || _switchingMenu) return;
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.reset();
 		#end
 		justTriggered = true;
-		_state = STATE_PLAY;
-		_grpMenuChoices.visible = false;
-		_grpPlayChoices.visible = true;
+		//_state = STATE_PLAY;
+		//_grpMenuChoices.visible = false;
+		//_grpPlayChoices.visible = true;
+		MenuOut(_grpMenuChoices, _grpPlayChoices, STATE_PLAY);
 	}
 	
 	private function Start1Player():Void
 	{
-		if (_state != STATE_PLAY || justTriggered) return;
+		if (_state != STATE_PLAY || justTriggered || _switchingMenu) return;
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.reset();
 		#end
 		justTriggered = true;
-		_state = STATE_MATCH;
+		//_state = STATE_MATCH;
 		Reg.numPlayers = 1;
-		_grpPlayChoices.visible = false;
-		_grpMatchesChoices.visible = true;
+		//_grpPlayChoices.visible = false;
+		//_grpMatchesChoices.visible = true;
+		MenuOut(_grpPlayChoices, _grpMatchesChoices, STATE_MATCH);
 
 	}
 	
 	private function Start2Player():Void
 	{
-		if (_state != STATE_PLAY || justTriggered) return;
+		if (_state != STATE_PLAY || justTriggered || _switchingMenu) return;
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.reset();
 		#end
 		justTriggered = true;
-		_state = STATE_MATCH;
+		//_state = STATE_MATCH;
 		Reg.numPlayers = 2;
-		_grpPlayChoices.visible = false;
-		_grpMatchesChoices.visible = true;
-
+		//_grpPlayChoices.visible = false;
+		//_grpMatchesChoices.visible = true;
+		MenuOut(_grpPlayChoices, _grpMatchesChoices, STATE_MATCH);
 	}
 	
 	private function CreditsClick():Void
 	{
-		if (_state != STATE_MENU || justTriggered) return;
+		if (_state != STATE_MENU || justTriggered || _switchingMenu) return;
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.reset();
 		#end
 		justTriggered = true;
 		_state = STATE_UNLOADING;
 		_goingToCredits = true;
-		
+		StartFadeOutTween();
 	}
 	
 	private function OptionsClick():Void
 	{
-		if (_state != STATE_MENU || justTriggered) return;
+		if (_state != STATE_MENU || justTriggered || _switchingMenu) return;
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.reset();
 		#end
 		justTriggered = true;
 		_state = STATE_UNLOADING;
 		_goingToOptions = true;
-		
+		StartFadeOutTween();
 	}
 	
 	private function ExitGame():Void
@@ -265,6 +292,37 @@ class MenuState extends FlxState
 		System.exit(0);
 	}
 	
+	private function StartFadeInTween():Void
+	{
+		
+		_twnTitle = FlxTween.multiVar(_sprBlack, { alpha: 0 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:StartTitleTween } );
+	}
+	
+	private function StartFadeOutTween():Void
+	{
+		
+		_twnTitle = FlxTween.multiVar(_sprBlack, { alpha: 1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeOut } );
+	}
+	
+	private function StartTitleTween(Tween:FlxTween):Void
+	{
+		
+		Tween = FlxTween.multiVar(_sprTitle, { alpha: 1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartOut, complete:TitleTweenDone} );
+	}
+	
+	private function DoneFadeOut(Tween:FlxTween):Void
+	{
+		
+		if (_goingToCredits)
+			FlxG.switchState(new CreditsState());
+		else if (_goingToOptions)
+			FlxG.switchState(new OptionsState());
+		else
+		{
+			Reg.PickLevels(Reg.numMatches);
+			FlxG.switchState(new PlayState());
+		}
+	}
 	
 	/**
 	 * Function that is called when this state is destroyed - you might want to 
@@ -275,69 +333,84 @@ class MenuState extends FlxState
 		super.destroy();
 	}
 
+	
+	private function MenuOut(OutMenu:FlxGroup,InMenu:FlxGroup, SwitchToState:Int):Void
+	{
+		_switchingMenu = true;
+		_outMenu = OutMenu;
+		_inMenu = InMenu;
+		_switchToState = SwitchToState;
+		_outAlpha = 1;
+		_inAlpha = 0;
+		
+		_twnTitle = FlxTween.multiVar(this, { _outAlpha: 0 }, .33, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:MenuIn } );
+	}
+	
+	private function MenuIn(Tween:FlxTween):Void
+	{
+		_outMenu.visible = false;
+		_inMenu.visible = true;
+		_inMenu.setAll("alpha", 0);
+		
+		Tween = FlxTween.multiVar(this, { _inAlpha:1 }, .33, { type: FlxTween.ONESHOT, ease:FlxEase.quartOut, complete: MenuDone } );
+	}
+	
+	private function MenuDone(Tween:FlxTween):Void
+	{
+		
+		_state = _switchToState;
+		_switchingMenu = false;
+	}
+	
 	/**
 	 * Function that is called once every frame.
 	 */
 	override public function update():Void
 	{
-		
-		switch(_state)
+		if (_switchingMenu)
 		{
-			case STATE_UNLOADED:
-				if (_sprBlack.alpha > 0)
-					_sprBlack.alpha -= FlxG.elapsed * 3;
-				else
-				{
-					if (_sprTitle.alpha < 1)
-						_sprTitle.alpha += FlxG.elapsed * 3;
-					else
-						_state = STATE_MAIN;
-				}
-			case STATE_MAIN:
-				#if !FLX_NO_MOUSE
-				if (FlxG.mouse.justReleased)
-				{
-					FlxG.mouse.reset();
-					_state = STATE_MENU;
-					_grpMain.visible = false;
-					_grpMenuChoices.visible = true;
-					#if (desktop && !FLX_NO_MOUSE)
-					_sprExit.visible = true;
+			_outMenu.setAll("alpha", _outAlpha);
+			_inMenu.setAll("alpha", _inAlpha);
+		}
+		else
+		{
+			
+			switch(_state)
+			{
+				case STATE_UNLOADED:
+					txtClickToPlay.alpha = _sprTitle.alpha;
+				case STATE_MAIN:
+					#if !FLX_NO_MOUSE
+					if (FlxG.mouse.justReleased && !_switchingMenu)
+					{
+						FlxG.mouse.reset();
+						
+						MenuOut(_grpMain,_grpMenuChoices, STATE_MENU);
+					}
 					#end
-				}
-				#end
-				#if !FLX_NO_TOUCH
-				for (touch in FlxG.touches.list)
-				{
-					if (touch.justReleased && _state == STATE_MAIN)
+					#if !FLX_NO_TOUCH
+					for (touch in FlxG.touches.list)
 					{
-						_state = STATE_MENU;
-						_grpMain.visible = false;
-						_grpMenuChoices.visible = true;	
+						if (touch.justReleased && !_switchingMenu)
+						{
+							MenuOut(_grpMain,_grpMenuChoices, STATE_MENU);
+						}
 					}
-				}
-				#end
+					#end
+					
 				
-			case STATE_UNLOADING:
-				if (_sprBlack.alpha < 1)
-					_sprBlack.alpha += FlxG.elapsed * 3;
-				else
-				{
-					if (_goingToCredits)
-						FlxG.switchState(new CreditsState());
-					else if (_goingToOptions)
-						FlxG.switchState(new OptionsState());
-					else
-					{
-						Reg.PickLevels(Reg.numMatches);
-						FlxG.switchState(new PlayState());
-					}
-				}
+					
+						
+					
+			}
 		}
 		
-		if (_state != STATE_UNLOADED && _state != STATE_UNLOADING)
+		#if (desktop && !FLX_NO_MOUSE)
+		if (_state == STATE_MAIN)
+			_sprExit.alpha = _inAlpha;
+		
+		if (_state != STATE_UNLOADED && _state != STATE_UNLOADING && _sprExit.visible)
 		{
-			#if (desktop && !FLX_NO_MOUSE)
 			if (_sprExit.overlapsPoint(new FlxPoint(FlxG.mouse.x, FlxG.mouse.y)))
 			{ 
 				if (FlxG.mouse.justReleased) ExitGame();
@@ -349,8 +422,9 @@ class MenuState extends FlxState
 				if (_sprExit.animation.name != "off")
 					_sprExit.animation.play("off");
 			}
-			#end
 		}
+		#end
+		
 		super.update();
 		justTriggered = false;
 	}	

@@ -18,6 +18,7 @@ class GameClass extends FlxGame
 	public function new()
 	{
 		Reg.instance = this;
+		
 		var stageWidth:Int = Lib.current.stage.stageWidth;
 		var stageHeight:Int = Lib.current.stage.stageHeight;
 		
