@@ -31,7 +31,12 @@ class GameClass extends FlxGame
 		x = (stageWidth - (gameWidth * ratio)) * .5;
 		y = (stageHeight - (gameHeight * ratio)) * .5;
 		
+		#if debug
 		super(gameWidth, gameHeight, MenuState, ratio, fps, 60);
+		#end
+		#if !debug
+		super(gameWidth, gameHeight, MadeInStlState, ratio, fps, 60);
+		#end
 		
 		Lib.current.stage.addEventListener(Event.RESIZE, window_resized);
 		
