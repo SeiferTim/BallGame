@@ -15,14 +15,16 @@ class MadeInStlState extends FlxState
 	
 	override public function create():Void 
 	{
-		super.create();
+		
+		Reg.initGame();
 		
 		_img = new FlxSprite(0, 0, "images/made_in_stl.png");
 		_img.alpha = 0;
 		add(_img);
 		
-		_twn = FlxTween.multiVar(_img, { alpha:1 }, .66, {type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeIn } );
+		_twn = FlxTween.multiVar(_img, { alpha:1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeIn } );
 		
+		super.create();
 	}
 	
 	private function DoneFadeIn(T:FlxTween):Void

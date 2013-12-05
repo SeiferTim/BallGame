@@ -49,5 +49,11 @@ class Main extends Sprite
 	{
 		Lib.current.stage.align = StageAlign.TOP_LEFT;
 		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
+		#if flash
+		Lib.current.stage.color = 0x110011;
+		#end
+		#if !flash
+		Lib.current.stage.opaqueBackground = 0x110011;
+		#end
 	}
 }

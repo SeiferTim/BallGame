@@ -5,7 +5,10 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.ui.FlxSlider;
+import flixel.util.FlxColor;
 import flixel.util.FlxGradient;
 import flixel.util.FlxSpriteUtil;
 
@@ -18,7 +21,11 @@ class OptionsState extends FlxState
 	private inline static var STATE_IN:Int = 0;
 	private inline static var STATE_WAIT:Int = 1;
 	private inline static var STATE_OUT:Int = 2;
+	private inline static var STATE_DONE:Int = 3;
 	
+	
+	private var _twn:FlxTween;
+	private var _sprBlack:FlxSprite;
 	private var _fadeObjs:Array<Array<FlxSprite>>;
 	
 	private var _exitButton:CustomButton;
@@ -40,7 +47,7 @@ class OptionsState extends FlxState
 		
 		_fadeObjs = new Array<Array<FlxSprite>>();
 		
-		var text:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		var text:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		text.setText("Options", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		text.setPosition((FlxG.width - text.width) / 2, 48);
 		text.alpha = 0;
@@ -48,10 +55,11 @@ class OptionsState extends FlxState
 		
 		_fadeObjs.push([text]);
 		
-		var optText1:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
-		optText1.setText("Sound FX:", false, 0, 0, FlxBitmapFont.ALIGN_RIGHT, true);
+		var optText1:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		optText1.setText("Sound FX", false, 0, 0, FlxBitmapFont.ALIGN_RIGHT, true);
 		optText1.setPosition(32, 80);
 		optText1.alpha = 0;
+		optText1.setFixedWidth(192, FlxBitmapFont.ALIGN_RIGHT);
 		add(optText1);
 		
 		var optSlide1:CustomSlider = new CustomSlider(Std.int(optText1.x + optText1.width + 16),Std.int(optText1.y), Std.int(FlxG.width - optText1.width - 80),64,16,14,0,1,SlideChange);
@@ -93,34 +101,16 @@ class OptionsState extends FlxState
 		
 		_fadeObjs.push([optText1, optSlide1]);
 		
-		/*
-		var optText2:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
-		optText2.setText("Music:", false, 0, 0, FlxBitmapFont.ALIGN_RIGHT, true);
-		optText2.setPosition(16, 128);
-		//optText1.alpha = 0;
-		add(optText2);
-		
-		var optSlide2:FlxSlider = new FlxSlider(FlxG.sound.music, "volume", 176,110, 0, 1, FlxG.width - 192, 16, 8, 0xff993399, 0xffaaffff);
-		optSlide2.decimals = 1;
-		optSlide2.setTexts("", false);
-		
-		//optSlide1.alpha = 0;
-		add(optSlide2);
-		
-		_fadeObjs.push([optText2, optSlide2]);
-		*/
-		
-		
 		#if desktop
 		
-		var optText2:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
-		optText2.setText("Screen:", false, 0, 0, FlxBitmapFont.ALIGN_RIGHT, true);
-		optText2.setFixedWidth(144, FlxBitmapFont.ALIGN_RIGHT);
+		var optText2:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		optText2.setText("Screen Mode", false, 0, 0, FlxBitmapFont.ALIGN_RIGHT, true);
+		optText2.setFixedWidth(192, FlxBitmapFont.ALIGN_RIGHT);
 		optText2.setPosition(32, 112);
 		optText2.alpha = 0;
 		add(optText2);
 		
-		_optButton2 = new CustomButton((optText2.x + optText2.width + 16) + ((FlxG.width - optText2.x - optText2.width - 48 - Reg.BUTTON_WIDTH) / 2), 112, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, FlxG.stage.displayState == StageDisplayState.FULL_SCREEN ? "Fullscreen" : "Window", ChangeScreen);
+		_optButton2 = new CustomButton((optText2.x + optText2.width + 16) + ((FlxG.width - optText2.x - optText2.width - 48 - Reg.BUTTON_WIDTH) / 2), 112, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, FlxG.fullscreen ? "Fullscreen" : "Window", ChangeScreen);
 		_optButton2.alpha = 0;
 		add(_optButton2);
 		
@@ -128,25 +118,43 @@ class OptionsState extends FlxState
 		
 		#end
 		
+		
 		_exitButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, FlxG.height - Reg.BUTTON_HEIGHT - 32, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Back", ClickBack);
 		_exitButton.alpha = 0;
 		add(_exitButton);
 		
 		_fadeObjs.push([_exitButton]);
 		
+		_sprBlack = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height,  FlxColor.BLACK);
+		add(_sprBlack);
 		
+		//_loaded = true;
+		StartFadeInTween();
 		super.create();
+		
+	}
+	
+	private function StartFadeInTween():Void
+	{
+		if (_twn != null) _twn.cancel();
+		_twn = FlxTween.multiVar(_sprBlack, { alpha: 0 }, .66, { type: FlxTween.ONESHOT, ease: FlxEase.quartIn, complete: FadeInDone } );
+	}
+	
+	private function FadeInDone(T:FlxTween):Void
+	{
 		_loaded = true;
 	}
+	
+	
 	
 	private function ChangeScreen():Void
 	{
 		Reg.instance.toggle_fullscreen();
-		if (FlxG.stage.displayState == StageDisplayState.FULL_SCREEN)
+		if (FlxG.fullscreen)
 			_optButton2.text = "Fullscreen";
 		else
 			_optButton2.text = "Window";
-		Reg.save.data.screenstate = FlxG.stage.displayState;
+		Reg.save.data.fullscreen = FlxG.fullscreen;
 		Reg.save.flush();
 	}
 	
@@ -206,7 +214,10 @@ class OptionsState extends FlxState
 			}
 			else
 			{
-				FlxG.switchState(new MenuState());
+				//FlxG.switchState(new MenuState());
+				_state = STATE_DONE;
+				StartFadeOutTween();
+				
 			}
 		}
 		
@@ -214,5 +225,13 @@ class OptionsState extends FlxState
 		super.update();
 	}
 	
+	private function StartFadeOutTween():Void
+	{
+		_twn = FlxTween.multiVar(_sprBlack, { alpha: 1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeOut } );
+	}
 	
+	private function DoneFadeOut(T:FlxTween):Void
+	{
+		FlxG.switchState(new MenuState());
+	}
 }

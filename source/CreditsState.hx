@@ -5,6 +5,9 @@ import flixel.addons.text.FlxBitmapFont;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxColor;
 
 class CreditsState extends FlxState
 {
@@ -16,9 +19,13 @@ class CreditsState extends FlxState
 	private var _loaded:Bool;
 	private var alphaLevel:Float;
 	
+	private var _twn:FlxTween;
+	private var _sprBlack:FlxSprite;
+	
 	private inline static var STATE_IN:Int = 0;
 	private inline static var STATE_WAIT:Int = 1;
 	private inline static var STATE_OUT:Int = 2;
+	private inline static var STATE_DONE:Int = 3;
 	
 	override public function create():Void
 	{
@@ -36,32 +43,32 @@ class CreditsState extends FlxState
 		
 		add(new FlxSprite(0, 0, "images/background.png"));
 		
-		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
+		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
 		cast(_texts[0],FlxBitmapFont).setText("This Game was Made By:", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[0].setPosition((FlxG.width - _texts[0].width) / 2, 32);
 		_texts[0].alpha = 0;
 		
-		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
+		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
 		cast(_texts[1],FlxBitmapFont).setText("Jevion White", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[1].setPosition((FlxG.width - _texts[1].width) / 2, 80);
 		_texts[1].alpha = 0;
 		
-		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
+		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
 		cast(_texts[2],FlxBitmapFont).setText("Tim I Hely", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[2].setPosition((FlxG.width - _texts[2].width) / 2, 112);
 		_texts[2].alpha = 0;
 		
-		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
+		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
 		cast(_texts[3],FlxBitmapFont).setText("Isaac Benrubi", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[3].setPosition((FlxG.width - _texts[3].width) / 2, 144);
 		_texts[3].alpha = 0;
 		
-		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
+		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
 		cast(_texts[4],FlxBitmapFont).setText("Visit us on the Web at:", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[4].setPosition((FlxG.width - _texts[4].width) / 2, 192);
 		_texts[4].alpha = 0;
 		
-		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
+		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
 		cast(_texts[5],FlxBitmapFont).setText("tileisle.net", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[5].setPosition((FlxG.width - _texts[5].width) / 2, 224);
 		_texts[5].alpha = 0;
@@ -72,9 +79,26 @@ class CreditsState extends FlxState
 		add(_btnBack);
 		_texts.push(_btnBack);
 		
+		
+		_sprBlack = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height,  FlxColor.BLACK);
+		add(_sprBlack);
+		StartFadeInTween();
+		
 		super.create();
+		
+	}
+	
+	private function StartFadeInTween():Void
+	{
+		if (_twn != null) _twn.cancel();
+		_twn = FlxTween.multiVar(_sprBlack, { alpha: 0 }, .66, { type: FlxTween.ONESHOT, ease: FlxEase.quartIn, complete: FadeInDone } );
+	}
+	
+	private function FadeInDone(T:FlxTween):Void
+	{
 		_loaded = true;
 	}
+	
 	
 	override public function update():Void
 	{
@@ -113,12 +137,23 @@ class CreditsState extends FlxState
 			}
 			else
 			{
-				FlxG.switchState(new MenuState());
+				_state = STATE_DONE;
+				StartFadeOutTween();
 				
 			}
 		}
 		
 		super.update();
+	}
+	
+	private function StartFadeOutTween():Void
+	{
+		_twn = FlxTween.multiVar(_sprBlack, { alpha: 1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeOut } );
+	}
+	
+	private function DoneFadeOut(T:FlxTween):Void
+	{
+		FlxG.switchState(new MenuState());
 	}
 	
 	private function ClickBack():Void 

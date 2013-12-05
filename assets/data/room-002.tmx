@@ -4,7 +4,7 @@
   <image source="../images/Wall-Terrain-Tiles.png" width="256" height="16"/>
  </tileset>
  <tileset firstgid="17" name="Enemies" tilewidth="16" tileheight="16">
-  <image source="../images/enemies.png" width="32" height="16"/>
+  <image source="../images/enemy.png" width="16" height="16"/>
  </tileset>
  <layer name="Tiles" width="44" height="25">
   <properties>
@@ -16,10 +16,10 @@
   </data>
  </layer>
  <objectgroup name="Enemies" width="44" height="25">
-  <object type="node" gid="18" x="336" y="128"/>
+  <object type="node" x="336" y="128"/>
   <object name="0" type="enemy" gid="17" x="208" y="128"/>
   <object name="0" type="enemy" gid="17" x="448" y="128"/>
-  <object type="node" gid="18" x="336" y="304"/>
+  <object type="node" x="336" y="304"/>
   <object name="1" type="enemy" gid="17" x="208" y="304"/>
   <object name="1" type="enemy" gid="17" x="448" y="304"/>
   <object name="2" type="enemy" gid="17" x="256" y="176"/>

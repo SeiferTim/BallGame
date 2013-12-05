@@ -600,13 +600,13 @@ class PlayState extends FlxState
 			if (_ball.x < 0)
 			{
 				_ballFollow = 1;
-				_scores[2] += 50;
+				_scores[2] += 50 * _multi[1];
 				_multi[1] = 1;
 			}
 			else
 			{
 				_ballFollow = 2;
-				_scores[1] += 50;
+				_scores[1] += 50 * _multi[2];
 				_multi[2] = 1;
 			}
 			

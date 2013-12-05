@@ -4,13 +4,16 @@ import flash.display.BlendMode;
 import flash.display.StageDisplayState;
 import flash.events.Event;
 import flash.Lib;
+import flash.media.Sound;
 import flash.system.System;
+import flash.ui.MouseCursorData;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.text.FlxBitmapFont;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
+import flixel.system.FlxSound;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
@@ -65,38 +68,16 @@ class MenuState extends FlxState
 	 */
 	override public function create():Void
 	{
+		Reg.initGame();
 		
-		Reg.save = new FlxSave();
-		Reg.save.bind("Options");
-		if (Reg.save.data.volume != null)
-			FlxG.sound.volume = Reg.save.data.volume;
-		else
-			FlxG.sound.volume = 0.5;
-			
-		#if desktop
-			if (Reg.save.data.screenstate != null)
-				Reg.instance.set_screenmode(Reg.save.data.screenstate);
-			else
-				Reg.instance.set_screenmode(StageDisplayState.FULL_SCREEN);
-		#end
-		
-		// Set a background color
 		FlxG.cameras.bgColor = 0xff330033;
-		// Show the mouse (in case it hasn't been disabled)
 		#if !FLX_NO_MOUSE
-		FlxG.mouse.show();
+		Reg.ShowMouse();
 		#end
-		
 		_inAlpha = 0;
 		_outAlpha = 0;
-		
-		Reg.LoadLevels();
-		
-		Reg.instance.FitWindow();
-		
 		_state = STATE_UNLOADED;
 		
-		//add(FlxGridOverlay.create(8, 8, Std.int(FlxG.width), Std.int(FlxG.height), false,true, 0xff330033, 0xff660066));
 		add(new FlxSprite(0, 0, "images/background.png"));
 		
 		_grpMain = new FlxGroup();
@@ -114,23 +95,28 @@ class MenuState extends FlxState
 		_grpPlayChoices.visible = false;
 		_grpMatchesChoices.visible = false;
 		
-		txtClickToPlay = new FlxBitmapFont(Reg.FONT_LIGHTGREY, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
-		txtClickToPlay.setText("Click to Play", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
-		txtClickToPlay.y = FlxG.height -32;
-		txtClickToPlay.x = (FlxG.width - txtClickToPlay.width ) / 2;
-		
 		_sprTitle = new FlxSprite(0, 0, "images/title-card.png");
 		_sprTitle.alpha = 0;
 		_grpMain.add(_sprTitle);
 		
+		
+		txtClickToPlay = new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		
+		#if !FLX_NO_TOUCH
+		txtClickToPlay.setText("Touch to Play", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
+		#end
+		#if !FLX_NO_MOUSE
+		txtClickToPlay.setText("Click to Play", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
+		#end
+		
+		txtClickToPlay.y = FlxG.height -32;
+		txtClickToPlay.x = (FlxG.width - txtClickToPlay.width ) / 2;
 		_grpMain.add(txtClickToPlay);
 		
-		
-		
-		
-		
+
 		var playButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, ((FlxG.height - Reg.BUTTON_HEIGHT) / 2) - Reg.BUTTON_HEIGHT - 16, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Play Game", PlayGameClick);
- 		_grpMenuChoices.add(playButton);
+ 		playButton.soundOver = FlxG.sound.load("sounds/beep.wav");
+		_grpMenuChoices.add(playButton);
 		
 		var optionsButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2,  (FlxG.height - Reg.BUTTON_HEIGHT) / 2, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Options", OptionsClick);
  		_grpMenuChoices.add(optionsButton);
@@ -144,8 +130,6 @@ class MenuState extends FlxState
 		
 		var p2:CustomButton = new CustomButton((FlxG.width -Reg.BUTTON_WIDTH) / 2, (FlxG.height / 2 ) + 8, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "2 Players", Start2Player);
 		_grpPlayChoices.add(p2);
-		
-		
 		
 		var matchButton1:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, ((FlxG.height - Reg.BUTTON_HEIGHT) / 2) - Reg.BUTTON_HEIGHT - 16,Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT, "Single Match", PlaySingleMatch);
 		_grpMatchesChoices.add(matchButton1);
@@ -169,14 +153,12 @@ class MenuState extends FlxState
 		_sprExit.alpha = 0;
 		add(_sprExit);
 		#end
+		
 		StartFadeInTween();
 		super.create();
 	}
 	
-	private function TitleTweenDone(Tween:FlxTween):Void
-	{
-		_state = STATE_MAIN;
-	}
+	
 	
 	private function PlaySingleMatch():Void
 	{
@@ -256,6 +238,7 @@ class MenuState extends FlxState
 		//_grpPlayChoices.visible = false;
 		//_grpMatchesChoices.visible = true;
 		MenuOut(_grpPlayChoices, _grpMatchesChoices, STATE_MATCH);
+		
 	}
 	
 	private function CreditsClick():Void
@@ -310,6 +293,12 @@ class MenuState extends FlxState
 		Tween = FlxTween.multiVar(_sprTitle, { alpha: 1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartOut, complete:TitleTweenDone} );
 	}
 	
+	private function TitleTweenDone(Tween:FlxTween):Void
+	{
+		_state = STATE_MAIN;
+		Tween = FlxTween.multiVar(_sprTitle, { alpha:1 }, 4, { type:FlxTween.ONESHOT, complete: DoneWait } );
+	}
+	
 	private function DoneFadeOut(Tween:FlxTween):Void
 	{
 		
@@ -342,8 +331,8 @@ class MenuState extends FlxState
 		_switchToState = SwitchToState;
 		_outAlpha = 1;
 		_inAlpha = 0;
-		
-		_twnTitle = FlxTween.multiVar(this, { _outAlpha: 0 }, .33, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:MenuIn } );
+		if (_twnTitle != null && !_twnTitle.finished) _twnTitle.cancel();
+		_twnTitle = FlxTween.multiVar(this, { _outAlpha: 0 }, .5, { type: FlxTween.ONESHOT, ease:FlxEase.quartOut, complete:MenuIn } );
 	}
 	
 	private function MenuIn(Tween:FlxTween):Void
@@ -352,7 +341,14 @@ class MenuState extends FlxState
 		_inMenu.visible = true;
 		_inMenu.setAll("alpha", 0);
 		
-		Tween = FlxTween.multiVar(this, { _inAlpha:1 }, .33, { type: FlxTween.ONESHOT, ease:FlxEase.quartOut, complete: MenuDone } );
+		Tween = FlxTween.multiVar(this, { _inAlpha:1 }, .5, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete: MenuDone } );
+	}
+	
+	private function DoneWait(Tween:FlxTween):Void
+	{
+		if (_switchingMenu) return;
+		//if (Tween != null && Tween.active) Tween.cancel();
+		MenuOut(_grpMain,_grpMenuChoices, STATE_MENU);
 	}
 	
 	private function MenuDone(Tween:FlxTween):Void
@@ -367,6 +363,7 @@ class MenuState extends FlxState
 	 */
 	override public function update():Void
 	{
+
 		if (_switchingMenu)
 		{
 			_outMenu.setAll("alpha", _outAlpha);
@@ -378,7 +375,9 @@ class MenuState extends FlxState
 			switch(_state)
 			{
 				case STATE_UNLOADED:
+					//#if !(FLX_NO_MOUSE && FLX_NO_TOUCH)
 					txtClickToPlay.alpha = _sprTitle.alpha;
+					//#end
 				case STATE_MAIN:
 					#if !FLX_NO_MOUSE
 					if (FlxG.mouse.justReleased && !_switchingMenu)
@@ -397,13 +396,10 @@ class MenuState extends FlxState
 						}
 					}
 					#end
-					
-				
-					
-						
-					
 			}
 		}
+		
+		
 		
 		#if (desktop && !FLX_NO_MOUSE)
 		if (_state == STATE_MAIN)
@@ -424,8 +420,24 @@ class MenuState extends FlxState
 			}
 		}
 		#end
-		
+
 		super.update();
+
 		justTriggered = false;
+
 	}	
+	
+	
+	override public function draw():Void 
+	{
+		super.draw();
+		
+		#if !FLX_NO_MOUSE
+			if (Reg.MouseOverButton)
+				Reg.ShowMouse(Reg.CURSOR_OVER);
+			else
+				Reg.ShowMouse(Reg.CURSOR_NORMAL);
+			Reg.MouseOverButton = false;
+		#end
+	}
 }

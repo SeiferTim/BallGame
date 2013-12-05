@@ -5,7 +5,7 @@
 	
 	<app title="Paddle Battles" file="PaddleBattles" main="Main" path="export" preloader="Preloader" swf-version="11.2" />
 	
-	<window width="683" height="384" fps="120" orientation="portrait" resizable="true" if="web" />
+	<window width="683" height="384" fps="120" orientation="portrait" resizable="false" if="web" />
 	<window width="1366" height="768" fps="120" orientation="landscape" hardware="true" vsync="true" unless="web" /> || <window width="0" height="0" if="mobile" unless="web" />
 	<window antialiasing="0" if="cpp"/>
 	<window fullscreen="false" if="desktop" /> || <window fullscreen="true" if="mobile" />
@@ -22,6 +22,7 @@
 	<!--You can use rename="newName" to shorten the paths to the individual subdirectories!-->
 	<assets path="assets/data" rename="data" include="*.tmx|*.tanim" />
 	<assets path="assets/images" rename="images" include="*.png" />
+	<assets path="assets/sounds" rename="sounds" include="*.wav" />
 	
 	<haxelib name="openfl" />
 	<haxelib name="flixel" />
@@ -64,9 +65,9 @@
 	<!--Disable the Flixel core debugger. Automatically gets set whenever you compile in release mode!-->
 	<haxedef name="FLX_NO_DEBUG" unless="debug" />
 	
-	<icon path="images/icons/16.png" size="16" />
-	<icon path="images/icons/32.png" size="32" />
-	<icon path="images/icons/64.png" size="64" />
+	<icon path="assets/images/icons/16.png" size="16" />
+	<icon path="assets/images/icons/32.png" size="32" />
+	<icon path="assets/images/icons/64.png" size="64" />
 	
 	<setenv name="GooglePlayID" value="500560584660" />
 	

@@ -7,17 +7,25 @@ import flixel.*;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxGame;
+import flixel.util.FlxSave;
 
 	
 class GameClass extends FlxGame
 {	
 	
-	private var gameWidth:Int = 683;
-	private var gameHeight:Int = 384;
+	private var gameWidth:Int;
+	private var gameHeight:Int;
 	
 	public function new()
 	{
+		Reg.save = new FlxSave();
+		Reg.save.bind("Options");
+		gameWidth = Reg.GameWidth;
+		gameHeight = Reg.GameHeight;
+		
 		Reg.instance = this;
+	
+		var fps:Int = 120;
 		
 		var stageWidth:Int = Lib.current.stage.stageWidth;
 		var stageHeight:Int = Lib.current.stage.stageHeight;
@@ -25,11 +33,6 @@ class GameClass extends FlxGame
 		var ratioX:Float = stageWidth / gameWidth;
 		var ratioY:Float = stageHeight / gameHeight;
 		var ratio:Float = Math.min(ratioX, ratioY);
-		
-		var fps:Int = 120;
-		
-		x = (stageWidth - (gameWidth * ratio)) * .5;
-		y = (stageHeight - (gameHeight * ratio)) * .5;
 		
 		#if debug
 		super(gameWidth, gameHeight, MenuState, ratio, fps, 60);
@@ -40,16 +43,18 @@ class GameClass extends FlxGame
 		
 		Lib.current.stage.addEventListener(Event.RESIZE, window_resized);
 		
+		
+		
+	}
+	
+	public function setScreenSize(Size:Int):Void
+	{
+		
 	}
 	
 	public function toggle_fullscreen():Void
 	{
-		if (FlxG.stage.displayState != StageDisplayState.FULL_SCREEN)
-			FlxG.stage.displayState = StageDisplayState.FULL_SCREEN;
-		else
-			FlxG.stage.displayState = StageDisplayState.NORMAL;
-		 
-		// The next function contains steps 2-4
+		FlxG.fullscreen = !FlxG.fullscreen;	 
 		window_resized();
 	}
 	
@@ -58,14 +63,16 @@ class GameClass extends FlxGame
 		FitWindow();
 	}
 	
-	public function set_screenmode(State:StageDisplayState):Void
+	public function set_screenmode(Fullscreen:Bool):Void
 	{
-		FlxG.stage.displayState = State;
+		FlxG.fullscreen = Fullscreen;
 		window_resized();
 	}
 	
 	public function FitWindow():Void 
 	{
+		
+		
 		var stageWidth:Int = Lib.current.stage.stageWidth;
 		var stageHeight:Int = Lib.current.stage.stageHeight;
 		
@@ -73,12 +80,17 @@ class GameClass extends FlxGame
 		var ratioY:Float = stageHeight / gameHeight;
 		var ratio:Float = Math.min(ratioX, ratioY);
 		
+		//FlxG.resizeGame(stageWidth, stageHeight);
+		
 		x = (stageWidth - (gameWidth * ratio)) * .5;
 		y = (stageHeight - (gameHeight * ratio)) * .5;
 		
 		FlxCamera.defaultZoom = ratio;
+		
+		if (FlxG.camera != null)		
 		FlxG.camera.zoom = ratio;
 	}
+		
 	
 	override public function update():Void 
 	{
