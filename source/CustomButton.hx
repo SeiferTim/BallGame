@@ -372,7 +372,7 @@ class CustomButton extends FlxSpriteGroup
 						soundOut.play(true);
 					}
 				}
-				trace("NORMAL");
+				//trace("NORMAL");
 				status = FlxButton.NORMAL;
 			}
 		}
@@ -407,7 +407,7 @@ class CustomButton extends FlxSpriteGroup
 			
 			if (JustPressed)
 			{
-				trace("PRESSED");
+				//trace("PRESSED");
 				status = FlxButton.PRESSED;
 				_pressed = true;
 				if (_onDown != null)
@@ -423,7 +423,7 @@ class CustomButton extends FlxSpriteGroup
 			}
 			if (status == FlxButton.NORMAL)
 			{
-				trace("HIGHLIGHT");
+				//trace("HIGHLIGHT");
 				status = FlxButton.HIGHLIGHT;
 				if (_onOver != null)
 				{
@@ -552,7 +552,7 @@ class CustomButton extends FlxSpriteGroup
 	 */
 	private function onMouseUp(event:Event):Void
 	{
-		trace(exists + " " + visible + " " + active + " " + status);
+		//trace(exists + " " + visible + " " + active + " " + status);
 		if (!exists || !visible || !active || (status != FlxButton.PRESSED))
 		{
 			
@@ -569,7 +569,7 @@ class CustomButton extends FlxSpriteGroup
 		}
 		
 		_touchPointID = -1;
-		trace("NORMAL");
+		//trace("NORMAL");
 		status = FlxButton.NORMAL;
 	}
 	

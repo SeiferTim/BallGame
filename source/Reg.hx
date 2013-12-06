@@ -128,8 +128,9 @@ class Reg
 			case CURSOR_OVER:
 				pointer = "images/pointer-over.png";
 		}
+		#if !FLX_NO_MOUSE
 		FlxG.mouse.show(pointer, 1, -5, -6);
-		
+		#end
 	}
 	
 	static public function LoadLevels():Void
@@ -145,7 +146,7 @@ class Reg
 		level = 0;
 		for (i in 0...Rounds)
 		{
-			trace(i);
+			//trace(i);
 			tLevel = FlxArrayUtil.getRandom(levelList);
 			levels.push(tLevel);
 			levelList.remove(tLevel);

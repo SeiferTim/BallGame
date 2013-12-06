@@ -385,7 +385,7 @@ class PlayState extends FlxState
 	
 	private function LoadLevel():Void
 	{
-		trace("data/room-" + Reg.levels[Reg.level] + ".tmx");
+		//trace("data/room-" + Reg.levels[Reg.level] + ".tmx");
 		var level:TiledLevel = new TiledLevel("data/room-" + Reg.levels[Reg.level] + ".tmx", "data/tiles.tanim");
 		
 		_grpWalls.add(level.wallTiles);
