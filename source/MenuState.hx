@@ -14,6 +14,7 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.system.FlxSound;
+import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
@@ -62,9 +63,9 @@ class MenuState extends FlxState
 	private var _switchingMenu:Bool;
 	private var _outAlpha:Float;
 	private var _inAlpha:Float;
-	
+		
 	/**
-	 * Function that is called up when to state is created to set it up. 
+	 * Function that is called up when to state is created to set it up.
 	 */
 	override public function create():Void
 	{
@@ -155,6 +156,7 @@ class MenuState extends FlxState
 		#end
 		
 		StartFadeInTween();
+		
 		super.create();
 	}
 	
@@ -296,7 +298,7 @@ class MenuState extends FlxState
 	private function TitleTweenDone(Tween:FlxTween):Void
 	{
 		_state = STATE_MAIN;
-		Tween = FlxTween.multiVar(_sprTitle, { alpha:1 }, 4, { type:FlxTween.ONESHOT, complete: DoneWait } );
+		Tween = FlxTween.multiVar(_sprTitle, { alpha:1 }, 2, { type:FlxTween.ONESHOT, complete: DoneWait } );
 	}
 	
 	private function DoneFadeOut(Tween:FlxTween):Void
@@ -314,7 +316,7 @@ class MenuState extends FlxState
 	}
 	
 	/**
-	 * Function that is called when this state is destroyed - you might want to 
+	 * Function that is called when this state is destroyed - you might want to
 	 * consider setting all objects this state uses to null to help garbage collection.
 	 */
 	override public function destroy():Void
@@ -331,7 +333,7 @@ class MenuState extends FlxState
 		_switchToState = SwitchToState;
 		_outAlpha = 1;
 		_inAlpha = 0;
-		if (_twnTitle != null && !_twnTitle.finished) _twnTitle.cancel();
+		//if (_twnTitle != null && !_twnTitle.finished) _twnTitle.cancel();
 		_twnTitle = FlxTween.multiVar(this, { _outAlpha: 0 }, .5, { type: FlxTween.ONESHOT, ease:FlxEase.quartOut, complete:MenuIn } );
 	}
 	
@@ -346,8 +348,7 @@ class MenuState extends FlxState
 	
 	private function DoneWait(Tween:FlxTween):Void
 	{
-		if (_switchingMenu) return;
-		//if (Tween != null && Tween.active) Tween.cancel();
+		if (_switchingMenu || _state != STATE_MAIN) return;
 		MenuOut(_grpMain,_grpMenuChoices, STATE_MENU);
 	}
 	
@@ -384,6 +385,9 @@ class MenuState extends FlxState
 					{
 						FlxG.mouse.reset();
 						
+						if (_twnTitle != null && _twnTitle.active)
+							_twnTitle.cancel();
+						
 						MenuOut(_grpMain,_grpMenuChoices, STATE_MENU);
 					}
 					#end
@@ -392,14 +396,34 @@ class MenuState extends FlxState
 					{
 						if (touch.justReleased && !_switchingMenu)
 						{
+							if (_twnTitle != null && _twnTitle.active)
+							_twnTitle.cancel();
+							
 							MenuOut(_grpMain,_grpMenuChoices, STATE_MENU);
 						}
 					}
 					#end
+				case STATE_PLAY:
+					#if !FLX_NO_KEYBOARD
+					if (FlxG.keyboard.justReleased("ESCAPE") && !_switchingMenu)
+						MenuOut(_grpPlayChoices, _grpMenuChoices, STATE_MENU);
+					#end
+					#if android
+					if (FlxG.android.justReleased("BACK") && !_switchingMenu)
+						MenuOut(_grpPlayChoices, _grpMenuChoices, STATE_MENU);
+					#end
+				case STATE_MATCH:
+					#if !FLX_NO_KEYBOARD
+					if (FlxG.keyboard.justReleased("ESCAPE") && !_switchingMenu)
+						MenuOut(_grpMatchesChoices,_grpPlayChoices, STATE_PLAY);
+					#end
+					#if android
+					if (FlxG.android.justReleased("BACK") && !_switchingMenu)
+						MenuOut(_grpMatchesChoices,_grpPlayChoices, STATE_PLAY);
+					#end
+					
 			}
 		}
-		
-		
 		
 		#if (desktop && !FLX_NO_MOUSE)
 		if (_state == STATE_MAIN)
@@ -408,7 +432,7 @@ class MenuState extends FlxState
 		if (_state != STATE_UNLOADED && _state != STATE_UNLOADING && _sprExit.visible)
 		{
 			if (_sprExit.overlapsPoint(new FlxPoint(FlxG.mouse.x, FlxG.mouse.y)))
-			{ 
+			{
 				if (FlxG.mouse.justReleased) ExitGame();
 				if (_sprExit.animation.name != "on")
 					_sprExit.animation.play("on");
@@ -425,10 +449,10 @@ class MenuState extends FlxState
 
 		justTriggered = false;
 
-	}	
+	}
 	
 	
-	override public function draw():Void 
+	override public function draw():Void
 	{
 		super.draw();
 		

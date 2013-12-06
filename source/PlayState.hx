@@ -100,6 +100,9 @@ class PlayState extends FlxState
 	private var _p2TouchZone:FlxRect;
 	#end
 	
+	private var _paused:Bool
+	private var _pauseScreen:FlxGroup;
+	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -158,10 +161,6 @@ class PlayState extends FlxState
 	{
 		
 		#if !FLX_NO_TOUCH
-		/*_rectP1Up =  new FlxRect(0, 0, FlxG.width / 2 , FlxG.height / 2);
-		_rectP1Down = new FlxRect(0, FlxG.height / 2, FlxG.width / 2, FlxG.height / 2); 
-		_rectP2Up =  new FlxRect(FlxG.width / 2, 0, FlxG.width / 2, FlxG.height / 2);
-		_rectP2Down = new FlxRect(FlxG.width / 2, FlxG.height / 2, FlxG.width / 2, FlxG.height / 2);*/
 		_p1TouchZone = new FlxRect(0, 0, FlxG.width / 4, FlxG.height);
 		_p2TouchZone = new FlxRect(0, FlxG.width - (FlxG.width / 4), FlxG.width / 4, FlxG.height);
 		#end
@@ -361,6 +360,24 @@ class PlayState extends FlxState
 		add(_grpParticles);
 		add(_grpUI);
 		add(_sprFade);
+		
+		_pauseScreen = new FlxGroup();
+		add(_pauseScreen);
+		
+		var _pauseBack = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		_pauseBack.alpha = .66;
+		_pauseScreen.add(_pauseBack);
+		
+		var _pauseText = new FlxBitmapFont(Reg.FONT_YELLOW, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		_pauseText.setText("* * PAUSED * *", false, 8, 0, FlxBitmapFont.ALIGN_CENTER, false);
+		_pauseText.x = (FlxG.width - _pauseText.width) / 2);
+		_pauseText.y = (FlxG.height/2) - _pauseText.height - 8;
+		_pauseScreen.add(_pauseText);
+		
+		var _resumeButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH)/2, (FlxG.height/2) + 8, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "RESUME", ResumeGame);
+		_pauseScreen.add(_resumeButton);
+		
+		_pauseScreen.visible = false;
 		
 		
 	}

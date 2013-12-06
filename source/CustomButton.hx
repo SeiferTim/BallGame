@@ -26,6 +26,7 @@ import flixel.util.FlxMath;
 import flixel.util.FlxPoint;
 import flixel.util.FlxRect;
 import flixel.util.FlxSpriteUtil;
+import flixel.system.input.touch.FlxTouch;
 
 class CustomButton extends FlxSpriteGroup
 {
@@ -261,6 +262,10 @@ class CustomButton extends FlxSpriteGroup
 				_initialized = true;
 			}
 		}
+		
+		
+		_pressed = false;
+		
 		super.update();
 	}
 	
@@ -290,6 +295,8 @@ class CustomButton extends FlxSpriteGroup
 			default:
 				_label.alpha = alpha * 1;
 		}
+		
+		_wasPressed = _pressed;
 	}
 	
 	/**
@@ -308,8 +315,7 @@ class CustomButton extends FlxSpriteGroup
 			continueUpdate = true;
 		#end
 		
-		_wasPressed = _pressed;
-		_pressed = false;
+		
 		if (continueUpdate)
 		{
 			if (cameras == null)
@@ -337,7 +343,7 @@ class CustomButton extends FlxSpriteGroup
 							if (touch.pressed && !_wasPressed)
 							{
 								touch.getWorldPosition(camera, _point);
-								offAll = (updateButtonStatus(_point, camera, touch.pressed && !_wasPressed, touch.touchPointID) == false) ? false : offAll;
+								offAll = (updateButtonStatus(_point, camera,  touch.pressed && !_wasPressed , touch.touchPointID) == false) ? false : offAll;
 							}
 						}
 						else if (touch.touchPointID == _touchPointID)
@@ -345,7 +351,7 @@ class CustomButton extends FlxSpriteGroup
 							touch.getWorldPosition(camera, _point);
 							offAll = false;
 							
-							if (!touch.pressed && _wasPressed || !overlapsPoint(_point, true, camera))
+							if (!touch.pressed || !overlapsPoint(_point, true, camera))
 							{
 								offAll = true;
 								this.onMouseUp(null);
@@ -395,10 +401,12 @@ class CustomButton extends FlxSpriteGroup
 	 */
 	private function updateButtonStatus(P:FlxPoint, Camera:FlxCamera, JustPressed:Bool, touchID:Int):Bool
 	{
+		
 		var offAll:Bool = true;
 		
 		if (overlapsPoint(P, true, Camera))
 		{
+			
 			offAll = false;
 			
 			#if !FLX_NO_MOUSE
@@ -551,7 +559,8 @@ class CustomButton extends FlxSpriteGroup
 	 * Internal function for handling the actual callback call (for UI thread dependent calls like <code>FlxMisc.openURL()</code>).
 	 */
 	private function onMouseUp(event:Event):Void
-	{
+	{	
+		//trace("oMU");
 		//trace(exists + " " + visible + " " + active + " " + status);
 		if (!exists || !visible || !active || (status != FlxButton.PRESSED))
 		{

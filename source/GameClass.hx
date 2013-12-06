@@ -3,15 +3,13 @@ package;
 import flash.display.StageDisplayState;
 import flash.events.Event;
 import flash.Lib;
-import flixel.*;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxGame;
 import flixel.util.FlxSave;
-
 	
 class GameClass extends FlxGame
-{	
+{
 	
 	private var gameWidth:Int;
 	private var gameHeight:Int;
@@ -43,10 +41,11 @@ class GameClass extends FlxGame
 		
 		Lib.current.stage.addEventListener(Event.RESIZE, window_resized);
 		
-		
-		
+		#if android
+		FlxG.android.preventDefaultBackAction = true;
+		#end
 	}
-	
+
 	public function setScreenSize(Size:Int):Void
 	{
 		
@@ -54,7 +53,7 @@ class GameClass extends FlxGame
 	
 	public function toggle_fullscreen():Void
 	{
-		FlxG.fullscreen = !FlxG.fullscreen;	 
+		FlxG.fullscreen = !FlxG.fullscreen;
 		window_resized();
 	}
 	
@@ -69,7 +68,7 @@ class GameClass extends FlxGame
 		window_resized();
 	}
 	
-	public function FitWindow():Void 
+	public function FitWindow():Void
 	{
 		
 		
@@ -87,20 +86,23 @@ class GameClass extends FlxGame
 		
 		FlxCamera.defaultZoom = ratio;
 		
-		if (FlxG.camera != null)		
+		if (FlxG.camera != null)
 		FlxG.camera.zoom = ratio;
+		
+		
 	}
 		
 	
-	override public function update():Void 
+	override public function update():Void
 	{
 		super.update();
 		#if !FLX_NO_KEYBOARD
 		#if !web
-		if (FlxG.keyboard.justReleased("ESCAPE"))
+		if (FlxG.keyboard.justReleased("F"))
 			toggle_fullscreen();
 		#end
 		#end
+		
 	}
 	
 	

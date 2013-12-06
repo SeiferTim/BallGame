@@ -122,6 +122,17 @@ class CreditsState extends FlxState
 				_btnBack.visible = true;
 			}
 		}
+		else if (_state == STATE_WAIT)
+		{
+			#if !FLX_NO_KEYBOARD
+			if (FlxG.keyboard.justReleased("ESCAPE"))
+				_state = STATE_OUT;
+			#end
+			#if android
+			if (FlxG.android.justReleased("BACK"))
+				_state = STATE_OUT;
+			#end
+		}
 		else if (_state == STATE_OUT)
 		{
 			if (_texts[_texts.length-1].alpha >0)
