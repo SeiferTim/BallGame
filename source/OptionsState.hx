@@ -1,4 +1,5 @@
 package ;
+import flash.display.BlendMode;
 import flash.display.StageDisplayState;
 import flixel.addons.text.FlxBitmapFont;
 import flixel.FlxG;
@@ -41,7 +42,7 @@ class OptionsState extends FlxState
 		#end
 		_loaded = false;
 		_state = STATE_IN;
-		alphaLevel = 0;
+		alphaLevel = 0.0001;
 		
 		add(new FlxSprite(0, 0, "images/background.png"));
 		
@@ -50,7 +51,7 @@ class OptionsState extends FlxState
 		var text:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		text.setText("Options", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		text.setPosition((FlxG.width - text.width) / 2, 48);
-		text.alpha = 0;
+		text.alpha = alphaLevel;
 		add(text);
 		
 		_fadeObjs.push([text]);
@@ -58,12 +59,13 @@ class OptionsState extends FlxState
 		var optText1:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		optText1.setText("Sound FX", false, 0, 0, FlxBitmapFont.ALIGN_RIGHT, true);
 		optText1.setPosition(32, 80);
-		optText1.alpha = 0;
+		optText1.alpha = alphaLevel;
 		optText1.setFixedWidth(192, FlxBitmapFont.ALIGN_RIGHT);
 		add(optText1);
 		
 		var optSlide1:CustomSlider = new CustomSlider(Std.int(optText1.x + optText1.width + 16),Std.int(optText1.y), Std.int(FlxG.width - optText1.width - 80),64,16,14,0,1,SlideChange);
 		optSlide1.decimals = 1;
+		
 		optSlide1.value = FlxG.sound.volume;
 		
 		var newBar:FlxSprite = new FlxSprite();
@@ -93,9 +95,8 @@ class OptionsState extends FlxState
 		FlxSpriteUtil.alphaMaskFlxSprite(FlxGradient.createGradientFlxSprite(Std.int(optSlide1.handle.width), Std.int(optSlide1.handle.height), [0xffb3dced,0xff29b8e5,0xffbce0ee]), tmpMask, newHandle);
 		
 		newHandleBorder.stamp(newHandle, 0, 0);
-		
 		optSlide1.replaceHandleSprite(newHandleBorder);
-		optSlide1.alpha = 0;
+		optSlide1.alpha = alphaLevel;
 		
 		add(optSlide1);
 		
@@ -107,11 +108,11 @@ class OptionsState extends FlxState
 		optText2.setText("Screen Mode", false, 0, 0, FlxBitmapFont.ALIGN_RIGHT, true);
 		optText2.setFixedWidth(192, FlxBitmapFont.ALIGN_RIGHT);
 		optText2.setPosition(32, 112);
-		optText2.alpha = 0;
+		optText2.alpha = alphaLevel;
 		add(optText2);
 		
 		_optButton2 = new CustomButton((optText2.x + optText2.width + 16) + ((FlxG.width - optText2.x - optText2.width - 48 - Reg.BUTTON_WIDTH) / 2), 112, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, FlxG.fullscreen ? "Fullscreen" : "Window", ChangeScreen);
-		_optButton2.alpha = 0;
+		_optButton2.alpha = alphaLevel;
 		add(_optButton2);
 		
 		_fadeObjs.push([optText2, _optButton2]);
@@ -120,12 +121,13 @@ class OptionsState extends FlxState
 		
 		
 		_exitButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, FlxG.height - Reg.BUTTON_HEIGHT - 32, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Back", ClickBack);
-		_exitButton.alpha = 0;
+		_exitButton.alpha = alphaLevel;
 		add(_exitButton);
 		
 		_fadeObjs.push([_exitButton]);
 		
-		_sprBlack = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height,  FlxColor.BLACK);
+		_sprBlack = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height,  FlxColor.WHITE);
+		_sprBlack.blend = BlendMode.ADD;
 		add(_sprBlack);
 		
 		//_loaded = true;
@@ -163,6 +165,7 @@ class OptionsState extends FlxState
 		FlxG.sound.volume = Value;
 		Reg.save.data.volume = FlxG.sound.volume;
 		Reg.save.flush();
+		FlxG.sound.play(SoundAssets.SND_BUTTONUP);
 	}
 	
 	private function ClickBack():Void

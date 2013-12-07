@@ -1,5 +1,6 @@
 package ;
 
+import flash.display.BlendMode;
 import flash.events.IOErrorEvent;
 import flixel.addons.text.FlxBitmapFont;
 import flixel.FlxG;
@@ -80,7 +81,8 @@ class CreditsState extends FlxState
 		_texts.push(_btnBack);
 		
 		
-		_sprBlack = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height,  FlxColor.BLACK);
+		_sprBlack = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height,  FlxColor.WHITE);
+		_sprBlack.blend = BlendMode.ADD;
 		add(_sprBlack);
 		StartFadeInTween();
 		

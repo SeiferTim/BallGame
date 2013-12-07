@@ -1,6 +1,7 @@
 package;
 
 import flash.display.BlendMode;
+import flash.events.Event;
 import flixel.addons.text.FlxBitmapFont;
 import flixel.addons.tile.FlxTilemapExt;
 import flixel.effects.FlxSpriteFilter;
@@ -100,8 +101,10 @@ class PlayState extends FlxState
 	private var _p2TouchZone:FlxRect;
 	#end
 	
-	private var _paused:Bool
+	private var _paused:Bool;
 	private var _pauseScreen:FlxGroup;
+	
+	private var _twn:FlxTween;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -136,6 +139,12 @@ class PlayState extends FlxState
 		super.create();
 		
 		_state = STATE_FADEIN;
+		_twn = FlxTween.multiVar(_sprFade, { alpha:0 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeIn } );
+	}
+	
+	private function DoneFadeIn(T:FlxTween):Void
+	{
+		_state = STATE_PLAY;
 	}
 	
 	private function AddLightTrail(Target:FlxSprite):FlxTrail
@@ -185,7 +194,8 @@ class PlayState extends FlxState
 		_grpUI = new FlxGroup();
 		_grpPlayerEmits = new FlxGroup();
 		
-		_sprFade = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		_sprFade = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE);
+		_sprFade.blend = BlendMode.ADD;
 		
 		_sprPlayer1 = new FlxSprite(22, 16).loadGraphic("images/Left-Bumper-Ship-1.png", true, false, 18, 48);//.makeGraphic(Reg.PLAYER_WIDTH, Reg.PLAYER_HEIGHT, FlxColor.BLUE);
 		_sprPlayer1.width = 15;
@@ -370,7 +380,7 @@ class PlayState extends FlxState
 		
 		var _pauseText = new FlxBitmapFont(Reg.FONT_YELLOW, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		_pauseText.setText("* * PAUSED * *", false, 8, 0, FlxBitmapFont.ALIGN_CENTER, false);
-		_pauseText.x = (FlxG.width - _pauseText.width) / 2);
+		_pauseText.x = (FlxG.width - _pauseText.width) / 2;
 		_pauseText.y = (FlxG.height/2) - _pauseText.height - 8;
 		_pauseScreen.add(_pauseText);
 		
@@ -379,6 +389,11 @@ class PlayState extends FlxState
 		
 		_pauseScreen.visible = false;
 		
+		
+	}
+	
+	private function ResumeGame(E:Event):Void
+	{
 		
 	}
 	
@@ -636,6 +651,7 @@ class PlayState extends FlxState
 			{
 				_gameTimer = 0;
 				_state = STATE_LEVELEND;
+				_twn = FlxTween.multiVar(_sprFade, { alpha:1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeOut } );
 				Reg.scores.push([_scores[1], _scores[2]]);
 				_ball.velocity.x = _ball.velocity.y = 0;
 			}
@@ -729,6 +745,8 @@ class PlayState extends FlxState
 		}
 		_ball.velocity.x *= 1.1;
 		_ball.velocity.y *= 1.1;
+		PlayPopSound();
+		PlayHitSound();
 		burst();
 	}
 	
@@ -738,6 +756,8 @@ class PlayState extends FlxState
 		var ballMid:Int = Std.int(B.y + (Reg.BALL_SIZE / 2));
 		var diff:Int;
 		var eType:Int = cast(E, Enemy).etype;
+		PlayPopSound();
+		PlayHitSound();
 		burst();
 		
 		E.hurt(1);
@@ -792,6 +812,8 @@ class PlayState extends FlxState
 			{			
 				newAngle = FlxAngle.rotatePoint(B.velocity.x, B.velocity.y, 0, 0, FlxRandom.floatRanged( -180, 180));
 				fb = cast _grpFakeBalls.recycle(FakeBall, [B.x, B.y, newAngle.x, newAngle.y]);
+				//fb.revive();
+				fb.reset(B.x, B.y);
 				fb.alpha = .6;
 				fb.trail = AddTrail(fb,_grpBallTrail);
 				fb.grad = AddLightTrail(fb);
@@ -812,11 +834,15 @@ class PlayState extends FlxState
 	private function FakeBallHitsPlayer(P:FlxObject, B:FlxObject):Void
 	{
 		burst(B.x, B.y);
+		PlayPopSound();
+		PlayHitSound();
 		B.kill();
 	}
 	
 	private function BallHitPlayer(P:FlxObject, B:FlxObject):Void
 	{
+		//PlayPopSound();
+		PlayHitSound();
 		if (P.x == _sprPlayer1.x)
 		{
 			ChangeOwner(1);
@@ -849,13 +875,24 @@ class PlayState extends FlxState
 		burst();
 	}
 	
+	private function PlayHitSound():Void
+	{
+		FlxArrayUtil.getRandom(SoundAssets.HIT_SOUNDS, 0, SoundAssets.HIT_SOUNDS.length).play(true);
+	}
+	private function PlayPopSound():Void
+	{
+		FlxArrayUtil.getRandom(SoundAssets.POP_SOUNDS, 0, SoundAssets.POP_SOUNDS.length).play(true);
+	}
+	
 	private function BallHitWall(W:FlxObject, B:FlxObject):Void
 	{
+		PlayHitSound();
 		burst();
 	}
 	
 	private function FakeBallHitWall(W:FlxObject, B:FlxObject):Void
 	{
+		PlayHitSound();
 		burst(B.x, B.y);
 	}
 
@@ -907,17 +944,17 @@ class PlayState extends FlxState
 			case STATE_LOADING:
 				
 			case STATE_FADEIN:
-				if (_sprFade.alpha > 0)
-					_sprFade.alpha -= FlxG.elapsed * 3;
-				else
-					_state = STATE_PLAY;
+				//if (_sprFade.alpha > 0)
+				//	_sprFade.alpha -= FlxG.elapsed * 3;
+				//else
+				//	_state = STATE_PLAY;
 			case STATE_PLAY:
 				GamePlay();
 			case STATE_LEVELEND:
-				if (_sprFade.alpha < 1)
+				/*if (_sprFade.alpha < 1)
 					_sprFade.alpha += FlxG.elapsed * 3;
 				else
-					FlxG.switchState(new ScoreBoardState());
+					FlxG.switchState(new ScoreBoardState());*/
 		}
 		
 		SetScoreText();
@@ -930,6 +967,11 @@ class PlayState extends FlxState
 		if (_sprPlayer2.y < 16) _sprPlayer2.y = _levelBounds.top;
 		else if (_sprPlayer2.y > _levelBounds.bottom - Reg.PLAYER_HEIGHT) _sprPlayer2.y = _levelBounds.bottom - Reg.PLAYER_HEIGHT;
 		
+	}
+	
+	private function DoneFadeOut(T:FlxTween):Void
+	{
+		FlxG.switchState(new ScoreBoardState());
 	}
 	
 	private function SetScoreText():Void

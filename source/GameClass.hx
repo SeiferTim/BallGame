@@ -44,6 +44,7 @@ class GameClass extends FlxGame
 		#if android
 		FlxG.android.preventDefaultBackAction = true;
 		#end
+		SoundAssets.cacheSounds();
 	}
 
 	public function setScreenSize(Size:Int):Void

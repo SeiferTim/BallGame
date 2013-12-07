@@ -119,8 +119,8 @@ class CustomButton extends FlxSpriteGroup
 		_button_up.pixels.fillRect(new Rectangle(2, 1, Width - 4, Height - 2), 0xccc078f2);
 		_button_up.pixels.fillRect(new Rectangle(1, 2, Width - 2, Height - 4), 0xccc078f2);
 		_button_up.pixels.fillRect(new Rectangle(2, 2, Width - 4, Height - 4), 0xff26ffff);
-		_button_up.pixels.fillRect(new Rectangle(4, 4, Width - 8, (Height - 8)/2), 0xcc99ffff  );
-		_button_up.pixels.fillRect(new Rectangle(4, ((Height - 8)/2)+4, Width - 8, (Height - 8)/2), 0xcc33ffff );
+		_button_up.pixels.fillRect(new Rectangle(4, 4, Width - 8, (Height - 8)/2), 0xaa99ffff  );
+		_button_up.pixels.fillRect(new Rectangle(4, ((Height - 8)/2)+4, Width - 8, (Height - 8)/2), 0xaa33ffff );
 		
 		_button_down = new FlxSprite();
 		_button_down.makeGraphic(Std.int(Width), Std.int(Height), 0x0, true);
@@ -128,8 +128,8 @@ class CustomButton extends FlxSpriteGroup
 		_button_down.pixels.fillRect(new Rectangle(2, 1, Width - 4, Height - 2), 0xccc078f2);
 		_button_down.pixels.fillRect(new Rectangle(1, 2, Width - 2, Height - 4), 0xccc078f2);
 		_button_down.pixels.fillRect(new Rectangle(2, 2, Width - 4, Height - 4), 0xff26ffff);
-		_button_down.pixels.fillRect(new Rectangle(6, 6, Width - 12, (Height - 12)/2), 0xdd88ffff  );
-		_button_down.pixels.fillRect(new Rectangle(6, ((Height - 12)/2)+6, Width - 12, (Height - 12)/2), 0xdd22ffff );
+		_button_down.pixels.fillRect(new Rectangle(6, 6, Width - 12, (Height - 12)/2), 0xcc88ffff  );
+		_button_down.pixels.fillRect(new Rectangle(6, ((Height - 12)/2)+6, Width - 12, (Height - 12)/2), 0xcc22ffff );
 		_button_down.visible = false;
 		
 		_button_highlight = new FlxSprite();
@@ -177,6 +177,9 @@ class CustomButton extends FlxSpriteGroup
 		scrollFactor.y = 0;
 		
 		_touchPointID = -1;
+		
+		//soundDown = FlxG.sound.load(SoundAssets.SND_BUTTONDOWN);
+		soundUp = FlxG.sound.load(SoundAssets.SND_BUTTONUP);
 	}
 	
 	/**

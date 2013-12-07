@@ -1,10 +1,14 @@
 package ;
+import flash.display.BlendMode;
 import flash.geom.Rectangle;
 import flixel.addons.text.FlxBitmapFont;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxColor;
 
 
 class ScoreBoardState extends FlxState
@@ -27,7 +31,7 @@ class ScoreBoardState extends FlxState
 	private var _btnNextMatch:CustomButton;
 	private var _btnQuit:CustomButton;
 	
-	private var _grpBlack:FlxSprite;
+	private var _sprBlack:FlxSprite;
 	private var _loaded:Bool;
 	private var _state:Int;
 	
@@ -36,11 +40,13 @@ class ScoreBoardState extends FlxState
 	private inline static var STATE_IN:Int = 0;
 	private inline static var STATE_WAIT:Int = 1;
 	private inline static var STATE_OUT:Int = 2;
+	private inline static var STATE_OUTOUT:Int = 3;
 	
 	private var alphaLevel:Float = 0;
 	
 	private var doingQuit:Bool;
 	
+	private var _twn:FlxTween;
 	
 	override public function create():Void
 	{
@@ -55,11 +61,16 @@ class ScoreBoardState extends FlxState
 		_state = STATE_IN;
 		BuildScreen();
 		
-		_loaded = true;
+		_loaded = false;
 		super.create();
+		
+		_twn = FlxTween.multiVar(_sprBlack, { alpha:0 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeIn } );
 	}
 	
-	
+	private function DoneFadeIn(T:FlxTween):Void
+	{
+		_loaded = true;
+	}
 	
 	private function BuildScreen():Void
 	{
@@ -254,6 +265,11 @@ class ScoreBoardState extends FlxState
 		}
 		
 		
+		_sprBlack = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE);
+		_sprBlack.blend = BlendMode.ADD;
+		add(_sprBlack);
+		
+		
 	}
 	
 	override public function update():Void
@@ -297,14 +313,21 @@ class ScoreBoardState extends FlxState
 			}
 			else
 			{
-				if (doingQuit)
-					FlxG.switchState(new MenuState());
-				else
-					FlxG.switchState(new PlayState());
+				_state = STATE_OUTOUT;
+				_twn = FlxTween.multiVar(_sprBlack, { alpha:1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete: DoneFadeOut} );
 			}
 		}
 		
 		super.update();
+	}
+	
+	
+	private function DoneFadeOut(T:FlxTween):Void
+	{
+		if (doingQuit)
+			FlxG.switchState(new MenuState());
+		else
+			FlxG.switchState(new PlayState());
 	}
 	
 	private function ClickNextMatch():Void
