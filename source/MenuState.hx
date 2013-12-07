@@ -158,6 +158,9 @@ class MenuState extends FlxState
 		StartFadeInTween();
 		
 		super.create();
+		
+		Reg.PlayMusic(SoundAssets.MUS_BG1);
+		
 	}
 	
 	

@@ -47,6 +47,7 @@ class ScoreBoardState extends FlxState
 	private var doingQuit:Bool;
 	
 	private var _twn:FlxTween;
+
 	
 	override public function create():Void
 	{
@@ -209,6 +210,7 @@ class ScoreBoardState extends FlxState
 			_grpTexts.add(_txtScoresP1[i]);
 			_grpTexts.add(_txtScoresP2[i]);
 			
+			
 
 		}
 		
@@ -241,6 +243,19 @@ class ScoreBoardState extends FlxState
 		_fadeGroups.push([p1WinText, p1Count]);
 		_fadeGroups.push([p2WinText, p2Count]);
 		
+		
+		if (Reg.curMatch == Reg.numMatches - 1)
+		{
+			var win:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_INVERT, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+			if (_p1wins != _p2wins)
+				win.setText("Player " + (_p1wins > _p2wins ? "1" : "2") + " Wins!", false, 8, 0, FlxBitmapFont.ALIGN_CENTER, true);
+			else
+				win.setText("It's a DRAW!", false, 8, 0, FlxBitmapFont.ALIGN_CENTER, true);
+			win.setPosition((FlxG.width - win.width) / 2, FlxG.height - 112);
+			add(win);
+		}
+		
+		
 		_btnQuit = new CustomButton(32, FlxG.height - Reg.BUTTON_HEIGHT - 32,Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT, "Exit", ClickQuit);//Plus(16, FlxG.height - 36, ClickQuit, null, "Exit", 100, 20);
 		//_btnQuit.visible = false;
 		add(_btnQuit);
@@ -263,6 +278,8 @@ class ScoreBoardState extends FlxState
 				_fadeGroups[i][j].alpha = 0;
 			}
 		}
+		
+		
 		
 		
 		_sprBlack = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE);

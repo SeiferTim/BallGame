@@ -55,7 +55,7 @@ class CustomButton extends FlxSpriteGroup
 	 * Set this to play a sound when the button is released.
 	 * We recommend using the helper function setSounds()!
 	 */
-	public var soundUp:FlxSound;
+	public var soundUp:String;
 	
 	/**
 	 * This function is called when the button is released.
@@ -166,7 +166,7 @@ class CustomButton extends FlxSpriteGroup
 		soundOver = null;
 		soundOut = null;
 		soundDown = null;
-		soundUp = null;
+		soundUp = "";
 		
 		status = FlxButton.NORMAL;
 		_pressed = false;
@@ -179,7 +179,8 @@ class CustomButton extends FlxSpriteGroup
 		_touchPointID = -1;
 		
 		//soundDown = FlxG.sound.load(SoundAssets.SND_BUTTONDOWN);
-		soundUp = FlxG.sound.load(SoundAssets.SND_BUTTONUP);
+		//soundUp = FlxG.sound.load(SoundAssets.SND_BUTTONUP);
+		soundUp = SoundAssets.SND_BUTTONUP;
 	}
 	
 	/**
@@ -225,10 +226,10 @@ class CustomButton extends FlxSpriteGroup
 		{
 			soundDown.destroy();
 		}
-		if (soundUp != null)
+		/*if (soundUp != null)
 		{
 			soundUp.destroy();
-		}
+		}*/
 		super.destroy();
 	}
 	
@@ -371,6 +372,7 @@ class CustomButton extends FlxSpriteGroup
 			if (offAll)
 			{
 				if (status != FlxButton.NORMAL)
+				if (status != FlxButton.NORMAL)
 				{
 					if (_onOut != null)
 					{
@@ -480,10 +482,10 @@ class CustomButton extends FlxSpriteGroup
 		{
 			soundDown = FlxG.sound.load(SoundDown, SoundDownVolume);
 		}
-		if (SoundUp != null)
+		/*if (SoundUp != null)
 		{
 			soundUp = FlxG.sound.load(SoundUp, SoundUpVolume);
-		}
+		}*/
 	}
 	
 	/**
@@ -571,14 +573,17 @@ class CustomButton extends FlxSpriteGroup
 			return;
 		}
 
+		
+		if (soundUp != "")
+		{
+			//soundUp.play(true);
+			FlxG.sound.play(soundUp, .66);
+		}
 		if (_onUp != null)
 		{
 			Reflect.callMethod(null, _onUp, _onUpParams);
 		}
-		if (soundUp != null)
-		{
-			soundUp.play(true);
-		}
+		
 		
 		_touchPointID = -1;
 		//trace("NORMAL");

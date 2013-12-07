@@ -26,13 +26,13 @@ class Enemy extends FlxSprite
 		switch (EType)
 		{
 			case 0:
-				img = "images/Baddie 1 throwing star.png";
+				img = "images/Baddie-1-throwing-star.png";
 			case 1:
-				img = "images/Baddie 1 throwing star.png";
+				img = "images/Baddie-1-throwing-star.png";
 			case 2:
 				img = "images/Baddie-2-Ghost.png";
 			case 3:
-				img = "images/Ball Keeper.png";
+				img = "images/Ball-Keeper.png";
 			case 4:
 				img = "images/stationary_block.png";
 		}

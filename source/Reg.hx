@@ -98,6 +98,8 @@ class Reg
 	
 	static public var MouseOverButton:Bool;
 	
+	static private var CurMusic:String = "";
+	
 	static public function initGame():Void
 	{
 		if (GameInitialized) return;
@@ -151,6 +153,16 @@ class Reg
 			levels.push(tLevel);
 			levelList.remove(tLevel);
 		}
+	}
+	
+	static public function PlayMusic(Music:String):Void	
+	{
+		if (CurMusic != Music)
+		{
+			CurMusic = Music;
+			FlxG.sound.playMusic(CurMusic);
+		}
+		
 	}
 	
 }

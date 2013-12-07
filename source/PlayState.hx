@@ -38,6 +38,7 @@ class PlayState extends FlxState
 	private var _sprPlayer1:FlxSprite;
 	private var _sprPlayer2:FlxSprite;
 	private var _ball:FlxSprite;
+	private var justTriggered:Bool;
 	
 	private var _levelBounds:FlxRect;
 	private var _grpWalls:FlxGroup;
@@ -61,10 +62,12 @@ class PlayState extends FlxState
 	private inline static var STATE_FADEOUT:Int = 2;
 	private inline static var STATE_PLAY:Int = 3;
 	private inline static var STATE_LEVELEND:Int = 4;
+	private inline static var STATE_PREPLAY:Int = 5;
 	
 	private var _ballLaunched:Bool = false;
 	private var _ballLaunchTimer:Float;
 	private var _ballLaunchDisplay:FlxSprite;
+	private var _ballLaunchScale:Float;
 	
 	private var _scores:Array<Int>;
 	private var _multi:Array<Int>;
@@ -105,6 +108,11 @@ class PlayState extends FlxState
 	private var _pauseScreen:FlxGroup;
 	
 	private var _twn:FlxTween;
+	private var _pauseTwn:FlxTween;
+	
+	private var GameStartTimer:Float;
+	
+	private var _pauseAlpha:Float;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -140,11 +148,30 @@ class PlayState extends FlxState
 		
 		_state = STATE_FADEIN;
 		_twn = FlxTween.multiVar(_sprFade, { alpha:0 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeIn } );
+		GameStartTimer  = 4;
+		justTriggered = true;
+		_pauseAlpha = 0.0001;
+		FlxG.autoPause = false;
+		//FlxG.watch.add(this, "_pauseAlpha");
+		
+	}
+	
+	override public function onFocusLost():Void 
+	{
+		//super.onFocusLost();
+		if (_paused) return;
+		StartPause();
+	}
+	
+	override public function onFocus():Void 
+	{
+		//super.onFocus();
 	}
 	
 	private function DoneFadeIn(T:FlxTween):Void
 	{
-		_state = STATE_PLAY;
+		//_state = STATE_PREPLAY;
+		ResetGamePlay();
 	}
 	
 	private function AddLightTrail(Target:FlxSprite):FlxTrail
@@ -230,10 +257,13 @@ class PlayState extends FlxState
 		_ballLaunchDisplay.animation.add("count", [0, 1, 2, 3], 0, false);
 		_ballLaunchDisplay.animation.pause();
 		_ballLaunchDisplay.animation.frameIndex = 0;
-		//_ballLaunchDisplay.alpha = 0;
+		_ballLaunchDisplay.alpha = 0;
+		_ballLaunchDisplay.visible = false;
+		_ballLaunchScale = 1;
+		_ballLaunchDisplay.scale.set(_ballLaunchScale, _ballLaunchScale);
 		_ballLaunchDisplay.x = (FlxG.width - _ballLaunchDisplay.width) / 2;
 		_ballLaunchDisplay.y = (FlxG.height - _ballLaunchDisplay.height) / 2;
-		_ballLaunchTimer = 2;
+		_ballLaunchTimer = 3;
 		
 		_grpUI.add(_ballLaunchDisplay);
 		
@@ -374,8 +404,9 @@ class PlayState extends FlxState
 		_pauseScreen = new FlxGroup();
 		add(_pauseScreen);
 		
-		var _pauseBack = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		var _pauseBack = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE);
 		_pauseBack.alpha = .66;
+		_pauseBack.blend = BlendMode.ADD;
 		_pauseScreen.add(_pauseBack);
 		
 		var _pauseText = new FlxBitmapFont(Reg.FONT_YELLOW, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
@@ -389,13 +420,12 @@ class PlayState extends FlxState
 		
 		_pauseScreen.visible = false;
 		
+		_pauseScreen.setAll("alpha", 0.0001);
+		
+		
 		
 	}
 	
-	private function ResumeGame(E:Event):Void
-	{
-		
-	}
 	
 	private function burst(X:Float = -1, Y:Float = -1):Void
 	{
@@ -446,20 +476,24 @@ class PlayState extends FlxState
 			_grpNodes.add(level.objects);
 		
 		_gameTimer = Reg.GAME_TIME;
-		ResetBall();
+		
 	}
 	
 	private function ResetBall():Void
 	{
 		
 		
-		SnapBall();
+		
 		_ballLaunchDisplay.animation.frameIndex = 0;
-		//_ballLaunchDisplay.alpha = 0;
+		_ballLaunchDisplay.alpha = 1;
+		_ballLaunchScale = 1;
+		_ballLaunchDisplay.scale.set(_ballLaunchScale, _ballLaunchScale);
 		_ballLaunchDisplay.visible = true;
-		_ballLaunchTimer = 2;
+		_ballLaunchTimer = 3;
 		_ballLaunched = false;
-		Reg.Freeze = true;
+		FlxG.sound.play(SoundAssets.SND_BOOOP);
+		SnapBall();
+		
 		_lastHitBy = 0;
 		_ball.animation.play("neutral");
 	}
@@ -524,8 +558,11 @@ class PlayState extends FlxState
 		
 	}
 	
+	
+	
 	private function GamePlay():Void
 	{
+		
 		var p1Up:Bool = false;
 		var p1Down:Bool = false;
 		var p2Up:Bool = false;
@@ -620,6 +657,11 @@ class PlayState extends FlxState
 		}
 		
 		
+	}
+	
+	
+	private function updateBall():Void
+	{
 		
 		if (!_ballLaunched)
 		{
@@ -641,8 +683,8 @@ class PlayState extends FlxState
 				_scores[1] += 50 * _multi[2];
 				_multi[2] = 1;
 			}
-			
-			ResetBall();
+			ResetGamePlay();
+			//ResetBall();
 		}
 		else
 		{
@@ -661,6 +703,12 @@ class PlayState extends FlxState
 		}
 	}
 	
+	private function ResetGamePlay():Void
+	{
+		Reg.Freeze = true;
+		_state = STATE_PREPLAY;
+		GameStartTimer = 4;
+	}
 	
 	private function SnapBall():Void
 	{
@@ -691,19 +739,30 @@ class PlayState extends FlxState
 			_ballLaunchTimer -= FlxG.elapsed * 3;
 			if (_ballLaunchTimer > 1)
 			{
-				//_ballLaunchDisplay.alpha = 1;
+				_ballLaunchScale = 1;
+				_ballLaunchDisplay.alpha = 1;
 				
 			}
 			else
 			{
-				//_ballLaunchDisplay.alpha = _ballLaunchTimer;
+				_ballLaunchScale = _ballLaunchTimer; 
+				_ballLaunchDisplay.alpha = _ballLaunchTimer;
 			}
+			_ballLaunchDisplay.scale.set(_ballLaunchScale, _ballLaunchScale);
+			_ballLaunchDisplay.setPosition((FlxG.width - _ballLaunchDisplay.width) / 2, (FlxG.height - _ballLaunchDisplay.height) / 2);
 		}
 		else if (_ballLaunchDisplay.animation.frameIndex < 3)
 		{
+			if (_ballLaunchDisplay.animation.frameIndex < 2)
+				FlxG.sound.play(SoundAssets.SND_BOOOP);
+			else
+				FlxG.sound.play(SoundAssets.SND_BOOOOP);
 			_ballLaunchDisplay.animation.frameIndex++;
-			_ballLaunchTimer = 2;
-			//_ballLaunchDisplay.alpha = 1;
+			_ballLaunchTimer = 3;
+			_ballLaunchDisplay.alpha = 1;
+			_ballLaunchScale = 1;
+			_ballLaunchDisplay.scale.set(_ballLaunchScale, _ballLaunchScale);
+			_ballLaunchDisplay.setPosition((FlxG.width - _ballLaunchDisplay.width) / 2, (FlxG.height - _ballLaunchDisplay.height) / 2);
 		}
 		else if (_ballLaunchDisplay.animation.frameIndex == 3)
 		{
@@ -877,11 +936,11 @@ class PlayState extends FlxState
 	
 	private function PlayHitSound():Void
 	{
-		FlxArrayUtil.getRandom(SoundAssets.HIT_SOUNDS, 0, SoundAssets.HIT_SOUNDS.length).play(true);
+		FlxG.sound.play(FlxArrayUtil.getRandom(SoundAssets.HIT_SOUNDS, 0, SoundAssets.HIT_SOUNDS.length), .66);
 	}
 	private function PlayPopSound():Void
 	{
-		FlxArrayUtil.getRandom(SoundAssets.POP_SOUNDS, 0, SoundAssets.POP_SOUNDS.length).play(true);
+		FlxG.sound.play(FlxArrayUtil.getRandom(SoundAssets.POP_SOUNDS, 0, SoundAssets.POP_SOUNDS.length), .88);
 	}
 	
 	private function BallHitWall(W:FlxObject, B:FlxObject):Void
@@ -926,6 +985,7 @@ class PlayState extends FlxState
 	 */
 	override public function update():Void
 	{
+		
 		SetTimerText();
 		
 		if (_lastHitBy <= 0)
@@ -939,6 +999,8 @@ class PlayState extends FlxState
 		_sprPlayer1.velocity.y = 0;
 		_sprPlayer2.velocity.y = 0;
 		
+		GamePlay();
+		
 		switch(_state)
 		{
 			case STATE_LOADING:
@@ -948,8 +1010,27 @@ class PlayState extends FlxState
 				//	_sprFade.alpha -= FlxG.elapsed * 3;
 				//else
 				//	_state = STATE_PLAY;
+			case STATE_PREPLAY:
+				if (GameStartTimer > 0)
+					GameStartTimer -= FlxG.elapsed * 3;
+				else
+				{
+					ResetBall();
+					_state = STATE_PLAY;
+				}
 			case STATE_PLAY:
-				GamePlay();
+				if (!_paused)
+				{
+					#if !FLX_NO_KEYBOARD
+					if (FlxG.keyboard.anyJustReleased(["ESCAPE", "P"]))
+						StartPause();
+					#end
+					#if android
+					if (FlxG.android.justReleased("MENU"))
+						StartPause();
+					#end
+					updateBall();
+				}
 			case STATE_LEVELEND:
 				/*if (_sprFade.alpha < 1)
 					_sprFade.alpha += FlxG.elapsed * 3;
@@ -957,9 +1038,17 @@ class PlayState extends FlxState
 					FlxG.switchState(new ScoreBoardState());*/
 		}
 		
+		if (_paused)
+		{
+			
+			_pauseScreen.setAll("alpha", _pauseAlpha);
+			cast(_pauseScreen.members[0],FlxSprite).alpha = .33 * _pauseAlpha;
+		}
 		SetScoreText();
 		
 		super.update();
+		
+		
 		
 		if (_sprPlayer1.y < _levelBounds.top) _sprPlayer1.y =  _levelBounds.top;
 		else if (_sprPlayer1.y >  _levelBounds.bottom - Reg.PLAYER_HEIGHT) _sprPlayer1.y = _levelBounds.bottom - Reg.PLAYER_HEIGHT;
@@ -968,6 +1057,36 @@ class PlayState extends FlxState
 		else if (_sprPlayer2.y > _levelBounds.bottom - Reg.PLAYER_HEIGHT) _sprPlayer2.y = _levelBounds.bottom - Reg.PLAYER_HEIGHT;
 		
 	}
+	
+	private function StartPause():Void
+	{
+		_paused = true;
+		_pauseScreen.visible = true;
+		justTriggered = false;
+		#if !FLX_NO_MOUSE
+		FlxG.mouse.show(Reg.CURSOR_NORMAL);
+		#end
+		_pauseTwn = FlxTween.multiVar(this, { _pauseAlpha:1 }, .33, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn } );
+	}
+	
+	
+	private function ResumeGame():Void
+	{
+		if (!_paused || justTriggered) return;
+		#if !FLX_NO_MOUSE
+		FlxG.mouse.reset();
+		FlxG.mouse.hide();
+		#end
+		_pauseTwn = FlxTween.multiVar(this, { _pauseAlpha:0.0001 }, .33, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete: DonePauseOut } );
+		justTriggered = true;
+	}
+	
+	private function DonePauseOut(T:FlxTween):Void
+	{
+		_pauseScreen.visible = false;
+		_paused = false;
+	}
+	
 	
 	private function DoneFadeOut(T:FlxTween):Void
 	{
