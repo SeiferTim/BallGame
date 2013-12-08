@@ -267,8 +267,8 @@ class CustomButton extends FlxSpriteGroup
 			}
 		}
 		
-		
 		_pressed = false;
+		
 		
 		super.update();
 	}
@@ -278,6 +278,7 @@ class CustomButton extends FlxSpriteGroup
 	 */
 	override public function draw():Void
 	{
+		
 		
 		super.draw();
 		
@@ -301,6 +302,7 @@ class CustomButton extends FlxSpriteGroup
 		}
 		
 		_wasPressed = _pressed;
+		
 	}
 	
 	/**
@@ -344,10 +346,10 @@ class CustomButton extends FlxSpriteGroup
 					{
 						if (_touchPointID == -1)
 						{
-							if (touch.pressed && !_wasPressed)
+							if (touch.pressed)
 							{
 								touch.getWorldPosition(camera, _point);
-								offAll = (updateButtonStatus(_point, camera,  touch.pressed && !_wasPressed , touch.touchPointID) == false) ? false : offAll;
+								offAll = (updateButtonStatus(_point, camera,  touch.pressed , touch.touchPointID) == false) ? false : offAll;
 							}
 						}
 						else if (touch.touchPointID == _touchPointID)
@@ -399,6 +401,7 @@ class CustomButton extends FlxSpriteGroup
 		// Then pick the appropriate frame of animation
 		//frame = framesData.frames[status];
 		drawButtonState();
+		
 	}
 	
 	/**
@@ -567,23 +570,22 @@ class CustomButton extends FlxSpriteGroup
 	{	
 		//trace("oMU");
 		//trace(exists + " " + visible + " " + active + " " + status);
-		if (!exists || !visible || !active || (status != FlxButton.PRESSED))
+		if (status != FlxButton.PRESSED)
 		{
 			
 			return;
 		}
 
+		if (_onUp != null)
+		{
+			Reflect.callMethod(null, _onUp, _onUpParams);
+		}
 		
 		if (soundUp != "")
 		{
 			//soundUp.play(true);
 			FlxG.sound.play(soundUp, .66);
 		}
-		if (_onUp != null)
-		{
-			Reflect.callMethod(null, _onUp, _onUpParams);
-		}
-		
 		
 		_touchPointID = -1;
 		//trace("NORMAL");

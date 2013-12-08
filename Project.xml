@@ -23,7 +23,8 @@
 	<assets path="assets/data" rename="data" include="*.tmx|*.tanim" />
 	<assets path="assets/images" rename="images" include="*.png" />
 	<assets path="assets/sounds" rename="sounds" include="*.wav" />
-	<assets path="assets/music" rename="music" include="*.mp3" />
+	<assets path="assets/music" rename="music" include="*.mp3" if="flash" />
+	<assets path="assets/music" rename="music" include="*.ogg" unless="flash" />
 	
 	<haxelib name="openfl" />
 	<haxelib name="flixel" />

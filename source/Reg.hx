@@ -89,7 +89,7 @@ class Reg
 	
 	static public var instance:GameClass;
 	
-	static public inline var GAME_TIME:Int =  2; // TESTING = 10, LIVE = 60
+	static public inline var GAME_TIME:Int =  60; // TESTING = 10, LIVE = 60
 	static public var Freeze:Bool = true;
 	
 	

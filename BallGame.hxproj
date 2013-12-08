@@ -16,16 +16,16 @@
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
     <class path="source" />
-    <class path="export\flash\haxe" />
+    <class path="export\windows\cpp\haxe" />
   </classpaths>
   <!-- Build options -->
   <build>
-    <option directives="FLX_NO_GAMEPAD&#xA;FLX_NO_FOCUS_LOST_SCREEN&#xA;tools=1.1.6&#xA;FLX_NO_DEBUG&#xA;openfl=1.1&#xA;FLX_NO_SOUND_TRAY&#xA;display&#xA;web" />
+    <option directives="FLX_NO_FOCUS_LOST_SCREEN&#xA;tools=1.1.6&#xA;FLX_NO_DEBUG&#xA;FLX_NO_TOUCH&#xA;openfl=1.1&#xA;FLX_NO_SOUND_TRAY&#xA;display&#xA;windows&#xA;desktop&#xA;no-compilation" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
     <option mainClass="ApplicationMain" />
     <option enabledebug="False" />
-    <option additional="--no-output&#xA;-swf-version 11.2&#xA;#--remap nme:flash" />
+    <option additional="--no-output&#xA;--macro allowPackage(&quot;flash&quot;)&#xA;--macro keep(&quot;Main&quot;)" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
