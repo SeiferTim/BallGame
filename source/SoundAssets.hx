@@ -31,8 +31,12 @@ class SoundAssets
 	inline static public var SND_BOOOOP:String = "sounds/booooop.wav";
 	
 	// MUSIC
-	
+	#if flash
 	inline static public var MUS_BG1:String = "music/bg1.mp3";
+	#end
+	#if !flash
+	inline static public var MUS_BG1:String = "music/bg1.ogg";
+	#end
 	
 	/**
 	 * Sound caching for android target
