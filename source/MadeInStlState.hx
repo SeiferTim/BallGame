@@ -20,7 +20,7 @@ class MadeInStlState extends FlxState
 	override public function create():Void 
 	{
 		
-		Reg.initGame();
+		//Reg.initGame();
 		
 		_img = new FlxSprite(0, 0, "images/made_in_stl.png");
 		_img.alpha = 0;

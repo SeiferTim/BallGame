@@ -89,7 +89,7 @@ class Reg
 	
 	static public var instance:GameClass;
 	
-	static public inline var GAME_TIME:Int =  60; // TESTING = 10, LIVE = 90;
+	static public inline var GAME_TIME:Int =  2; // TESTING = 10, LIVE = 60
 	static public var Freeze:Bool = true;
 	
 	
@@ -100,19 +100,21 @@ class Reg
 	
 	static private var CurMusic:String = "";
 	
+	#if desktop
+	static public var IsFullscreen:Bool;
+	#end
+	
 	static public function initGame():Void
 	{
 		if (GameInitialized) return;
-
+		Reg.save = new FlxSave();
+		Reg.save.bind("Options");
 		if (save.data.volume != null)
 			FlxG.sound.volume = save.data.volume;
 		else
 			FlxG.sound.volume = 0.5;
 		#if desktop
-			if (save.data.fullscreen != null)
-				instance.set_screenmode(save.data.fullscreen);
-			else
-				instance.set_screenmode(true);
+		IsFullscreen = (save.data.fullscreen != null) ? save.data.fullscreen : true;
 		#end
 		
 		LoadLevels();

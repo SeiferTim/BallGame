@@ -7,9 +7,6 @@ import flash.events.Event;
 import flash.Lib;
 import flixel.FlxGame;
 
-/**
- * @author Joshua Granick
- */
 class Main extends Sprite 
 {
 	// Entry point
@@ -47,6 +44,8 @@ class Main extends Sprite
 	
 	private function initialize():Void 
 	{
+		
+		
 		Lib.current.stage.align = StageAlign.TOP_LEFT;
 		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
 		#if flash

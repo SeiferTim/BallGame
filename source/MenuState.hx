@@ -69,7 +69,7 @@ class MenuState extends FlxState
 	 */
 	override public function create():Void
 	{
-		Reg.initGame();
+		//Reg.initGame();
 		
 		FlxG.cameras.bgColor = 0xff330033;
 		#if !FLX_NO_MOUSE

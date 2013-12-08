@@ -6,6 +6,7 @@ import flash.Lib;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxGame;
+import flixel.FlxState;
 import flixel.util.FlxSave;
 	
 class GameClass extends FlxGame
@@ -16,8 +17,9 @@ class GameClass extends FlxGame
 	
 	public function new()
 	{
-		Reg.save = new FlxSave();
-		Reg.save.bind("Options");
+		Reg.initGame();
+		
+		
 		gameWidth = Reg.GameWidth;
 		gameHeight = Reg.GameHeight;
 		
@@ -32,11 +34,19 @@ class GameClass extends FlxGame
 		var ratioY:Float = stageHeight / gameHeight;
 		var ratio:Float = Math.min(ratioX, ratioY);
 		
+		var startState:Class<FlxState>;
+		
 		#if debug
-		super(gameWidth, gameHeight, MenuState, ratio, fps, 60);
+		startState = MenuState;
 		#end
 		#if !debug
-		super(gameWidth, gameHeight, MadeInStlState, ratio, fps, 60);
+		startState = MadeInStlState;
+		#end
+		#if desktop
+		super(gameWidth, gameHeight, startState, ratio, fps, 60,false, Reg.IsFullscreen);
+		#end
+		#if !desktop
+		super(gameWidth, gameHeight, startState, ratio, fps, 60,false);
 		#end
 		
 		Lib.current.stage.addEventListener(Event.RESIZE, window_resized);
@@ -45,6 +55,8 @@ class GameClass extends FlxGame
 		FlxG.android.preventDefaultBackAction = true;
 		#end
 		SoundAssets.cacheSounds();
+		
+		//Reg.initGame();
 	}
 
 	public function setScreenSize(Size:Int):Void

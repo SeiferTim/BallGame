@@ -47,6 +47,8 @@ class ScoreBoardState extends FlxState
 	private var doingQuit:Bool;
 	
 	private var _twn:FlxTween;
+	private var win:FlxBitmapFont;
+	
 
 	
 	override public function create():Void
@@ -71,6 +73,7 @@ class ScoreBoardState extends FlxState
 	private function DoneFadeIn(T:FlxTween):Void
 	{
 		_loaded = true;
+		
 	}
 	
 	private function BuildScreen():Void
@@ -246,12 +249,16 @@ class ScoreBoardState extends FlxState
 		
 		if (Reg.curMatch == Reg.numMatches - 1)
 		{
-			var win:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_INVERT, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+			win = new FlxBitmapFont(Reg.FONT_INVERT, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 			if (_p1wins != _p2wins)
 				win.setText("Player " + (_p1wins > _p2wins ? "1" : "2") + " Wins!", false, 8, 0, FlxBitmapFont.ALIGN_CENTER, true);
 			else
 				win.setText("It's a DRAW!", false, 8, 0, FlxBitmapFont.ALIGN_CENTER, true);
 			win.setPosition((FlxG.width - win.width) / 2, FlxG.height - 112);
+			_fadeGroups.push([win]);
+			
+			
+			
 			add(win);
 		}
 		
@@ -309,6 +316,7 @@ class ScoreBoardState extends FlxState
 			{
 				alphaLevel = 1;
 				_state = STATE_WAIT;
+				var wt:FlxTween = FlxTween.multiVar(win, { alpha:.33 }, .33, { type:FlxTween.PINGPONG, ease:FlxEase.sineInOut } );
 				/*if (_btnNextMatch != null)
 					_btnNextMatch.visible = true;
 				_btnQuit.visible = true;*/

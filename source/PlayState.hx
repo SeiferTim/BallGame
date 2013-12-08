@@ -4,6 +4,7 @@ import flash.display.BlendMode;
 import flash.events.Event;
 import flixel.addons.text.FlxBitmapFont;
 import flixel.addons.tile.FlxTilemapExt;
+import flixel.addons.ui.FlxButtonPlus;
 import flixel.effects.FlxSpriteFilter;
 import flixel.effects.FlxTrail;
 import flixel.effects.particles.FlxEmitter;
@@ -113,6 +114,9 @@ class PlayState extends FlxState
 	private var GameStartTimer:Float;
 	
 	private var _pauseAlpha:Float;
+	
+	private var _grpQuit:FlxGroup;
+	private var _grpPause:FlxGroup;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -404,26 +408,73 @@ class PlayState extends FlxState
 		_pauseScreen = new FlxGroup();
 		add(_pauseScreen);
 		
+		_grpPause = new FlxGroup();
+		
+		
 		var _pauseBack = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE);
-		_pauseBack.alpha = .66;
+		_pauseBack.alpha = .8;
 		_pauseBack.blend = BlendMode.ADD;
 		_pauseScreen.add(_pauseBack);
+		
+		_pauseScreen.add(_grpPause);
 		
 		var _pauseText = new FlxBitmapFont(Reg.FONT_YELLOW, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		_pauseText.setText("* * PAUSED * *", false, 8, 0, FlxBitmapFont.ALIGN_CENTER, false);
 		_pauseText.x = (FlxG.width - _pauseText.width) / 2;
 		_pauseText.y = (FlxG.height/2) - _pauseText.height - 8;
-		_pauseScreen.add(_pauseText);
+		_grpPause.add(_pauseText);
 		
 		var _resumeButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH)/2, (FlxG.height/2) + 8, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "RESUME", ResumeGame);
-		_pauseScreen.add(_resumeButton);
+		_grpPause.add(_resumeButton);
+		
+		var _quitButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, (FlxG.height / 2) + 16 + Reg.BUTTON_HEIGHT, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "QUIT", QuitGame);
+		_grpPause.add(_quitButton);
+		
+		
+		_grpQuit = new FlxGroup();
+		_pauseScreen.add(_grpQuit);
+		
+		var confirm:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_YELLOW, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		confirm.setText("Are you sure\nyou want to Quit?", true, 8, 0, FlxBitmapFont.ALIGN_CENTER, false);
+		confirm.x = (FlxG.width - confirm.width) / 2;
+		confirm.y = (FlxG.height / 2) - confirm.height - 8;
+		_grpQuit.add(confirm);
+		
+		var quitYes:CustomButton  = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, (FlxG.height / 2) + 8, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "YES", YesQuit);
+		_grpQuit.add(quitYes);
+		
+		var quitNo:CustomButton  = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, (FlxG.height / 2) + 16 + Reg.BUTTON_HEIGHT, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "NO", NoQuit);
+		_grpQuit.add(quitNo);
+		
+		_grpQuit.visible = false;
 		
 		_pauseScreen.visible = false;
 		
 		_pauseScreen.setAll("alpha", 0.0001);
 		
+	
+	
 		
-		
+	}
+	
+	private function QuitGame():Void
+	{
+		if (!_paused || _grpQuit.visible) return;
+		_grpPause.visible = false;
+		_grpQuit.visible = true;
+	}
+	
+	private function YesQuit():Void
+	{
+		if (!_grpQuit.visible || _state == STATE_LEVELEND) return;
+		GameQuit();
+	}
+	
+	private function NoQuit():Void
+	{
+		if (!_paused || !_grpQuit.visible) return;
+		_grpPause.visible = true;
+		_grpQuit.visible = false;
 	}
 	
 	
@@ -691,16 +742,24 @@ class PlayState extends FlxState
 			_gameTimer -= FlxG.elapsed;
 			if (_gameTimer <= 0)
 			{
-				_gameTimer = 0;
-				_state = STATE_LEVELEND;
-				_twn = FlxTween.multiVar(_sprFade, { alpha:1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeOut } );
+				GameQuit();
 				Reg.scores.push([_scores[1], _scores[2]]);
 				_ball.velocity.x = _ball.velocity.y = 0;
 			}
-			if (_ball.velocity.x > -180 && _ball.velocity.x < 180)
-				_ball.velocity.x = 180 * (_ball.velocity.x / Math.abs(_ball.velocity.x));
+			else
+			{
+				if (_ball.velocity.x > -180 && _ball.velocity.x < 180)
+					_ball.velocity.x = 180 * (_ball.velocity.x / Math.abs(_ball.velocity.x));
+			}
 			
 		}
+	}
+	
+	private function GameQuit():Void
+	{
+		_gameTimer = 0;
+		_state = STATE_LEVELEND;
+		_twn = FlxTween.multiVar(_sprFade, { alpha:1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeOut } );
 	}
 	
 	private function ResetGamePlay():Void
@@ -1046,7 +1105,17 @@ class PlayState extends FlxState
 		}
 		SetScoreText();
 		
-		super.update();
+		if (!_paused)
+		{
+			super.update();
+		}
+		else
+		{
+			_sprPlayer1.update();
+			_sprPlayer2.update();
+			_pauseScreen.update();
+		}
+		
 		
 		
 		
@@ -1090,7 +1159,10 @@ class PlayState extends FlxState
 	
 	private function DoneFadeOut(T:FlxTween):Void
 	{
-		FlxG.switchState(new ScoreBoardState());
+		if (_paused)
+			FlxG.switchState(new MenuState());
+		else
+			FlxG.switchState(new ScoreBoardState());
 	}
 	
 	private function SetScoreText():Void
