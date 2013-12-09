@@ -108,6 +108,8 @@ class CustomButton extends FlxSpriteGroup
 	private var _button_highlight:FlxSprite;
 	
 	private var _buttonRect:FlxRect;
+	private var _isDrawn:Bool;
+	
 	
 	
 	public function new(X:Float, Y:Float, Width:Float, Height:Float, ?Label:String, ?OnClick:Dynamic) 
@@ -181,6 +183,8 @@ class CustomButton extends FlxSpriteGroup
 		//soundDown = FlxG.sound.load(SoundAssets.SND_BUTTONDOWN);
 		//soundUp = FlxG.sound.load(SoundAssets.SND_BUTTONUP);
 		soundUp = SoundAssets.SND_BUTTONUP;
+		
+		_isDrawn = false;
 	}
 	
 	/**
@@ -267,10 +271,32 @@ class CustomButton extends FlxSpriteGroup
 			}
 		}
 		
-		_pressed = false;
-		
 		
 		super.update();
+		
+		if (_isDrawn)
+		{
+			updateButton(); //Basic button logic
+
+			// Default button appearance is to simply update
+			// the label appearance based on animation frame.
+			if (_label == null)
+			{
+				return;
+			}
+			switch (status)
+			{
+				case FlxButton.HIGHLIGHT:
+					_label.alpha = alpha * .8;
+				case FlxButton.PRESSED:
+					_label.alpha = alpha * .5;
+					_label.setPosition(_button_down.x + ((_button_down.width - _label.width) / 2), (_button_down.y + 1 + (_button_down.height - _label.height) / 2));
+				default:
+					_label.alpha = alpha * 1;
+			}
+		}
+		_isDrawn = false;
+		
 	}
 	
 	/**
@@ -278,31 +304,8 @@ class CustomButton extends FlxSpriteGroup
 	 */
 	override public function draw():Void
 	{
-		
-		
 		super.draw();
-		
-		updateButton(); //Basic button logic
-
-		// Default button appearance is to simply update
-		// the label appearance based on animation frame.
-		if (_label == null)
-		{
-			return;
-		}
-		switch (status)
-		{
-			case FlxButton.HIGHLIGHT:
-				_label.alpha = alpha * .8;
-			case FlxButton.PRESSED:
-				_label.alpha = alpha * .5;
-				_label.setPosition(_button_down.x + ((_button_down.width - _label.width) / 2), (_button_down.y + 1 + (_button_down.height - _label.height) / 2));
-			default:
-				_label.alpha = alpha * 1;
-		}
-		
-		_wasPressed = _pressed;
-		
+		_isDrawn = true;
 	}
 	
 	/**
@@ -339,17 +342,17 @@ class CustomButton extends FlxSpriteGroup
 				camera = cameras[i++];
 				#if !FLX_NO_MOUSE
 					FlxG.mouse.getWorldPosition(camera, _point);
-					offAll = (updateButtonStatus(_point, camera, FlxG.mouse.pressed && !_wasPressed, 1) == false) ? false : offAll;
+					offAll = (updateButtonStatus(_point, camera, FlxG.mouse.justPressed, 1) == false) ? false : offAll;
 				#end
 				#if !FLX_NO_TOUCH
 					for (touch in FlxG.touches.list)
 					{
 						if (_touchPointID == -1)
 						{
-							if (touch.pressed)
+							if (touch.justPressed)
 							{
 								touch.getWorldPosition(camera, _point);
-								offAll = (updateButtonStatus(_point, camera,  touch.pressed , touch.touchPointID) == false) ? false : offAll;
+								offAll = (updateButtonStatus(_point, camera, touch.justPressed, touch.touchPointID) == false) ? false : offAll;
 							}
 						}
 						else if (touch.touchPointID == _touchPointID)
@@ -357,7 +360,7 @@ class CustomButton extends FlxSpriteGroup
 							touch.getWorldPosition(camera, _point);
 							offAll = false;
 							
-							if (!touch.pressed || !overlapsPoint(_point, true, camera))
+							if (touch.justReleased || !overlapsPoint(_point, true, camera))
 							{
 								offAll = true;
 								this.onMouseUp(null);
@@ -374,7 +377,6 @@ class CustomButton extends FlxSpriteGroup
 			if (offAll)
 			{
 				if (status != FlxButton.NORMAL)
-				if (status != FlxButton.NORMAL)
 				{
 					if (_onOut != null)
 					{
@@ -385,7 +387,7 @@ class CustomButton extends FlxSpriteGroup
 						soundOut.play(true);
 					}
 				}
-				//trace("NORMAL");
+				
 				status = FlxButton.NORMAL;
 			}
 		}
@@ -568,9 +570,7 @@ class CustomButton extends FlxSpriteGroup
 	 */
 	private function onMouseUp(event:Event):Void
 	{	
-		//trace("oMU");
-		//trace(exists + " " + visible + " " + active + " " + status);
-		if (status != FlxButton.PRESSED)
+		if (!exists || !visible || !active || status != FlxButton.PRESSED)
 		{
 			
 			return;

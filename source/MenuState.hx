@@ -49,6 +49,7 @@ class MenuState extends FlxState
 	private var _sprBlack:FlxSprite;
 	private var _goingToCredits:Bool;
 	private var _goingToOptions:Bool;
+	private var _goingToHow:Bool;
 	
 	private var _sprTitle:FlxSprite;
 	
@@ -115,13 +116,16 @@ class MenuState extends FlxState
 		_grpMain.add(txtClickToPlay);
 		
 
-		var playButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, ((FlxG.height - Reg.BUTTON_HEIGHT) / 2) - Reg.BUTTON_HEIGHT - 16, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Play Game", PlayGameClick);
+		var playButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, ((FlxG.height - Reg.BUTTON_HEIGHT) / 2) - (Reg.BUTTON_HEIGHT*2) - 24, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Play Game", PlayGameClick);
 		_grpMenuChoices.add(playButton);
 		
-		var optionsButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2,  (FlxG.height - Reg.BUTTON_HEIGHT) / 2, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Options", OptionsClick);
+		var howButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, ((FlxG.height - Reg.BUTTON_HEIGHT) / 2) - Reg.BUTTON_HEIGHT - 8, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "How to Play", HowClick);
+		_grpMenuChoices.add(howButton);
+		
+		var optionsButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2,  ((FlxG.height - Reg.BUTTON_HEIGHT) / 2) + 8, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Options", OptionsClick);
  		_grpMenuChoices.add(optionsButton);
 		
-		var creditsButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2,((FlxG.height - Reg.BUTTON_HEIGHT) / 2) + Reg.BUTTON_HEIGHT+ 16, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Credits", CreditsClick);
+		var creditsButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2,((FlxG.height - Reg.BUTTON_HEIGHT) / 2) + Reg.BUTTON_HEIGHT+ 24, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Credits", CreditsClick);
  		_grpMenuChoices.add(creditsButton);
 		
 		
@@ -160,6 +164,9 @@ class MenuState extends FlxState
 		super.create();
 		
 		Reg.PlayMusic(SoundAssets.MUS_BG1);
+		
+		FlxG.log.redirectTraces = false;
+		trace("TEST");
 		
 	}
 	
@@ -246,6 +253,18 @@ class MenuState extends FlxState
 		
 	}
 	
+	private function HowClick():Void
+	{
+		if (_state != STATE_MENU || justTriggered || _switchingMenu) return;
+		#if !FLX_NO_MOUSE
+		FlxG.mouse.reset();
+		#end
+		justTriggered = true;
+		_state = STATE_UNLOADING;
+		_goingToHow = true;
+		StartFadeOutTween();
+	}
+	
 	private function CreditsClick():Void
 	{
 		if (_state != STATE_MENU || justTriggered || _switchingMenu) return;
@@ -311,6 +330,8 @@ class MenuState extends FlxState
 			FlxG.switchState(new CreditsState());
 		else if (_goingToOptions)
 			FlxG.switchState(new OptionsState());
+		else if (_goingToHow)
+			FlxG.switchState(new HowToPlayState());
 		else
 		{
 			Reg.PickLevels(Reg.numMatches);

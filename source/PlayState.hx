@@ -28,6 +28,7 @@ import flixel.util.FlxMath;
 import flixel.util.FlxPoint;
 import flixel.util.FlxRandom;
 import flixel.util.FlxRect;
+import flixel.util.FlxSpriteUtil;
 import levels.TiledLevel;
 
 /**
@@ -103,6 +104,10 @@ class PlayState extends FlxState
 	#if !FLX_NO_TOUCH
 	private var _p1TouchZone:FlxRect;
 	private var _p2TouchZone:FlxRect;
+	private var _p1Touch:FlxSprite;
+	private var _p2Touch:FlxSprite;
+	private var _p1Touchline:FlxSprite;
+	private var _p2Touchline:FlxSprite;
 	#end
 	
 	private var _paused:Bool;
@@ -117,6 +122,7 @@ class PlayState extends FlxState
 	
 	private var _grpQuit:FlxGroup;
 	private var _grpPause:FlxGroup;
+	
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -180,7 +186,7 @@ class PlayState extends FlxState
 	
 	private function AddLightTrail(Target:FlxSprite):FlxTrail
 	{
-		var _lightTrail:FlxTrail = new FlxTrail(Target, "images/gradient3.png", 1, 12, .6, .08);
+		var _lightTrail:FlxTrail = new FlxTrail(Target, "images/gradient3.png", 2, 12, 1, .08);
 		_lightTrail.setAll("width", Target.width);
 		_lightTrail.setAll("height", Target.height);
 		_lightTrail.setAll("offset", new FlxPoint((300 - Target.width) / 2, (300 - Target.height) / 2));
@@ -199,12 +205,6 @@ class PlayState extends FlxState
 	
 	private function InitGameScreen():Void
 	{
-		
-		#if !FLX_NO_TOUCH
-		_p1TouchZone = new FlxRect(0, 0, FlxG.width / 4, FlxG.height);
-		_p2TouchZone = new FlxRect(0, FlxG.width - (FlxG.width / 4), FlxG.width / 4, FlxG.height);
-		#end
-		
 		_background = new FlxTileblock(0, 0, 704, 400).loadTiles("images/Tile-Top.png", 16, 16);
 		_background.scrollFactor.x = _background.scrollFactor.y = 0;
 		_background.x = (FlxG.width - _background.width) / 2; 
@@ -228,12 +228,12 @@ class PlayState extends FlxState
 		_sprFade = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE);
 		_sprFade.blend = BlendMode.ADD;
 		
-		_sprPlayer1 = new FlxSprite(22, 16).loadGraphic("images/Left-Bumper-Ship-1.png", true, false, 18, 48);//.makeGraphic(Reg.PLAYER_WIDTH, Reg.PLAYER_HEIGHT, FlxColor.BLUE);
+		_sprPlayer1 = new FlxSprite(64, 16).loadGraphic("images/Left-Bumper-Ship-1.png", true, false, 18, 48);//.makeGraphic(Reg.PLAYER_WIDTH, Reg.PLAYER_HEIGHT, FlxColor.BLUE);
 		_sprPlayer1.width = 15;
 		_sprPlayer1.offset.x = 2;
 		_sprPlayer1.animation.add("normal", [0, 1, 2, 1],6);
 		_sprPlayer1.animation.play("normal");
-		_sprPlayer2 = new FlxSprite(FlxG.width - 22 - 15, 16).loadGraphic("images/Right-Bumper-Ship-1.png", true, false, 18, 48);//).makeGraphic(Reg.PLAYER_WIDTH, Reg.PLAYER_HEIGHT, FlxColor.GOLDENROD);
+		_sprPlayer2 = new FlxSprite(FlxG.width - 64 - 15, 16).loadGraphic("images/Right-Bumper-Ship-1.png", true, false, 18, 48);//).makeGraphic(Reg.PLAYER_WIDTH, Reg.PLAYER_HEIGHT, FlxColor.GOLDENROD);
 		_sprPlayer2.width = 15;
 		_sprPlayer2.offset.x = 1;
 		_sprPlayer2.animation.add("normal", [0, 1, 2, 1],6);
@@ -452,7 +452,30 @@ class PlayState extends FlxState
 		
 		_pauseScreen.setAll("alpha", 0.0001);
 		
-	
+		
+		#if !FLX_NO_TOUCH
+		_p1TouchZone = new FlxRect(0, 0, FlxG.width / 4, FlxG.height);
+		_p2TouchZone = new FlxRect(FlxG.width - (FlxG.width / 4), 0, FlxG.width / 4, FlxG.height);
+		_p1Touch = new FlxSprite(0, 0, "images/p1_touch.png");
+		_p1Touch.visible = false;
+		_p2Touch = new FlxSprite(0, 0, "images/p2_touch.png");
+		_p2Touch.visible = false;
+		
+		add(_p1Touch);
+		add(_p2Touch);
+		
+		_p1Touchline = new FlxSprite();
+		_p1Touchline.makeGraphic(1, 3, 0xff0000ff);
+		_p1Touchline.visible = false;
+		add(_p1Touchline);
+		
+		
+		_p2Touchline = new FlxSprite();
+		_p2Touchline.makeGraphic(1, 3, 0xffff0000);
+		_p2Touchline.visible = false;
+		add(_p2Touchline);
+		
+		#end
 	
 		
 	}
@@ -609,6 +632,58 @@ class PlayState extends FlxState
 		
 	}
 	
+	private function DrawTouchLine(PlayerNo:Int, Touch:FlxTouch):Void
+	{
+		var sprTouch:FlxSprite;
+		var sprPlayer:FlxSprite;
+		var sprTouchline:FlxSprite;
+		var lineColor:Int;
+		if (PlayerNo == 1)
+		{
+			sprTouch = _p1Touch;
+			sprPlayer = _sprPlayer1;
+			sprTouchline = _p1Touchline;
+			lineColor = 0x990000ff;
+		}
+		else
+		{
+			sprTouch = _p2Touch;
+			sprPlayer = _sprPlayer2;
+			sprTouchline = _p2Touchline;
+			lineColor = 0x99ff0000;
+		}
+		
+		sprTouch.visible = true;
+		sprTouch.setPosition(Touch.x - (sprTouch.width / 2), Touch.y - (sprTouch.height / 2));
+		
+		var pStartX:Float = Math.min(sprTouch.x + sprTouch.width, sprPlayer.x);
+		var pStartY:Float = Math.min(sprTouch.y + (sprTouch.height / 2), sprPlayer.y + (Reg.PLAYER_HEIGHT / 2));
+		var pStopX:Float = Math.max(sprTouch.x, sprPlayer.x);
+		var pStopY:Float = Math.max(sprTouch.y + (sprTouch.height / 2), sprPlayer.y + (Reg.PLAYER_HEIGHT / 2));
+		
+		var pointA:FlxPoint;
+		var pointB:FlxPoint;
+		
+		if (sprTouch.x < sprPlayer.x)
+		{
+			pointA = new FlxPoint(sprTouch.x + sprTouch.width, sprTouch.y + (sprTouch.height / 2));
+			pointB = new FlxPoint(sprPlayer.x, sprPlayer.y + (Reg.PLAYER_HEIGHT / 2));
+		}
+		else
+		{
+			pointA = new FlxPoint(sprPlayer.x+sprPlayer.width, sprPlayer.y + (Reg.PLAYER_HEIGHT / 2));
+			pointB = new FlxPoint(sprTouch.x + sprTouch.width, sprTouch.y + (sprTouch.height / 2));
+		}
+		sprTouchline.scale.x =  FlxMath.getDistance(pointA, pointB);
+		sprTouchline.setPosition(pStartX + ((pStopX - pStartX) / 2), pStartY + ((pStopY - pStartY) / 2));
+		var angle:Float = FlxAngle.getAngle(pointA, pointB);
+		if (angle < 0) angle += 360;
+		else if (angle > 360) angle -= 360;
+		angle += 90;
+		sprTouchline.angle = angle;
+		sprTouchline.visible = true;
+		
+	}
 	
 	
 	private function GamePlay():Void
@@ -631,18 +706,24 @@ class PlayState extends FlxState
 		#end
 		
 		#if !FLX_NO_TOUCH
+		_p1Touch.visible = false;
+		_p1Touchline.visible = false;
 		for (touch in FlxG.touches.list)
 		{
 			if (touch.pressed)
 			{
 				if (touch.inFlxRect(_p1TouchZone))
 				{
-					if (touch.y < _sprPlayer1.y + (Reg.PLAYER_HEIGHT / 2))
+					
+					DrawTouchLine(1,touch);
+					
+					if (touch.y < _sprPlayer1.y + (Reg.PLAYER_HEIGHT / 2)-(Reg.PLAYER_HEIGHT/8))
 						p1Up = true;
-					else if (touch.y > _sprPlayer1.y + (Reg.PLAYER_HEIGHT / 2))
+					else if (touch.y > _sprPlayer1.y + (Reg.PLAYER_HEIGHT / 2)+(Reg.PLAYER_HEIGHT/8))
 						p1Down = true;
 				}
 			}
+			
 		}
 		#end
 		
@@ -668,17 +749,23 @@ class PlayState extends FlxState
 			#end
 			
 			#if !FLX_NO_TOUCH
+			_p2Touch.visible = false;
+			_p2Touchline.visible = false;
 			for (touch in FlxG.touches.list)
 			{
 				if (touch.pressed)
 				{
 					if (touch.inFlxRect(_p2TouchZone))
 					{
-						if (touch.y < _sprPlayer2.y + (Reg.PLAYER_HEIGHT / 2))
+						//_p2Touch.visible = true;
+						//_p2Touch.setPosition(touch.x - (_p2Touch.width / 2),touch.y - (_p2Touch.height / 2));
+						DrawTouchLine(2, touch);
+						if (touch.y < _sprPlayer2.y + (Reg.PLAYER_HEIGHT / 2)-(Reg.PLAYER_HEIGHT/8))
 							p2Up = true;
-						else if (touch.y > _sprPlayer2.y + (Reg.PLAYER_HEIGHT / 2))
+						else if (touch.y > _sprPlayer2.y + (Reg.PLAYER_HEIGHT / 2)+(Reg.PLAYER_HEIGHT/8))
 							p2Down = true;
 					}
+					
 				}
 			}
 			#end
