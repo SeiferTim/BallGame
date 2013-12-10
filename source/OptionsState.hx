@@ -48,7 +48,7 @@ class OptionsState extends FlxState
 		
 		_fadeObjs = new Array<Array<FlxSprite>>();
 		
-		var text:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		var text:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		text.setText("Options", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		text.setPosition((FlxG.width - text.width) / 2, 48);
 		text.alpha = alphaLevel;
@@ -56,7 +56,7 @@ class OptionsState extends FlxState
 		
 		_fadeObjs.push([text]);
 		
-		var optText1:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		var optText1:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		optText1.setText("Sound FX", false, 0, 0, FlxBitmapFont.ALIGN_RIGHT, true);
 		optText1.setPosition(32, 80);
 		optText1.alpha = alphaLevel;
@@ -104,7 +104,7 @@ class OptionsState extends FlxState
 		
 		#if desktop
 		
-		var optText2:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		var optText2:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		optText2.setText("Screen Mode", false, 0, 0, FlxBitmapFont.ALIGN_RIGHT, true);
 		optText2.setFixedWidth(192, FlxBitmapFont.ALIGN_RIGHT);
 		optText2.setPosition(32, 112);

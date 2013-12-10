@@ -67,9 +67,16 @@
 	<!--Disable the Flixel core debugger. Automatically gets set whenever you compile in release mode!-->
 	<haxedef name="FLX_NO_DEBUG" unless="debug" />
 	
-	<icon path="assets/images/icons/16.png" size="16" />
-	<icon path="assets/images/icons/32.png" size="32" />
-	<icon path="assets/images/icons/64.png" size="64" />
+	<icon path="assets/icons/16.png" height="16" width="16" />
+	<icon path="assets/icons/32.png" height="32" width="32" />
+	<icon path="assets/icons/36.png" height="36" width="36" />
+	<icon path="assets/icons/48.png" height="48" width="48" />
+	<icon path="assets/icons/48.png" height="64" width="64" />
+	<icon path="assets/icons/72.png" height="72" width="72" />
+	<icon path="assets/icons/96.png" height="96" width="96" />
+	<icon path="assets/icons/144.png" height="144" width="144" />
+	<icon path="assets/icons/256.png" height="256" width="256" />
+	<icon path="assets/icons/playstore-icon.png" height="512" width="512" />
 	
 	<setenv name="GooglePlayID" value="500560584660" />
 	

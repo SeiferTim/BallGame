@@ -631,7 +631,7 @@ class PlayState extends FlxState
 		
 		
 	}
-	
+	#if !FLX_NO_TOUCH
 	private function DrawTouchLine(PlayerNo:Int, Touch:FlxTouch):Void
 	{
 		var sprTouch:FlxSprite;
@@ -684,6 +684,7 @@ class PlayState extends FlxState
 		sprTouchline.visible = true;
 		
 	}
+	#end
 	
 	
 	private function GamePlay():Void

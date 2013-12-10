@@ -2,6 +2,8 @@ package ;
 
 import flash.display.BlendMode;
 import flash.events.IOErrorEvent;
+import flash.Lib;
+import flash.net.URLRequest;
 import flixel.addons.text.FlxBitmapFont;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -9,6 +11,8 @@ import flixel.FlxState;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
+import flixel.util.FlxMisc;
+import flixel.util.FlxRect;
 
 class CreditsState extends FlxState
 {
@@ -28,6 +32,8 @@ class CreditsState extends FlxState
 	private inline static var STATE_OUT:Int = 2;
 	private inline static var STATE_DONE:Int = 3;
 	
+	private var linkRect:FlxRect;
+	
 	override public function create():Void
 	{
 		// Set a background color
@@ -44,35 +50,37 @@ class CreditsState extends FlxState
 		
 		add(new FlxSprite(0, 0, "images/background.png"));
 		
-		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
+		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
 		cast(_texts[0],FlxBitmapFont).setText("This Game was Made By:", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[0].setPosition((FlxG.width - _texts[0].width) / 2, 32);
 		_texts[0].alpha = 0;
 		
-		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
+		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_GOLD, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
 		cast(_texts[1],FlxBitmapFont).setText("Jevion White", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[1].setPosition((FlxG.width - _texts[1].width) / 2, 80);
 		_texts[1].alpha = 0;
 		
-		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
+		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_GOLD, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
 		cast(_texts[2],FlxBitmapFont).setText("Tim I Hely", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[2].setPosition((FlxG.width - _texts[2].width) / 2, 112);
 		_texts[2].alpha = 0;
 		
-		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
+		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_GOLD, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
 		cast(_texts[3],FlxBitmapFont).setText("Isaac Benrubi", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[3].setPosition((FlxG.width - _texts[3].width) / 2, 144);
 		_texts[3].alpha = 0;
 		
-		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
+		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
 		cast(_texts[4],FlxBitmapFont).setText("Visit us on the Web at:", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[4].setPosition((FlxG.width - _texts[4].width) / 2, 192);
 		_texts[4].alpha = 0;
 		
-		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_GREEN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
+		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_GOLD, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
 		cast(_texts[5],FlxBitmapFont).setText("tileisle.net", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_texts[5].setPosition((FlxG.width - _texts[5].width) / 2, 224);
 		_texts[5].alpha = 0;
+		
+		linkRect = new FlxRect(_texts[5].x, _texts[5].y, _texts[5].width, _texts[5].height);
 	
 		_btnBack = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH)/2, FlxG.height - Reg.BUTTON_HEIGHT - 32,Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT, "Exit", ClickBack);//Plus(16, FlxG.height - 36, ClickQuit, null, "Exit", 100, 20);
 		_btnBack.alpha = 0;
@@ -133,6 +141,21 @@ class CreditsState extends FlxState
 			#if android
 			if (FlxG.android.justReleased("BACK"))
 				_state = STATE_OUT;
+			#end
+			#if (!FLX_NO_MOUSE)
+			if (FlxG.mouse.inFlxRect(linkRect))
+			{
+				Reg.ShowMouse(Reg.CURSOR_OVER);
+				if (FlxG.mouse.justReleased)
+				{
+					
+					//Lib.getURL(new URLRequest("http://tileisle.net"));
+					FlxMisc.openURL("http://tileisle.net");
+					
+				}
+			}
+			else
+				Reg.ShowMouse(Reg.CURSOR_NORMAL);
 			#end
 		}
 		else if (_state == STATE_OUT)
