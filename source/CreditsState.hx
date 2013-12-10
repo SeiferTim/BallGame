@@ -5,6 +5,7 @@ import flash.events.IOErrorEvent;
 import flash.Lib;
 import flash.net.URLRequest;
 import flixel.addons.text.FlxBitmapFont;
+import flixel.addons.ui.FlxButtonPlus;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -81,6 +82,11 @@ class CreditsState extends FlxState
 		_texts[5].alpha = 0;
 		
 		linkRect = new FlxRect(_texts[5].x, _texts[5].y, _texts[5].width, _texts[5].height);
+		
+		_texts.push(cast add(new FlxBitmapFont(Reg.FONT_CYAN, 16, 16, FlxBitmapFont.TEXT_SET1, 95)));
+		cast(_texts[6],FlxBitmapFont).setText("Special thanks to Andrew-David Jahchan\nfor Button Beautification Services!", true, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
+		_texts[6].setPosition((FlxG.width - _texts[6].width) / 2, 256);
+		_texts[6].alpha = 0;
 	
 		_btnBack = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH)/2, FlxG.height - Reg.BUTTON_HEIGHT - 32,Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT, "Exit", ClickBack);//Plus(16, FlxG.height - 36, ClickQuit, null, "Exit", 100, 20);
 		_btnBack.alpha = 0;

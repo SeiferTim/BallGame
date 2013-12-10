@@ -71,7 +71,7 @@
 	<icon path="assets/icons/32.png" height="32" width="32" />
 	<icon path="assets/icons/36.png" height="36" width="36" />
 	<icon path="assets/icons/48.png" height="48" width="48" />
-	<icon path="assets/icons/48.png" height="64" width="64" />
+	<icon path="assets/icons/64.png" height="64" width="64" />
 	<icon path="assets/icons/72.png" height="72" width="72" />
 	<icon path="assets/icons/96.png" height="96" width="96" />
 	<icon path="assets/icons/144.png" height="144" width="144" />

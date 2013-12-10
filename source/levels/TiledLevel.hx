@@ -183,8 +183,12 @@ class TiledLevel extends TiledMap
 		
 		var y:Float = o.y; // Std.int((Math.floor(o.y) / 16)) * 16;
 		
-		x +=(FlxG.width - fullWidth) / 2;
-		y +=(FlxG.height - fullHeight) / 2;
+		//x -=(fullWidth-FlxG.width) / 2;
+		//y -=(fullHeight-FlxG.height) / 2;
+		
+		x += (FlxG.width / 2) - (fullWidth / 2)+2;
+		y += (FlxG.height / 2) - (fullHeight / 2)-16;
+		
 		var width:Float = o.width;
 		var height:Float = o.height;
 		switch(o.type.toLowerCase())

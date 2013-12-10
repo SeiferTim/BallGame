@@ -526,8 +526,8 @@ class PlayState extends FlxState
 		
 		_grpWalls.add(level.wallTiles);
 		
-		_grpWalls.setAll("x", (FlxG.width - level.fullWidth) / 2);
-		_grpWalls.setAll("y", (FlxG.height - level.fullHeight) / 2);
+		_grpWalls.setAll("x", (FlxG.width / 2)-(level.fullWidth / 2) );
+		_grpWalls.setAll("y", (FlxG.height / 2)-(level.fullHeight / 2));
 		
 		_sprPlayer1.y = (FlxG.height - Reg.PLAYER_HEIGHT) / 2;
 		_sprPlayer2.y = (FlxG.height - Reg.PLAYER_HEIGHT) / 2;

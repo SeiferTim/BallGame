@@ -140,8 +140,12 @@ class Reg
 	static public function LoadLevels():Void
 	{
 		levelList = new Array<String>();
-		levelList.push("001");
-		levelList.push("001");
+		levelList.push("100");
+		levelList.push("100");
+		levelList.push("100");
+		levelList.push("100");
+		levelList.push("100");
+		
 	}
 	
 	static public function PickLevels(Rounds:Int):Void 
