@@ -108,10 +108,10 @@ class Reg
 		if (GameInitialized) return;
 		Reg.save = new FlxSave();
 		Reg.save.bind("Options");
-		if (save.data.volume != null)
-			FlxG.sound.volume = save.data.volume;
-		else
-			FlxG.sound.volume = 0.5;
+		//if (save.data.volume != null)
+		//	FlxG.sound.volume = save.data.volume;
+		//else
+		//	FlxG.sound.volume = 0.5;
 		#if desktop
 		IsFullscreen = (save.data.fullscreen != null) ? save.data.fullscreen : true;
 		#end

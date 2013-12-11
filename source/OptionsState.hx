@@ -160,8 +160,8 @@ class OptionsState extends FlxState
 	private function SlideChange(Value:Float):Void
 	{
 		FlxG.sound.volume = Value;
-		Reg.save.data.volume = FlxG.sound.volume;
-		Reg.save.flush();
+		//Reg.save.data.volume = FlxG.sound.volume;
+		//Reg.save.flush();
 		FlxG.sound.play(SoundAssets.SND_BUTTONUP);
 	}
 	

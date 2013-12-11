@@ -8,7 +8,7 @@ class SoundAssets
 
 	//inline static public var SND_MADEINSTL:String = "sounds/madeinsound.wav";
 	inline static public var SND_BUTTONUP:String = "sounds/button_press.wav";
-	inline static public var SND_BUTTONDOWN:String = "sounds/boop.wav";
+	//inline static public var SND_BUTTONDOWN:String = "sounds/boop.wav";
 	
 	static public var HIT_SOUNDS:Array<String>;
 	
@@ -46,24 +46,6 @@ class SoundAssets
 	 */
 	static public function cacheSounds():Void
 	{
-		#if android
-		Reflect.callMethod(Assets, Reflect.field(Assets, "initialize"), []);
-		
-		var resourceClasses:Map<String, Dynamic> = cast Reflect.getProperty(Assets, "resourceClasses");
-		var resourceTypes:Map<String, String> = cast Reflect.getProperty(Assets, "resourceTypes");
-		
-		if (resourceTypes != null)
-		{
-			for (key in resourceTypes.keys())
-			{
-				if (resourceTypes.get(key) == "sound")
-				{	
-					FlxG.sound.add(key);
-				}
-			}
-		}
-		#end
-		
 		HIT_SOUNDS = new Array<String>();
 		HIT_SOUNDS.push(SND_HIT1);
 		HIT_SOUNDS.push(SND_HIT2);
@@ -76,7 +58,31 @@ class SoundAssets
 		POP_SOUNDS.push(SND_POP1);
 		POP_SOUNDS.push(SND_POP2);
 		POP_SOUNDS.push(SND_POP3);
-		POP_SOUNDS.push(SND_POP4);
+		POP_SOUNDS.push(SND_POP4);	
+		
+		#if android
+		FlxG.sound.add(SND_BUTTONUP);
+		//FlxG.sound.add(SND_BUTTONDOWN);
+		FlxG.sound.add(MUS_BG1);
+		FlxG.sound.add(MUS_BG2);
+		FlxG.sound.add(MUS_MADEINSTL);
+		FlxG.sound.add(SND_BOOOP);
+		FlxG.sound.add(SND_BOOOOP);
+		
+		for (sound in HIT_SOUNDS)
+		{
+			FlxG.sound.add(sound);
+		}
+		
+		for (sound in POP_SOUNDS)
+		{
+			FlxG.sound.add(sound);
+		}
+		
+		
+		
+		#end
+		
 
 	}
 	

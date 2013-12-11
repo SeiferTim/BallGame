@@ -36,6 +36,7 @@ class MadeInStlState extends FlxState
 		
 		FlxG.sound.play(SoundAssets.MUS_MADEINSTL, 1, false, true, DonePause);
 		
+		
 		super.create();
 	}
 	

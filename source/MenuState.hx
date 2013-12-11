@@ -1,6 +1,8 @@
 package;
 
 import flash.display.BlendMode;
+import flash.events.Event;
+import flash.Lib;
 import flash.system.System;
 import flixel.addons.text.FlxBitmapFont;
 import flixel.FlxG;
@@ -11,6 +13,7 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxPoint;
+
 
 /**
  * A FlxState which can be used for the game's menu.
@@ -53,6 +56,11 @@ class MenuState extends FlxState
 	private var _switchingMenu:Bool;
 	private var _outAlpha:Float;
 	private var _inAlpha:Float;
+	
+	#if android
+	private var _gpSignIn:FlxSprite;
+	
+	#end
 		
 	/**
 	 * Function that is called up when to state is created to set it up.
@@ -148,6 +156,7 @@ class MenuState extends FlxState
 		add(_sprExit);
 		#end
 		
+		
 		StartFadeInTween();
 		
 		super.create();
@@ -156,7 +165,6 @@ class MenuState extends FlxState
 
 		
 	}
-	
 	
 	
 	private function PlaySingleMatch():Void
@@ -437,6 +445,7 @@ class MenuState extends FlxState
 					
 			}
 		}
+		
 		
 		#if (desktop && !FLX_NO_MOUSE)
 		if (_state == STATE_MAIN)

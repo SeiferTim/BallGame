@@ -80,5 +80,5 @@
 	
 	<setenv name="GooglePlayID" value="500560584660" />
 	
-	<certificate path="keys/paddlebattles.keystore" password="tileisle" alias="paddlebattles.keystore" />
+	<certificate path="C:\Users\Tim\Dropbox\Keys\paddle-battles-release-key.keystore"  alias="paddle-battles-release" password="tileisle" if="android" unless="debug" />
 </project>
