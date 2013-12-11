@@ -1198,6 +1198,7 @@ class PlayState extends FlxState
 			_sprPlayer1.update();
 			_sprPlayer2.update();
 			_pauseScreen.update();
+			
 		}
 		
 		
@@ -1272,6 +1273,16 @@ class PlayState extends FlxState
 	override public function draw():Void
 	{
 		super.draw();
+		
+		#if !FLX_NO_MOUSE
+			if (Reg.MouseOverButton)
+				Reg.ShowMouse(Reg.CURSOR_OVER);
+			else if (_paused)
+				Reg.ShowMouse(Reg.CURSOR_NORMAL);
+			else if (FlxG.mouse.visible)
+				FlxG.mouse.hide();
+			Reg.MouseOverButton = false;
+		#end
 		
 	}
 	

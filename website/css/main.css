@@ -97,11 +97,60 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+.fillscreen{
+    height:100%;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    position: absolute;
+    min-height:600px;
+    overflow: hidden;
+}
+
+body {
+
+    background: #0000ff; /* Old browsers */
+    background: -moz-linear-gradient(-45deg,  #0000ff 0%, #660066 50%, #ff0000 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#0000ff), color-stop(50%,#660066), color-stop(100%,#ff0000)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(-45deg,  #0000ff 0%,#660066 50%,#ff0000 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(-45deg,  #0000ff 0%,#660066 50%,#ff0000 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(-45deg,  #0000ff 0%,#660066 50%,#ff0000 100%); /* IE10+ */
+    background: linear-gradient(135deg,  #0000ff 0%,#660066 50%,#ff0000 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0000ff', endColorstr='#ff0000',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    
+    
+
+}
+
+#container {
+    background-image: url(../img/Tile-Top.png);
+}
+
+#shadow {
+    background: -moz-radial-gradient(center, ellipse cover,  rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%);
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(0,0,0,0.65)), color-stop(100%,rgba(0,0,0,0)));
+    background: -webkit-radial-gradient(center, ellipse cover,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%);
+    background: -o-radial-gradient(center, ellipse cover,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%);
+    background: -ms-radial-gradient(center, ellipse cover,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%);
+    background: radial-gradient(ellipse at center,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=1 );
+
+}
 
 
+#logo {
 
+    display:block;
+    margin:0 auto;
+    padding-bottom: 1em;
+}
 
-
+embed {
+    margin: 0 auto;
+    -webkit-box-shadow: 0 0 100px 10px rgba(0,0,0,100);
+    box-shadow: 0 0 100px 10px rgba(0,0,0,100);
+}
 
 
 
