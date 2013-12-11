@@ -1,11 +1,7 @@
 package ;
 
 import flash.display.BlendMode;
-import flash.events.IOErrorEvent;
-import flash.Lib;
-import flash.net.URLRequest;
 import flixel.addons.text.FlxBitmapFont;
-import flixel.addons.ui.FlxButtonPlus;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -107,7 +103,7 @@ class CreditsState extends FlxState
 	private function StartFadeInTween():Void
 	{
 		if (_twn != null) _twn.cancel();
-		_twn = FlxTween.multiVar(_sprBlack, { alpha: 0 }, .66, { type: FlxTween.ONESHOT, ease: FlxEase.quartIn, complete: FadeInDone } );
+		_twn = FlxTween.multiVar(_sprBlack, { alpha: 0 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease: FlxEase.quartIn, complete: FadeInDone } );
 	}
 	
 	private function FadeInDone(T:FlxTween):Void
@@ -190,7 +186,7 @@ class CreditsState extends FlxState
 	
 	private function StartFadeOutTween():Void
 	{
-		_twn = FlxTween.multiVar(_sprBlack, { alpha: 1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeOut } );
+		_twn = FlxTween.multiVar(_sprBlack, { alpha: 1 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeOut } );
 	}
 	
 	private function DoneFadeOut(T:FlxTween):Void

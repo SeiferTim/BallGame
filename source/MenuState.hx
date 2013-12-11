@@ -1,27 +1,16 @@
 package;
 
 import flash.display.BlendMode;
-import flash.display.StageDisplayState;
-import flash.events.Event;
-import flash.Lib;
-import flash.media.Sound;
 import flash.system.System;
-import flash.ui.MouseCursorData;
-import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.text.FlxBitmapFont;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
-import flixel.system.FlxSound;
-import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
-import flixel.util.FlxGradient;
-import flixel.util.FlxMath;
 import flixel.util.FlxPoint;
-import flixel.util.FlxSave;
 
 /**
  * A FlxState which can be used for the game's menu.
@@ -164,9 +153,7 @@ class MenuState extends FlxState
 		super.create();
 		
 		Reg.PlayMusic(SoundAssets.MUS_BG1);
-		
-		FlxG.log.redirectTraces = false;
-		trace("TEST");
+
 		
 	}
 	
@@ -302,19 +289,20 @@ class MenuState extends FlxState
 	private function StartFadeInTween():Void
 	{
 		
-		_twnTitle = FlxTween.multiVar(_sprBlack, { alpha: 0 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:StartTitleTween } );
+		_twnTitle = FlxTween.multiVar(_sprBlack, { alpha: 0 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:StartTitleTween } );
 	}
 	
 	private function StartFadeOutTween():Void
 	{
-		
-		_twnTitle = FlxTween.multiVar(_sprBlack, { alpha: 1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeOut } );
+		if (!_goingToCredits && ! _goingToOptions && !_goingToHow)
+			FlxG.sound.music.fadeOut(Reg.TweenTime);
+		_twnTitle = FlxTween.multiVar(_sprBlack, { alpha: 1 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeOut } );
 	}
 	
 	private function StartTitleTween(Tween:FlxTween):Void
 	{
 		
-		Tween = FlxTween.multiVar(_sprTitle, { alpha: 1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartOut, complete:TitleTweenDone} );
+		Tween = FlxTween.multiVar(_sprTitle, { alpha: 1 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease:FlxEase.quartOut, complete:TitleTweenDone} );
 	}
 	
 	private function TitleTweenDone(Tween:FlxTween):Void
@@ -335,6 +323,7 @@ class MenuState extends FlxState
 		else
 		{
 			Reg.PickLevels(Reg.numMatches);
+			FlxG.sound.playMusic(SoundAssets.MUS_BG2);
 			FlxG.switchState(new PlayState());
 		}
 	}
@@ -358,7 +347,7 @@ class MenuState extends FlxState
 		_outAlpha = 1;
 		_inAlpha = 0;
 		//if (_twnTitle != null && !_twnTitle.finished) _twnTitle.cancel();
-		_twnTitle = FlxTween.multiVar(this, { _outAlpha: 0 }, .5, { type: FlxTween.ONESHOT, ease:FlxEase.quartOut, complete:MenuIn } );
+		_twnTitle = FlxTween.multiVar(this, { _outAlpha: 0 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease:FlxEase.quartOut, complete:MenuIn } );
 	}
 	
 	private function MenuIn(Tween:FlxTween):Void
@@ -367,7 +356,7 @@ class MenuState extends FlxState
 		_inMenu.visible = true;
 		_inMenu.setAll("alpha", 0);
 		
-		Tween = FlxTween.multiVar(this, { _inAlpha:1 }, .5, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete: MenuDone } );
+		Tween = FlxTween.multiVar(this, { _inAlpha:1 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete: MenuDone } );
 	}
 	
 	private function DoneWait(Tween:FlxTween):Void

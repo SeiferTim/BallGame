@@ -2,7 +2,6 @@ package ;
 
 import flash.display.BlendMode;
 import flixel.addons.text.FlxBitmapFont;
-import flixel.addons.ui.FlxButtonPlus;
 import flixel.effects.particles.FlxEmitterExt;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -352,7 +351,7 @@ class HowToPlayState extends FlxState
 	private function StartFadeInTween():Void
 	{
 		if (_twn != null) _twn.cancel();
-		_twn = FlxTween.multiVar(_sprWhite, { alpha: 0 }, .66, { type: FlxTween.ONESHOT, ease: FlxEase.quartIn, complete: FadeInDone } );
+		_twn = FlxTween.multiVar(_sprWhite, { alpha: 0 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease: FlxEase.quartIn, complete: FadeInDone } );
 	}
 	
 	private function FadeInDone(T:FlxTween):Void
@@ -399,7 +398,7 @@ class HowToPlayState extends FlxState
 	
 	private function StartFadeOutTween():Void
 	{
-		_twn = FlxTween.multiVar(_sprWhite, { alpha: 1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeOut } );
+		_twn = FlxTween.multiVar(_sprWhite, { alpha: 1 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeOut } );
 	}
 	
 	private function DoneFadeOut(T:FlxTween):Void
@@ -442,7 +441,7 @@ class HowToPlayState extends FlxState
 		_switching = true;
 		_groupOut = GroupOut;
 		_groupIn = GroupIn;
-		_twn = FlxTween.multiVar(_sprWhite, { alpha: 1 }, .66, { type: FlxTween.ONESHOT, ease: FlxEase.quartIn, complete: SwitchMid } );
+		_twn = FlxTween.multiVar(_sprWhite, { alpha: 1 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease: FlxEase.quartIn, complete: SwitchMid } );
 	}
 	
 	private function SwitchMid(T:FlxTween):Void
@@ -451,7 +450,7 @@ class HowToPlayState extends FlxState
 		_groupOut.visible = false;
 		_groupIn.active = true;
 		_groupIn.visible = true;
-		T = FlxTween.multiVar(_sprWhite, { alpha: 0 }, .66, { type: FlxTween.ONESHOT, ease: FlxEase.quartIn, complete: SwitchDone } );
+		T = FlxTween.multiVar(_sprWhite, { alpha: 0 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease: FlxEase.quartIn, complete: SwitchDone } );
 	}
 	
 	private function SwitchDone(T:FlxTween):Void

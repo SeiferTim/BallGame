@@ -1,13 +1,12 @@
 package ;
 import flixel.FlxG;
-import flixel.system.FlxSound;
 import openfl.Assets;
 
 
 class SoundAssets
 {
 
-	inline static public var SND_MADEINSTL:String = "sounds/madeinsound.wav";
+	//inline static public var SND_MADEINSTL:String = "sounds/madeinsound.wav";
 	inline static public var SND_BUTTONUP:String = "sounds/button_press.wav";
 	inline static public var SND_BUTTONDOWN:String = "sounds/boop.wav";
 	
@@ -33,9 +32,13 @@ class SoundAssets
 	// MUSIC
 	#if flash
 	inline static public var MUS_BG1:String = "music/bg1.mp3";
+	inline static public var MUS_BG2:String = "music/bg2.mp3";
+	inline static public var MUS_MADEINSTL:String = "music/madeinstl.mp3";
 	#end
 	#if !flash
 	inline static public var MUS_BG1:String = "music/bg1.ogg";
+	inline static public var MUS_BG2:String = "music/bg2.ogg";
+	inline static public var MUS_MADEINSTL:String = "music/madeinstl.ogg";
 	#end
 	
 	/**

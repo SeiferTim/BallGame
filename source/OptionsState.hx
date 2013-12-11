@@ -1,14 +1,11 @@
 package ;
 import flash.display.BlendMode;
-import flash.display.StageDisplayState;
 import flixel.addons.text.FlxBitmapFont;
 import flixel.FlxG;
-import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import flixel.ui.FlxSlider;
 import flixel.util.FlxColor;
 import flixel.util.FlxGradient;
 import flixel.util.FlxSpriteUtil;
@@ -139,7 +136,7 @@ class OptionsState extends FlxState
 	private function StartFadeInTween():Void
 	{
 		if (_twn != null) _twn.cancel();
-		_twn = FlxTween.multiVar(_sprBlack, { alpha: 0 }, .66, { type: FlxTween.ONESHOT, ease: FlxEase.quartIn, complete: FadeInDone } );
+		_twn = FlxTween.multiVar(_sprBlack, { alpha: 0 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease: FlxEase.quartIn, complete: FadeInDone } );
 	}
 	
 	private function FadeInDone(T:FlxTween):Void
@@ -241,7 +238,7 @@ class OptionsState extends FlxState
 	
 	private function StartFadeOutTween():Void
 	{
-		_twn = FlxTween.multiVar(_sprBlack, { alpha: 1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeOut } );
+		_twn = FlxTween.multiVar(_sprBlack, { alpha: 1 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeOut } );
 	}
 	
 	private function DoneFadeOut(T:FlxTween):Void

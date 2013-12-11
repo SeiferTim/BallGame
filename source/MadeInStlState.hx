@@ -32,22 +32,23 @@ class MadeInStlState extends FlxState
 		add(_bright);
 		
 		
-		_twn = FlxTween.multiVar(_img, { alpha:1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeIn } );
+		_twn = FlxTween.multiVar(_img, { alpha:1 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeIn } );
 		
-		
+		FlxG.sound.play(SoundAssets.MUS_MADEINSTL, 1, false, true, DonePause);
 		
 		super.create();
 	}
 	
 	private function DoneFadeIn(T:FlxTween):Void
 	{
-		FlxG.sound.play(SoundAssets.SND_MADEINSTL);
-		T = FlxTween.multiVar(_img, { alpha:1 }, 2, {type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DonePause } );
+		
+		
+		T = FlxTween.multiVar(_img, { alpha:1 }, 3, {type: FlxTween.ONESHOT, ease:FlxEase.quartIn } );
 	}
 	
-	private function DonePause(T:FlxTween):Void
+	private function DonePause():Void
 	{
-		T = FlxTween.multiVar(_bright, { alpha:1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeOut } );
+		_twn = FlxTween.multiVar(_bright, { alpha:1 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeOut } );
 	}
 	
 	private function DoneFadeOut(T:FlxTween):Void

@@ -1,5 +1,4 @@
 package ;
-import flixel.effects.FlxSpriteFilter;
 import flixel.effects.FlxTrail;
 import flixel.FlxSprite;
 import flixel.util.FlxPoint;

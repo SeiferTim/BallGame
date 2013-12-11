@@ -1,11 +1,8 @@
 package;
 
 import flash.display.BlendMode;
-import flash.events.Event;
 import flixel.addons.text.FlxBitmapFont;
 import flixel.addons.tile.FlxTilemapExt;
-import flixel.addons.ui.FlxButtonPlus;
-import flixel.effects.FlxSpriteFilter;
 import flixel.effects.FlxTrail;
 import flixel.effects.particles.FlxEmitter;
 import flixel.effects.particles.FlxEmitterExt;
@@ -28,7 +25,6 @@ import flixel.util.FlxMath;
 import flixel.util.FlxPoint;
 import flixel.util.FlxRandom;
 import flixel.util.FlxRect;
-import flixel.util.FlxSpriteUtil;
 import levels.TiledLevel;
 
 /**
@@ -157,7 +153,7 @@ class PlayState extends FlxState
 		super.create();
 		
 		_state = STATE_FADEIN;
-		_twn = FlxTween.multiVar(_sprFade, { alpha:0 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeIn } );
+		_twn = FlxTween.multiVar(_sprFade, { alpha:0 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeIn } );
 		GameStartTimer  = 4;
 		justTriggered = true;
 		_pauseAlpha = 0.0001;
@@ -847,7 +843,7 @@ class PlayState extends FlxState
 	{
 		_gameTimer = 0;
 		_state = STATE_LEVELEND;
-		_twn = FlxTween.multiVar(_sprFade, { alpha:1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeOut } );
+		_twn = FlxTween.multiVar(_sprFade, { alpha:1 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeOut } );
 	}
 	
 	private function ResetGamePlay():Void
@@ -1223,7 +1219,7 @@ class PlayState extends FlxState
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.show(Reg.CURSOR_NORMAL);
 		#end
-		_pauseTwn = FlxTween.multiVar(this, { _pauseAlpha:1 }, .33, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn } );
+		_pauseTwn = FlxTween.multiVar(this, { _pauseAlpha:1 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn } );
 	}
 	
 	
@@ -1234,7 +1230,7 @@ class PlayState extends FlxState
 		FlxG.mouse.reset();
 		FlxG.mouse.hide();
 		#end
-		_pauseTwn = FlxTween.multiVar(this, { _pauseAlpha:0.0001 }, .33, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete: DonePauseOut } );
+		_pauseTwn = FlxTween.multiVar(this, { _pauseAlpha:0.0001 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete: DonePauseOut } );
 		justTriggered = true;
 	}
 	

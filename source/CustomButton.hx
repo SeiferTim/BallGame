@@ -1,32 +1,20 @@
 package ;
 
-import flash.display.BitmapDataChannel;
-import flash.display.BlendMode;
 import flash.events.Event;
 import flash.events.MouseEvent;
-import flash.filters.GlowFilter;
-import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.Lib;
 import flash.media.Sound;
 import flixel.addons.text.FlxBitmapFont;
-import flixel.effects.FlxSpriteFilter;
-import flixel.effects.particles.FlxEmitter;
-import flixel.effects.particles.FlxParticle;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.group.FlxGroup;
 import flixel.group.FlxSpriteGroup;
 import flixel.system.FlxSound;
 import flixel.ui.FlxButton;
-import flixel.util.FlxArrayUtil;
-import flixel.util.FlxGradient;
-import flixel.util.FlxMath;
 import flixel.util.FlxPoint;
 import flixel.util.FlxRect;
 import flixel.util.FlxSpriteUtil;
-import flixel.system.input.touch.FlxTouch;
 
 class CustomButton extends FlxSpriteGroup
 {
@@ -425,7 +413,6 @@ class CustomButton extends FlxSpriteGroup
 			
 			if (JustPressed)
 			{
-				//trace("PRESSED");
 				status = FlxButton.PRESSED;
 				_pressed = true;
 				if (_onDown != null)
@@ -441,7 +428,6 @@ class CustomButton extends FlxSpriteGroup
 			}
 			if (status == FlxButton.NORMAL)
 			{
-				//trace("HIGHLIGHT");
 				status = FlxButton.HIGHLIGHT;
 				if (_onOver != null)
 				{

@@ -67,7 +67,7 @@ class ScoreBoardState extends FlxState
 		_loaded = false;
 		super.create();
 		
-		_twn = FlxTween.multiVar(_sprBlack, { alpha:0 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeIn } );
+		_twn = FlxTween.multiVar(_sprBlack, { alpha:0 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneFadeIn } );
 	}
 	
 	private function DoneFadeIn(T:FlxTween):Void
@@ -316,7 +316,10 @@ class ScoreBoardState extends FlxState
 			{
 				alphaLevel = 1;
 				_state = STATE_WAIT;
-				var wt:FlxTween = FlxTween.multiVar(win, { alpha:.33 }, .33, { type:FlxTween.PINGPONG, ease:FlxEase.sineInOut } );
+				
+				if (Reg.curMatch < Reg.numMatches-1)
+					var wt:FlxTween = FlxTween.multiVar(win, { alpha:.33 }, .33, { type:FlxTween.PINGPONG, ease:FlxEase.sineInOut } );
+				
 				/*if (_btnNextMatch != null)
 					_btnNextMatch.visible = true;
 				_btnQuit.visible = true;*/
@@ -339,7 +342,7 @@ class ScoreBoardState extends FlxState
 			else
 			{
 				_state = STATE_OUTOUT;
-				_twn = FlxTween.multiVar(_sprBlack, { alpha:1 }, .66, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete: DoneFadeOut} );
+				_twn = FlxTween.multiVar(_sprBlack, { alpha:1 }, Reg.TweenTime, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete: DoneFadeOut} );
 			}
 		}
 		

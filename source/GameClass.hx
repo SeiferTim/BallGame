@@ -1,13 +1,11 @@
 package;
 
-import flash.display.StageDisplayState;
 import flash.events.Event;
 import flash.Lib;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxGame;
 import flixel.FlxState;
-import flixel.util.FlxSave;
 	
 class GameClass extends FlxGame
 {

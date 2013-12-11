@@ -1,11 +1,8 @@
 package;
 
-import flash.display.StageDisplayState;
 import flixel.FlxG;
 import flixel.util.FlxArrayUtil;
-import flixel.util.FlxRandom;
 import flixel.util.FlxSave;
-import levels.TiledLevel;
 
 /**
 * Handy, pre-built Registry class that can be used to store 
@@ -100,6 +97,8 @@ class Reg
 	
 	static private var CurMusic:String = "";
 	
+	static public inline var TweenTime:Float = .2;
+	
 	#if desktop
 	static public var IsFullscreen:Bool;
 	#end
@@ -141,10 +140,11 @@ class Reg
 	{
 		levelList = new Array<String>();
 		levelList.push("100");
-		levelList.push("100");
-		levelList.push("100");
-		levelList.push("100");
-		levelList.push("100");
+		levelList.push("101");
+		levelList.push("102");
+		levelList.push("103");
+		levelList.push("104");
+		levelList.push("105");
 		
 	}
 	

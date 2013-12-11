@@ -186,7 +186,7 @@ class TiledLevel extends TiledMap
 		//x -=(fullWidth-FlxG.width) / 2;
 		//y -=(fullHeight-FlxG.height) / 2;
 		
-		x += (FlxG.width / 2) - (fullWidth / 2)+2;
+		x += (FlxG.width / 2) - (fullWidth / 2)+1;
 		y += (FlxG.height / 2) - (fullHeight / 2)-16;
 		
 		var width:Float = o.width;
@@ -194,6 +194,11 @@ class TiledLevel extends TiledMap
 		switch(o.type.toLowerCase())
 		{
 			case "enemy":
+				if (Std.parseInt(o.name) == 3)
+				{
+					x -= 8;
+					y -= 8;
+				}
 				var enemy:Enemy = new Enemy(x,y,  Std.parseInt(o.name));
 				_enemies.add(enemy);
 			case "node":

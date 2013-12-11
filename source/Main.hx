@@ -51,7 +51,7 @@ class Main extends Sprite
 		#if flash
 		Lib.current.stage.color = 0x110011;
 		#end
-		#if !flash
+		#if desktop
 		Lib.current.stage.opaqueBackground = 0x110011;
 		#end
 	}
