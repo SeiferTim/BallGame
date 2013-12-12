@@ -59,6 +59,7 @@ class ScoreBoardState extends FlxState
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.show();
 		#end
+		
 		Reg.PlayMusic(SoundAssets.MUS_BG1);
 		add(new FlxSprite(0, 0, "images/background.png"));
 		_state = STATE_IN;

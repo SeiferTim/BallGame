@@ -180,8 +180,10 @@ class Reg
 	
 	static public function PlayMusic(Music:String):Void	
 	{
+		//trace(CurMusic + " " + Music);
 		if (CurMusic != Music)
 		{
+			
 			CurMusic = Music;
 			FlxG.sound.playMusic(CurMusic);
 		}

@@ -387,7 +387,7 @@ class MenuState extends FlxState
 		else
 		{
 			
-			FlxG.sound.playMusic(SoundAssets.MUS_BG2);
+			Reg.PlayMusic(SoundAssets.MUS_BG2);
 			FlxG.switchState(new PlayState());
 		}
 	}
