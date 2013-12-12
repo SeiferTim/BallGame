@@ -111,7 +111,6 @@ class Reg
 		
 		if (save.data.volume != null)
 		{
-			trace(save.data.volume);
 			FlxG.sound.volume = save.data.volume;
 		}
 		else
