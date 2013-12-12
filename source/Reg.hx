@@ -139,6 +139,11 @@ class Reg
 	static public function LoadLevels():Void
 	{
 		levelList = new Array<String>();
+		levelList.push("001");
+		levelList.push("002");
+		levelList.push("003");
+		levelList.push("004");
+		levelList.push("005");
 		levelList.push("100");
 		levelList.push("101");
 		levelList.push("102");
