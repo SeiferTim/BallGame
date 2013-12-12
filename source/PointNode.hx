@@ -37,12 +37,13 @@ class PointNode extends FlxSprite
 	{
 		if (alive && onScreen() && exists)
 		{
-			if (_owner == 0)
-				animation.play("neutral");
-			else
-				animation.play("p" + Std.string(_owner));
-			
-			
+			if (animation.name == "neutral" || animation.name == "p1" || animation.name == "p2")
+			{
+				if (_owner == 0)
+					animation.play("neutral");
+				else
+					animation.play("p" + Std.string(_owner));
+			}			
 		}
 		super.update();
 		

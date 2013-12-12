@@ -206,30 +206,55 @@ class HowToPlayState extends FlxState
 		text010.setPosition(96,144);
 		_grpPage02.add(text010);
 		
-		var e2:Enemy = new Enemy(192, 144, 0);
+		
+		
+		var e2:Enemy = new Enemy(160, 144, 0);
 		_grpPage02.add(e2);
 		
 		var text011:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_LIGHTGREY, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		text011.setText("=", false, 0, 0, FlxBitmapFont.ALIGN_LEFT, true);
-		text011.setPosition(224,144);
+		text011.setPosition(192,144);
 		_grpPage02.add(text011);
 		
 		var text012:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_GOLD, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		text012.setText("15", false, 0, 0, FlxBitmapFont.ALIGN_LEFT, true);
-		text012.setPosition(240,144);
+		text012.setPosition(208,144);
 		_grpPage02.add(text012);
 		
-		var e3:Enemy = new Enemy(FlxG.width - 336, 144, 2);
+		
+		var eN:PointNode = new PointNode(268, 140);
+		
+		
+		var text012b:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_LIGHTGREY, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		text012b.setText("=", false, 0, 0, FlxBitmapFont.ALIGN_LEFT, true);
+		text012b.setPosition(304,144);
+		_grpPage02.add(text012b);
+		
+		var text012c:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_GOLD, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		text012c.setText("10", false, 0, 0, FlxBitmapFont.ALIGN_LEFT, true);
+		text012c.setPosition(320,144);
+		_grpPage02.add(text012c);
+		
+		var text012d:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_GOLD, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
+		text012d.setText("+5/sec", false, 0, 0, FlxBitmapFont.ALIGN_LEFT, true);
+		text012d.setPosition(268,160);
+		_grpPage02.add(text012d);
+		
+		eN.animation.add("playing", [0, 1, 2],1);
+		eN.animation.play("playing");
+		_grpPage02.add(eN);
+		
+		var e3:Enemy = new Enemy(FlxG.width - 304, 144, 2);
 		_grpPage02.add(e3);
 		
 		var text013:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_LIGHTGREY, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		text013.setText("=", false, 0, 0, FlxBitmapFont.ALIGN_LEFT, true);
-		text013.setPosition(FlxG.width - 272,144);
+		text013.setPosition(FlxG.width - 240,144);
 		_grpPage02.add(text013);
 		
 		var text014:FlxBitmapFont = new FlxBitmapFont(Reg.FONT_GOLD, 16, 16, FlxBitmapFont.TEXT_SET1, 95);
 		text014.setText("25", false, 0, 0, FlxBitmapFont.ALIGN_LEFT, true);
-		text014.setPosition(FlxG.width - 256,144);
+		text014.setPosition(FlxG.width - 224,144);
 		_grpPage02.add(text014);
 		
 		var e4:Enemy = new Enemy(FlxG.width - 160, 136, 3);

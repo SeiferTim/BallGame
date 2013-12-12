@@ -1252,14 +1252,32 @@ class PlayState extends FlxState
 	
 	private function SetScoreText():Void
 	{
-		if (Std.string(_scores[1]) != _txtP1Score.text )
+		var addBy:Int = 0;
+		
+		if (_scores[1] > Std.parseInt(_txtP1Score.text) )
 		{
-			_txtP1Score.text = Std.string(Std.parseInt(_txtP1Score.text) + 1);
+			if (_scores[1] - Std.parseInt(_txtP1Score.text) > 1000)
+				addBy = 1000;
+			else if (_scores[1] - Std.parseInt(_txtP1Score.text) > 100)
+				addBy = 100;
+			else if (_scores[1] - Std.parseInt(_txtP1Score.text) > 10)
+				addBy = 10;
+			else
+				addBy = 1;
+			_txtP1Score.text = Std.string(Std.parseInt(_txtP1Score.text) + addBy);
 		}
 		
-		if (Std.string(_scores[2]) != _txtP2Score.text )
+		if (Std.string(_scores[2]) > _txtP2Score.text )
 		{
-			_txtP2Score.text = Std.string(Std.parseInt(_txtP2Score.text) + 1);
+			if (_scores[2] - Std.parseInt(_txtP2Score.text) > 1000)
+				addBy = 1000;
+			else if (_scores[2] - Std.parseInt(_txtP2Score.text) > 100)
+				addBy = 100;
+			else if (_scores[2] - Std.parseInt(_txtP2Score.text) > 10)
+				addBy = 10;
+			else
+				addBy = 1;
+			_txtP2Score.text = Std.string(Std.parseInt(_txtP2Score.text) + addBy);
 			_txtP2Score.x = _txtP2Multi.x - _txtP2Score.width;
 		}
 		_txtP1Multi.text = Std.string(_multi[1]) + "x";
