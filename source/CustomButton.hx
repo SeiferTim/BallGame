@@ -98,9 +98,7 @@ class CustomButton extends FlxSpriteGroup
 	private var _buttonRect:FlxRect;
 	private var _isDrawn:Bool;
 	
-	
-	
-	public function new(X:Float, Y:Float, Width:Float, Height:Float, ?Label:String, ?OnClick:Dynamic) 
+	public function new(X:Float, Y:Float, Width:Float, Height:Float, Label:String, OnClick:Dynamic, ?ClickParams:Array<Dynamic>) 
 	{
 		super(X, Y, 4);
 		
@@ -148,7 +146,11 @@ class CustomButton extends FlxSpriteGroup
 		_onOut = null;
 		_onOver = null;
 		
-		_onUpParams = [];
+		if (ClickParams != null)
+			_onUpParams = ClickParams;
+		else
+			_onUpParams = [];
+		
 		_onDownParams = [];
 		_onOutParams = [];
 		_onOverParams = [];

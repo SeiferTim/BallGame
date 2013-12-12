@@ -34,6 +34,7 @@ class MenuState extends FlxState
 	private inline static var STATE_PLAY:Int = 3;
 	private inline static var STATE_MATCH:Int = 4;
 	private inline static var STATE_UNLOADING:Int = 5;
+	private inline static var STATE_CHOOSING:Int = 6;
 	private var justTriggered:Bool;
 	
 	private var txtClickToPlay:FlxBitmapFont;
@@ -56,10 +57,11 @@ class MenuState extends FlxState
 	private var _switchingMenu:Bool;
 	private var _outAlpha:Float;
 	private var _inAlpha:Float;
+	private var _grpLevelSelect:FlxGroup;
+	private var _arrLevels:Array<CustomButton>;
 	
 	#if android
 	private var _gpSignIn:FlxSprite;
-	
 	#end
 		
 	/**
@@ -83,16 +85,19 @@ class MenuState extends FlxState
 		_grpMenuChoices = new FlxGroup();
 		_grpPlayChoices = new FlxGroup();
 		_grpMatchesChoices = new FlxGroup();
+		_grpLevelSelect = new FlxGroup();
 		
 		add(_grpMain);
 		add(_grpMenuChoices);
 		add(_grpPlayChoices);
 		add(_grpMatchesChoices);
+		add(_grpLevelSelect);
 		
 		_grpMain.visible = true;
 		_grpMenuChoices.visible = false;
 		_grpPlayChoices.visible = false;
 		_grpMatchesChoices.visible = false;
+		_grpLevelSelect.visible = false;
 		
 		_sprTitle = new FlxSprite(0, 0, "images/title-card.png");
 		_sprTitle.alpha = 0;
@@ -113,16 +118,16 @@ class MenuState extends FlxState
 		_grpMain.add(txtClickToPlay);
 		
 
-		var playButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, ((FlxG.height - Reg.BUTTON_HEIGHT) / 2) - (Reg.BUTTON_HEIGHT*2) - 24, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Play Game", PlayGameClick);
+		var playButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, (FlxG.height/2) - (Reg.BUTTON_HEIGHT*2) - 24, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Play Game", PlayGameClick);
 		_grpMenuChoices.add(playButton);
 		
-		var howButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, ((FlxG.height - Reg.BUTTON_HEIGHT) / 2) - Reg.BUTTON_HEIGHT - 8, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "How to Play", HowClick);
+		var howButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, (FlxG.height/2) - Reg.BUTTON_HEIGHT - 8, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "How to Play", HowClick);
 		_grpMenuChoices.add(howButton);
 		
-		var optionsButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2,  ((FlxG.height - Reg.BUTTON_HEIGHT) / 2) + 8, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Options", OptionsClick);
+		var optionsButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2,  (FlxG.height/2) + 8, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Options", OptionsClick);
  		_grpMenuChoices.add(optionsButton);
 		
-		var creditsButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2,((FlxG.height - Reg.BUTTON_HEIGHT) / 2) + Reg.BUTTON_HEIGHT+ 24, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Credits", CreditsClick);
+		var creditsButton:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2,(FlxG.height/2) + Reg.BUTTON_HEIGHT+ 24, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "Credits", CreditsClick);
  		_grpMenuChoices.add(creditsButton);
 		
 		
@@ -132,14 +137,17 @@ class MenuState extends FlxState
 		var p2:CustomButton = new CustomButton((FlxG.width -Reg.BUTTON_WIDTH) / 2, (FlxG.height / 2 ) + 8, Reg.BUTTON_WIDTH, Reg.BUTTON_HEIGHT, "2 Players", Start2Player);
 		_grpPlayChoices.add(p2);
 		
-		var matchButton1:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, ((FlxG.height - Reg.BUTTON_HEIGHT) / 2) - Reg.BUTTON_HEIGHT - 16,Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT, "Single Match", PlaySingleMatch);
+		var matchButton1:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, (FlxG.height/2) - (Reg.BUTTON_HEIGHT*2) - 24, Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT, "Single Match", PlaySingleMatch);
 		_grpMatchesChoices.add(matchButton1);
 		
-		var matchButton2:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, (FlxG.height - Reg.BUTTON_HEIGHT) / 2, Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT,"Best of 3", Play2OO3Match);
+		var matchButton2:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, (FlxG.height/2) - Reg.BUTTON_HEIGHT - 8, Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT,"Best of 3", Play2OO3Match);
 		_grpMatchesChoices.add(matchButton2);
 		
-		var matchButton3:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, ((FlxG.height - Reg.BUTTON_HEIGHT) / 2) + Reg.BUTTON_HEIGHT+ 16, Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT,"Best of 5", Play3OO5Match);
+		var matchButton3:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, (FlxG.height/2) + 8, Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT,"Best of 5", Play3OO5Match);
 		_grpMatchesChoices.add(matchButton3);
+		
+		var matchSelectLevel:CustomButton = new CustomButton((FlxG.width - Reg.BUTTON_WIDTH) / 2, (FlxG.height/2) + Reg.BUTTON_HEIGHT+ 24, Reg.BUTTON_WIDTH,Reg.BUTTON_HEIGHT,"Choose a Level", ChooseLevel);
+		_grpMatchesChoices.add(matchSelectLevel);
 		
 		_sprBlack = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE);
 		_sprBlack.blend = BlendMode.ADD;
@@ -156,6 +164,31 @@ class MenuState extends FlxState
 		add(_sprExit);
 		#end
 		
+		Reg.LoadLevels();
+		
+		
+		
+		_arrLevels = new Array<CustomButton>();
+		var lNo:Int = 0;
+		var c:CustomButton;
+		var buttonWidth:Int = Reg.BUTTON_HEIGHT * 2;
+		var buffer:Int = 32;
+		var buttonsPerRow:Int = 5;
+		var startX:Float = ((FlxG.width / 2) - ((((buttonsPerRow) * (buttonWidth)) + ((buttonsPerRow) - 1) * buffer) / 2));
+		var startY:Float = ((FlxG.height /2 ) - ((((Reg.levelList.length / buttonsPerRow) * (Reg.BUTTON_HEIGHT)) + ((Reg.levelList.length / buttonsPerRow) - 1) * buffer) / 2));
+		for (l in Reg.levelList)
+		{
+			c = new CustomButton(0, 0, Reg.BUTTON_HEIGHT * 2, Reg.BUTTON_HEIGHT, Std.string(lNo + 1), PickLevel, [lNo]);
+			_arrLevels.push(c);
+			_grpLevelSelect.add(c);
+			
+			c.x =  startX + ((lNo % buttonsPerRow) * (buttonWidth + buffer));
+			c.y = startY + (Math.floor(lNo / buttonsPerRow) * (buttonWidth + buffer));
+			
+			lNo++;
+		}
+		
+		
 		
 		StartFadeInTween();
 		
@@ -167,6 +200,26 @@ class MenuState extends FlxState
 	}
 	
 	
+	private function PickLevel(LevelNo:Int):Void
+	{
+		Reg.PickLevel(LevelNo);
+		StartFadeOutTween();
+	}
+	
+	private function ChooseLevel():Void
+	{
+		if (_state != STATE_MATCH || justTriggered || _switchingMenu) return;
+		#if !FLX_NO_MOUSE
+		FlxG.mouse.reset();
+		#end
+		justTriggered = true;
+		Reg.numMatches = 1;
+		
+		MenuOut(_grpMatchesChoices, _grpLevelSelect, STATE_CHOOSING);
+		
+		
+	}
+	
 	private function PlaySingleMatch():Void
 	{
 		if (_state != STATE_MATCH || justTriggered || _switchingMenu) return;
@@ -176,6 +229,7 @@ class MenuState extends FlxState
 		justTriggered = true;
 		_state = STATE_UNLOADING;
 		Reg.numMatches = 1;
+		Reg.PickLevels(Reg.numMatches);
 		StartFadeOutTween();
 		
 	}
@@ -189,6 +243,7 @@ class MenuState extends FlxState
 		justTriggered = true;
 		_state = STATE_UNLOADING;
 		Reg.numMatches = 3;
+		Reg.PickLevels(Reg.numMatches);
 		StartFadeOutTween();
 		
 	}
@@ -202,6 +257,7 @@ class MenuState extends FlxState
 		justTriggered = true;
 		_state = STATE_UNLOADING;
 		Reg.numMatches = 5;
+		Reg.PickLevels(Reg.numMatches);
 		StartFadeOutTween();
 	}
 	
@@ -330,7 +386,7 @@ class MenuState extends FlxState
 			FlxG.switchState(new HowToPlayState());
 		else
 		{
-			Reg.PickLevels(Reg.numMatches);
+			
 			FlxG.sound.playMusic(SoundAssets.MUS_BG2);
 			FlxG.switchState(new PlayState());
 		}

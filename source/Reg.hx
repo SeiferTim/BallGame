@@ -106,17 +106,21 @@ class Reg
 	static public function initGame():Void
 	{
 		if (GameInitialized) return;
-		Reg.save = new FlxSave();
-		Reg.save.bind("Options");
-		//if (save.data.volume != null)
-		//	FlxG.sound.volume = save.data.volume;
-		//else
-		//	FlxG.sound.volume = 0.5;
+		save = new FlxSave();
+		save.bind("flixel");
+		
+		if (save.data.volume != null)
+		{
+			trace(save.data.volume);
+			FlxG.sound.volume = save.data.volume;
+		}
+		else
+			FlxG.sound.volume = 0.5;
 		#if desktop
 		IsFullscreen = (save.data.fullscreen != null) ? save.data.fullscreen : true;
 		#end
 		
-		LoadLevels();
+		
 		
 		GameInitialized = true;
 	}
@@ -139,7 +143,7 @@ class Reg
 	static public function LoadLevels():Void
 	{
 		levelList = new Array<String>();
-		levelList.push("001");
+		//levelList.push("001");
 		levelList.push("002");
 		levelList.push("003");
 		levelList.push("004");
@@ -155,6 +159,7 @@ class Reg
 	
 	static public function PickLevels(Rounds:Int):Void 
 	{
+		
 		var tLevel:String;
 		levels = new Array<Dynamic>();
 		level = 0;
@@ -165,6 +170,13 @@ class Reg
 			levels.push(tLevel);
 			levelList.remove(tLevel);
 		}
+	}
+	
+	static public function PickLevel(LevelNo:Int):Void
+	{
+		levels = new Array<Dynamic>();
+		level = 0;
+		levels.push(levelList[LevelNo]);
 	}
 	
 	static public function PlayMusic(Music:String):Void	

@@ -185,6 +185,37 @@ embed {
     left:1em;
 }
 
+#info {
+    text-align: center;
+    text-shadow: 0 0 4px rgba(255,100,255,.6);
+    font-family: 'Days One', sans-serif;
+    width:683px;
+    margin-right: auto;
+    margin-left: -341.5px;
+    margin-top:1em;
+    font-size:16px;
+    color:#ff66ff;
+    z-index: 1;
+    display:block;
+    position: absolute;
+    left:50%;
+}
+
+#info strong {
+    font-size:18px;
+}
+
+#info a, #info a:visited {
+    color:#cc00cc;
+    text-decoration: none;
+}
+
+#info a:hover {
+    color:#fff;
+    text-decoration: none;
+
+}
+
 
 /* ==========================================================================
    Helper classes
