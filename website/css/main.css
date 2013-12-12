@@ -105,11 +105,9 @@ textarea {
     right:0;
     position: absolute;
     min-height:600px;
-    overflow: hidden;
 }
 
 body {
-
     background: #0000ff; /* Old browsers */
     background: -moz-linear-gradient(-45deg,  #0000ff 0%, #660066 50%, #ff0000 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#0000ff), color-stop(50%,#660066), color-stop(100%,#ff0000)); /* Chrome,Safari4+ */
@@ -118,13 +116,12 @@ body {
     background: -ms-linear-gradient(-45deg,  #0000ff 0%,#660066 50%,#ff0000 100%); /* IE10+ */
     background: linear-gradient(135deg,  #0000ff 0%,#660066 50%,#ff0000 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0000ff', endColorstr='#ff0000',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-    
-    
-
+    background-attachment: fixed;
 }
 
 #container {
     background-image: url(../img/Tile-Top.png);
+    background-attachment: fixed;
 }
 
 #shadow {
@@ -135,31 +132,58 @@ body {
     background: -ms-radial-gradient(center, ellipse cover,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%);
     background: radial-gradient(ellipse at center,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=1 );
-
+    background-attachment: fixed;
 }
 
-
 #logo {
-
     display:block;
     margin:0 auto;
     padding-bottom: 1em;
 }
 
 embed {
+    display:block;
+    width:683px;
+    height:384px;
     margin: 0 auto;
-    -webkit-box-shadow: 0 0 100px 10px rgba(0,0,0,100);
-    box-shadow: 0 0 100px 10px rgba(0,0,0,100);
+    -webkit-box-shadow: 0 0 50px 30px rgba(0,0,0,255);
+    box-shadow: 0 0 50px 30px rgba(0,0,0,255);
+}
+
+#downloads {
+    display:block;
+    list-style-type: none;
+    margin-left:-208px;
+    margin-right:auto;
+    bottom:1em;
+    width:416px;
+    padding:0;
+    position: absolute;
+    left:50%;
+
+}
+
+#downloads li {
+    display:inline;
+    padding-left:1em;
+    padding-right:1em;
+
 }
 
 
+#madeinstl {
+    display:block;
+    position: absolute;
+    bottom:1em;
+    right:1em;
+}
 
-
-
-
-
-
-
+#tileisle {
+    display:block;
+    position: absolute;
+    bottom:1em;
+    left:1em;
+}
 
 
 /* ==========================================================================
