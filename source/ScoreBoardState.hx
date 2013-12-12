@@ -317,7 +317,7 @@ class ScoreBoardState extends FlxState
 				alphaLevel = 1;
 				_state = STATE_WAIT;
 				
-				if (Reg.curMatch < Reg.numMatches-1)
+				if (Reg.curMatch == Reg.numMatches-1)
 					var wt:FlxTween = FlxTween.multiVar(win, { alpha:.33 }, .33, { type:FlxTween.PINGPONG, ease:FlxEase.sineInOut } );
 				
 				/*if (_btnNextMatch != null)

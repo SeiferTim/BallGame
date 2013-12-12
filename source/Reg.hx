@@ -156,6 +156,7 @@ class Reg
 	static public function PickLevels(Rounds:Int):Void 
 	{
 		var tLevel:String;
+		levels = new Array<Dynamic>();
 		level = 0;
 		for (i in 0...Rounds)
 		{
