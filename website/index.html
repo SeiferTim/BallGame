@@ -11,13 +11,25 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        
+        <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+        <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-precomposed.png">
+        <!-- For the iPad mini and the first- and second-generation iPad on iOS ≤ 6: -->
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-72x72-precomposed.png">
+        <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+        <link rel="apple-touch-icon-precomposed" sizes="120x120" href="apple-touch-icon-120x120-precomposed.png">
+        <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="apple-touch-icon-144x144-precomposed.png">
+        <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="Icon.png">
+
         <link href='http://fonts.googleapis.com/css?family=Days+One' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
 
         <script src="js/vendor/modernizr-2.6.2.min.js"></script>
     </head>
-    <body class="fillscreen" >
+    <body  >
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
@@ -26,37 +38,46 @@
         
         <div id="container" class="fillscreen">
             <div id="shadow" class="fillscreen">
+                
+                    <img src="img/title-logo.png" id="logo" />
 
-                <img src="img/title-logo.png" id="logo" />
+                    <embed id="game" src="swfs/PaddleBattles.swf" name="PaddleBattles" wmode="opaque" width="683px" height="384px" />
 
-                <embed id="game" src="swfs/PaddleBattles.swf" name="PaddleBattles" wmode="opaque" width="683px" height="384px" />
+                    <div id="stuff">
+                        <div id="info">Heroically hurtle through the hypnotic highways of Hyperspace in<br/><strong>Paddle Battles - The War for Hyperspace 40XXAD!</strong><br/>Created for the <a href="http://www.gamedevduel.com/">St Louis Game Dev Duel '13</a> by<br/>an intrepid trio of talented techies from <a href="http://tileisle.net/">Tile Isle</a>.</div>
+
+                        <ul id="downloads">
+                            <li id="android">
+                                <a href="https://play.google.com/store/apps/details?id=net.tileisle.paddlebattles">
+                                    <img alt="Android app on Google Play" src="https://developer.android.com/images/brand/en_app_rgb_wo_60.png" />
+                                </a>
+                            </li>
+                            <li id="windows">
+                                <a href="downloads/PaddleBattles-Install.exe">
+                                    <img alt="Download for Windows" src="img/win_download.png" />
+                                </a>
+                            </li>
+                        </ul>
+
+                        
+                    </div>
 
 
-                <div id="info">Heroicly hurtle through the hypnotic highways of Hyperspace in<br/><strong>Paddle Battles - The War for Hyperspace 40XXAD!</strong><br/>Created for the <a href="http://www.gamedevduel.com/">St Louis Game Dev Duel '13</a> by<br/>an intrepid trio of talented techies from <a href="http://tileisle.net/">Tile Isle</a>.</div>
-
-                <ul id="downloads">
-                    <li id="android">
-                        <a href="https://play.google.com/store/apps/details?id=net.tileisle.paddlebattles">
-                            <img alt="Android app on Google Play" src="https://developer.android.com/images/brand/en_app_rgb_wo_60.png" />
-                        </a>
-                    </li>
-                    <li id="windows">
-                        <a href="downloads/PaddleBattles-Install.exe">
-                            <img alt="Download for Windows" src="img/win_download.png" />
-                        </a>
-                    </li>
-                </ul>
-
-                <a href="http://tileisle.net" id="tileisle">
-                    <img src="img/tileisle.png" />
-                </a>
-
-                <img id="madeinstl" src="img/madeinstl.png" />
+                    
 
             </div>
         </div>
 
+        <a href="http://tileisle.net" id="tileisle">
+            <img src="img/tileisle.png" />
+        </a>
 
+        <img id="madeinstl" src="img/madeinstl.png" />
+
+        <div id="gitstuff">
+            <iframe src="http://ghbtns.com/github-btn.html?user=SeiferTim&repo=BallGame&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+            <iframe src="http://ghbtns.com/github-btn.html?user=SeiferTim&repo=BallGame&type=fork&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+        </div>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
         <script src="js/plugins.js"></script>

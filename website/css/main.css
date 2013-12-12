@@ -98,15 +98,21 @@ textarea {
    ========================================================================== */
 
 .fillscreen{
-    height:100%;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
-    position: absolute;
-    min-height:600px;
+    
+    position:relative; /* needed for footer positioning*/
+    margin:0 auto; /* center, not in IE5 */
+    width:100%;
+    height:auto !important; /* real browsers */
+    height:100%; /* IE6: treaded as min-height*/
+    min-height:100%; /* real browsers */
+
 }
 
+html {
+    margin:0;
+    padding:0;
+    height:100%;
+}
 body {
     background: #0000ff; /* Old browsers */
     background: -moz-linear-gradient(-45deg,  #0000ff 0%, #660066 50%, #ff0000 100%); /* FF3.6+ */
@@ -117,11 +123,17 @@ body {
     background: linear-gradient(135deg,  #0000ff 0%,#660066 50%,#ff0000 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0000ff', endColorstr='#ff0000',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
     background-attachment: fixed;
+    margin:0;
+    padding:0;
+    height:100%;
+
+
 }
 
 #container {
     background-image: url(../img/Tile-Top.png);
     background-attachment: fixed;
+
 }
 
 #shadow {
@@ -137,8 +149,9 @@ body {
 
 #logo {
     display:block;
-    margin:0 auto;
-    padding-bottom: 1em;
+    margin:0 auto 1em auto;
+    
+
 }
 
 embed {
@@ -148,18 +161,16 @@ embed {
     margin: 0 auto;
     -webkit-box-shadow: 0 0 50px 30px rgba(0,0,0,255);
     box-shadow: 0 0 50px 30px rgba(0,0,0,255);
+    z-index:1;
+    position: relative;
 }
 
 #downloads {
     display:block;
     list-style-type: none;
-    margin-left:-208px;
-    margin-right:auto;
-    bottom:1em;
+    margin: 1em auto 0 auto;
     width:416px;
-    padding:0;
-    position: absolute;
-    left:50%;
+    padding:1em 0 0 0;
 
 }
 
@@ -185,20 +196,22 @@ embed {
     left:1em;
 }
 
+#stuff {
+    display: block;
+    width:683px;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:2em;
+    z-index:2;
+    position: relative;
+}
+
 #info {
     text-align: center;
     text-shadow: 0 0 4px rgba(255,100,255,.6);
-    font-family: 'Days One', sans-serif;
-    width:683px;
-    margin-right: auto;
-    margin-left: -341.5px;
-    margin-top:1em;
+    font-family: 'Days One', sans-serif;    
     font-size:16px;
     color:#ff66ff;
-    z-index: 1;
-    display:block;
-    position: absolute;
-    left:50%;
 }
 
 #info strong {
@@ -214,6 +227,30 @@ embed {
     color:#fff;
     text-decoration: none;
 
+}
+
+img.githubsprite {
+
+    background-image: url(../img/github-sprite.png) 0 0;
+    width:32px;
+    height:32px;
+
+
+}
+
+a:hover img.githubsprite {
+    background-image: url(../img/github-sprite.png) -32 0;
+}
+
+
+#gitstuff {
+
+    width:110px;
+    height:40px;
+    display:block;
+    position: absolute;
+    top:1em;
+    left:1em;
 }
 
 
