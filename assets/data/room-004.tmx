@@ -43,7 +43,7 @@
   <object type="node" gid="113" x="400" y="128"/>
   <object type="node" gid="113" x="400" y="320"/>
   <object type="node" gid="113" x="304" y="320"/>
-  <object gid="113" x="224" y="48"/>
+  <object name="4" type="enemy " gid="113" x="224" y="48"/>
   <object name="3" type="enemy" gid="113" x="224" y="48"/>
   <object name="4" type="enemy" gid="113" x="224" y="32"/>
   <object name="4" type="enemy" gid="113" x="224" y="80"/>
@@ -54,16 +54,16 @@
   <object name="4" type="enemy" gid="113" x="240" y="48"/>
   <object name="4" type="enemy" gid="113" x="240" y="80"/>
   <object name="4" type="enemy" gid="113" x="240" y="96"/>
-  <object gid="113" x="224" y="320"/>
-  <object gid="113" x="224" y="352"/>
-  <object gid="113" x="224" y="336"/>
+  <object name="4" type="enemy" gid="113" x="224" y="320"/>
+  <object name="4" type="enemy" gid="113" x="224" y="352"/>
+  <object name="4" type="enemy" gid="113" x="224" y="336"/>
   <object name="3" type="enemy" gid="113" x="224" y="368"/>
-  <object gid="113" x="224" y="384"/>
-  <object gid="113" x="240" y="320"/>
-  <object gid="113" x="240" y="336"/>
-  <object gid="113" x="240" y="352"/>
-  <object gid="113" x="240" y="384"/>
-  <object gid="113" x="240" y="368"/>
+  <object name="4" type="enemy" gid="113" x="224" y="384"/>
+  <object name="4" type="enemy" gid="113" x="240" y="320"/>
+  <object name="4" type="enemy" gid="113" x="240" y="336"/>
+  <object name="4" type="enemy" gid="113" x="240" y="352"/>
+  <object name="4" type="enemy" gid="113" x="240" y="384"/>
+  <object name="4" type="enemy" gid="113" x="240" y="368"/>
   <object name="4" type="enemy" gid="113" x="464" y="320"/>
   <object name="4" type="enemy" gid="113" x="464" y="336"/>
   <object name="4" type="enemy" gid="113" x="464" y="352"/>
