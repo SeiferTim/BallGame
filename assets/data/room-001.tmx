@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="46" height="25" tilewidth="16" tileheight="16">
  <tileset firstgid="1" name="Tiles" tilewidth="16" tileheight="16">
-  <image source="../images/Wall-Terrain-Tiles.png" width="256" height="16"/>
+  <image source="../images/Wall-Terrain-Tiles.png" width="256" height="112"/>
  </tileset>
- <tileset firstgid="17" name="Enemies" tilewidth="16" tileheight="16">
+ <tileset firstgid="113" name="Enemies" tilewidth="16" tileheight="16">
   <image source="../images/enemy.png" width="16" height="16"/>
  </tileset>
  <layer name="Tiles" width="46" height="25">
@@ -18,27 +18,27 @@
  <objectgroup name="Enemies" width="46" height="25">
   <object type="node" x="337" y="227"/>
   <object type="node" x="383" y="207"/>
-  <object name="0" type="enemy" gid="17" x="304" y="224"/>
-  <object name="1" type="enemy" gid="17" x="416" y="224"/>
-  <object name="1" type="enemy" gid="17" x="128" y="208"/>
-  <object name="1" type="enemy" gid="17" x="144" y="208"/>
-  <object name="0" type="enemy" gid="17" x="544" y="208"/>
-  <object name="1" type="enemy" gid="17" x="560" y="208"/>
-  <object name="1" type="enemy" gid="17" x="528" y="208"/>
-  <object name="1" type="enemy" gid="17" x="160" y="208"/>
-  <object name="3" type="enemy" gid="17" x="352" y="128"/>
-  <object name="3" type="enemy" gid="17" x="368" y="304"/>
-  <object name="4" type="enemy" gid="17" x="192" y="176"/>
-  <object name="4" type="enemy" gid="17" x="192" y="272"/>
-  <object name="4" type="enemy" gid="17" x="208" y="288"/>
-  <object name="4" type="enemy" gid="17" x="224" y="304"/>
-  <object name="4" type="enemy" gid="17" x="464" y="144"/>
-  <object name="4 " type="enemy" gid="17" x="480" y="160"/>
-  <object name="4 " type="enemy" gid="17" x="496" y="176"/>
-  <object name="4" type="enemy" gid="17" x="464" y="304"/>
-  <object name="4 " type="enemy" gid="17" x="480" y="288"/>
-  <object name="4" type="enemy" gid="17" x="496" y="272"/>
-  <object name="4 " type="enemy" gid="17" x="208" y="160"/>
-  <object name="4" type="enemy" gid="17" x="224" y="144"/>
+  <object name="0" type="enemy" gid="113" x="304" y="224"/>
+  <object name="1" type="enemy" gid="113" x="416" y="224"/>
+  <object name="1" type="enemy" gid="113" x="128" y="208"/>
+  <object name="1" type="enemy" gid="113" x="144" y="208"/>
+  <object name="0" type="enemy" gid="113" x="544" y="208"/>
+  <object name="1" type="enemy" gid="113" x="560" y="208"/>
+  <object name="1" type="enemy" gid="113" x="528" y="208"/>
+  <object name="1" type="enemy" gid="113" x="160" y="208"/>
+  <object name="3" type="enemy" gid="113" x="352" y="128"/>
+  <object name="3" type="enemy" gid="113" x="368" y="304"/>
+  <object name="4" type="enemy" gid="113" x="192" y="176"/>
+  <object name="4" type="enemy" gid="113" x="192" y="272"/>
+  <object name="4" type="enemy" gid="113" x="208" y="288"/>
+  <object name="4" type="enemy" gid="113" x="224" y="304"/>
+  <object name="4" type="enemy" gid="113" x="464" y="144"/>
+  <object name="4 " type="enemy" gid="113" x="480" y="160"/>
+  <object name="4 " type="enemy" gid="113" x="496" y="176"/>
+  <object name="4" type="enemy" gid="113" x="464" y="304"/>
+  <object name="4 " type="enemy" gid="113" x="480" y="288"/>
+  <object name="4" type="enemy" gid="113" x="496" y="272"/>
+  <object name="4 " type="enemy" gid="113" x="208" y="160"/>
+  <object name="4" type="enemy" gid="113" x="224" y="144"/>
  </objectgroup>
 </map>
