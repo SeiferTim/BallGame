@@ -36,8 +36,8 @@
   <object name="3" type="enemy" gid="113" x="336" y="224"/>
   <object name="3" type="enemy" gid="113" x="368" y="224"/>
   <object name="2" type="enemy" gid="113" x="224" y="224"/>
-  <object name="4" type="enemy" gid="113" x="480" y="224"/>
-  <object name="4" type="enemy" gid="113" x="352" y="112"/>
+  <object name="2" type="enemy" gid="113" x="480" y="224"/>
+  <object name="3" type="enemy" gid="113" x="352" y="112"/>
   <object name="3" type="enemy" gid="113" x="352" y="352"/>
   <object type="node" gid="113" x="304" y="128"/>
   <object type="node" gid="113" x="400" y="128"/>

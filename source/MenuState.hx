@@ -173,9 +173,9 @@ class MenuState extends FlxState
 		var c:CustomButton;
 		var buttonWidth:Int = Reg.BUTTON_HEIGHT * 2;
 		var buffer:Int = 32;
-		var buttonsPerRow:Int = 5;
+		var buttonsPerRow:Int = 3;
 		var startX:Float = ((FlxG.width / 2) - ((((buttonsPerRow) * (buttonWidth)) + ((buttonsPerRow) - 1) * buffer) / 2));
-		var startY:Float = ((FlxG.height /2 ) - ((((Reg.levelList.length / buttonsPerRow) * (Reg.BUTTON_HEIGHT)) + ((Reg.levelList.length / buttonsPerRow) - 1) * buffer) / 2));
+		var startY:Float = ((FlxG.height *.35 ) - ((((Reg.levelList.length / buttonsPerRow) * (Reg.BUTTON_HEIGHT)) + ((Reg.levelList.length / buttonsPerRow) - 1) * buffer) / 2));
 		for (l in Reg.levelList)
 		{
 			c = new CustomButton(0, 0, Reg.BUTTON_HEIGHT * 2, Reg.BUTTON_HEIGHT, Std.string(lNo + 1), PickLevel, [lNo]);
