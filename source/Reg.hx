@@ -143,7 +143,7 @@ class Reg
 	{
 		levelList = new Array<String>();
 		//levelList.push("001");
-		levelList.push("002");
+		//levelList.push("002");
 		levelList.push("003");
 		levelList.push("004");
 		levelList.push("005");
